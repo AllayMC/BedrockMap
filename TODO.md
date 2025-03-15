@@ -1,27 +1,16 @@
-# 新功能
+# New Features
 
-- [X] 实装区块定位功能
-- [ ] 给前往的坐标加上坐标标识(需要画图标)
-- [ ] 在全局NBT区域展示传送门结构
-- [ ] 在全局NBT区域加上地图(地图物品，不是大地图)查看和编辑功能
-- [ ] 在全局NBT区域加上定位玩家功能
-- [ ] 在全局NBT区域加上定位村庄的功能
-- [ ] 给区块加上HSA编辑功能
-- [ ] 让植物的颜色随群系变化
-- [ ] 半透明方块下方方块渲染(吃性能做成可选项)
-- [X] 调整网格间距
-- [ ] 允许NBT修改key
-- [ ] 渲染性能优化
+- [ ] Add markers for target position (requires drawing icons).
+- [ ] Display portal structures in the global NBTs.
+- [ ] Add map viewing and editing functionality in the global NBTs (for map items, not the map view).
+- [ ] Add player tracking functionality in the global NBTs.
+- [ ] Add village tracking functionality in the global NBTs  
+- [ ] Add HSA editing functionality for chunks.
+- [ ] Make plant colors change according to the biome.
+- [ ] Render blocks under semi-transparent blocks (performance-intensive, should be an optional setting).
+- [ ] Allow NBT key modification.
+- [ ] Optimize rendering performance.
 
 # BUGS
 
-- [X] 新区块可能同时使用两种格式存储实体，在修改实体时候需要处理这种情况
-- [X] 最小release时部分图标缺失
-- [x] 无法加载中文路径的存档
-- [x] 部分新版本扁平化的方块无法正常渲染
-- [X] 部分地图群系读取错误
-- [X] 实体显示不完整
-- [X] 最小缩放不够小
-- [x] 显示群系名称
-- [ ] 删除区块会产生幽灵地狱门
-- [x] 打开区块地形数据会闪退
+- [ ] Deleting chunks may create ghost Nether portals  

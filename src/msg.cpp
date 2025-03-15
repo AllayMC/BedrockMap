@@ -20,4 +20,4 @@ void CHECK_RESULT(bool c, const QString &succ, const QString &fail) {
     }
 }
 
-void CHECK_DATA_SAVE(bool c) { CHECK_RESULT(c, "成功保存数据", "无法保存数据"); }
+void CHECK_DATA_SAVE(bool c) { CHECK_RESULT(c, "Successfully saved data", "Unable to save data"); }

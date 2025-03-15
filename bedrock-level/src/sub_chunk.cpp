@@ -112,7 +112,7 @@ namespace bl {
     }  // namespace
 
     bool sub_chunk::load(const byte_t *data, size_t len) {
-        size_t idx = 0;  // 全局索引
+        size_t idx = 0;  // Global Index
         int read{0};
         if (!read_header(this, data, read)) return false;
         idx += read;

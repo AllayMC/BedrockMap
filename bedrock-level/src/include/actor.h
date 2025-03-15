@@ -40,7 +40,7 @@ namespace bl {
         ~actor();
     };
 
-    /* 实体摘要信息
+    /* Entity summary information
      * key - "dige" + chunk_pos.to_raw()
      * value = key*
      * key = "actorprefix" + uid

@@ -65,7 +65,7 @@ void MapItemEditor::paintEvent(QPaintEvent *event) {
 
 void MapItemEditor::on_export_map_btn_clicked() {
     bool ok;
-    int i = QInputDialog::getInt(this, tr("另存为"), tr("设置缩放比例"), 1, 1, 16, 1, &ok);
+    int i = QInputDialog::getInt(this, tr("Save As"), tr("Set the zoom ratio"), 1, 1, 16, 1, &ok);
 
     if (!ok) return;
 
@@ -85,13 +85,13 @@ void MapItemEditor::on_change_map_btn_clicked() {
 
     QImage new_img(fileName);
     if (new_img.width() != new_img.height()) {
-        WARN("图片的长宽不一致,将会进行自动拉伸");
+        WARN("The length and width of the picture are inconsistent, and it will be automatically stretched");
         return;
     }
 
     auto scale_img = new_img.scaled(this->img.width(), this->img.height());
     this->img = scale_img;
-    // TODO 写入图数据
+    // TODO Writing map data
     auto *it = this->map_nbt_editor_->openedItem();
     if (!it || !it->root_) return;
     auto *color_tag = dynamic_cast<bl::palette::byte_array_tag *>(it->root_->get("colors"));
@@ -109,7 +109,7 @@ void MapItemEditor::on_change_map_btn_clicked() {
 }
 
 void MapItemEditor::on_save_map_btn_clicked() {
-    if (!CHECK_CONDITION(this->mw_->enable_write(), "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->mw_->enable_write(), "Write mode is not enabled")) return;
     CHECK_DATA_SAVE(this->mw_->levelLoader()->modifyDBGlobal(this->map_nbt_editor_->getModifyCache()));
     this->map_nbt_editor_->clearModifyCache();
 }

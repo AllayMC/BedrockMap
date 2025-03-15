@@ -18,7 +18,7 @@
 
 namespace bl::palette {
 
-    // TODD: 使用模板重写这个库
+    // TODD: Rewrite this library using templates
     enum tag_type : int8_t {
         End = 0,
         Byte = 1,
@@ -58,7 +58,7 @@ namespace bl::palette {
 
         /**
          *
-         * 这个函数有bug，暂时不要使用
+         * This function has a bug, please do not use it for now
          * @return
          */
         [[nodiscard]] virtual std::string to_raw() const {

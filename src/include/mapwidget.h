@@ -92,10 +92,10 @@ public:
 
     inline void setDrawDebug(bool enable) { this->draw_debug_window_ = enable; }
 
-    // 生成图片
+    // Generate image.
     void saveImageAction(bool full_screen);
 
-    // 前往坐标
+    // Go to position.
     void gotoPositionAction();
 
     inline void selectChunk(const bl::chunk_pos &p) { this->opened_chunk_ = true, this->opened_chunk_pos_ = p; }
@@ -166,7 +166,7 @@ private:
     void drawMarkers(QPaintEvent *event, QPainter *p);
 
     QRect getRenderSelectArea();
-    // 给定窗口，计算该区域内需要渲染的所有区块的坐标数据以及渲染范围的坐标
+    // Given a window, calculate the position data of all blocks that need to be rendered in the area and the coordinates of the rendering range.
 
     std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> getRenderRange(const QRect &camera);
 

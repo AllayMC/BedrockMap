@@ -12,7 +12,7 @@
 namespace bl::palette {
 
     /**
-     * 从数据流中读取一个nbt，可以是任何类型，返回指针和读取的长度
+     * Read a nbt from the data stream, which can be of any type, and return the pointer and the length
      * @param data
      * @return
      */
@@ -147,7 +147,7 @@ namespace bl::palette {
     }
 
     /*
-     * 不保证内存够用
+     * There is no guarantee that there is enough memory
      *
      */
     std::tuple<abstract_tag *, size_t> read_nbt(const byte_t *data) {

@@ -56,7 +56,7 @@ namespace {
                 int alpha{0};
                 for (int i = -1; i <= 1; i++) {
                     for (int j = -1; j <= 1; j++) {
-                        //                        范围内有像素
+                        //                        There are pixels in the range
                         int nx = cx + i;
                         int nz = cz + j;
                         if (nx >= 0 && nx < 16 && nz >= 0 && nz < 16 && origin->pixelColor(nx, nz).alpha() != 0) {

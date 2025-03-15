@@ -16,7 +16,7 @@
 namespace bl {
     namespace {
         // biome id -> water
-        // 和群系有关的颜色白名单
+        // Biome-related color whitelist
         std::unordered_set<std::string> water_block_names;
         std::unordered_set<std::string> leaves_block_names;
         std::unordered_set<std::string> grass_block_names;
@@ -35,7 +35,7 @@ namespace bl {
         // biome id -> biome color
         std::unordered_map<biome, bl::color> biome_color_map;
 
-        // key 是palette的raw形态
+        // key It is the raw form of palette
         std::unordered_map<std::string, bl::color> block_color_map;
 
         bl::color blend_with_biome(const std::unordered_map<bl::biome, bl::color>& map,

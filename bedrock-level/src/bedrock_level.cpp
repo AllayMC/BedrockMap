@@ -133,7 +133,7 @@ namespace bl {
         leveldb::WriteBatch batch;
         bl::actor_digest_key key{cp};
         std::string raw;
-        // 没啥要解析的，不用管错误
+        // Nothing to parse, ignore the error
         if (load_raw(this->db_, key.to_raw(), raw)) {
             bl::actor_digest_list ads;
             ads.load(raw);

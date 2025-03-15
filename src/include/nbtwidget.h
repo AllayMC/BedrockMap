@@ -15,7 +15,7 @@ namespace Ui {
 
 using namespace bl::palette;
 
-// 不持有数据
+// Not hold data.
 class NBTTreeItem : public QTreeWidgetItem {
 public:
     [[nodiscard]] inline QString getRawText() const {
@@ -26,8 +26,7 @@ public:
     bl::palette::abstract_tag *root_{nullptr};
 };
 
-// 持有数据
-
+// Hold data.
 struct NBTListItem : public QListWidgetItem {
     QString getLabel() {
         auto dyn = this->namer_(root_);
@@ -37,11 +36,11 @@ struct NBTListItem : public QListWidgetItem {
     bl::palette::compound_tag *root_{nullptr};                                                                   // 原始数据
     std::function<QString(bl::palette::compound_tag *)> namer_{[](bl::palette::compound_tag *) { return ""; }};  // 动态标签
     QString default_label;                                                                                       // 外显标签
-    QString raw_key;  // leveldb中key结构的原始key
+    QString raw_key;  // The original key of the key structure in leveldb
     ~NBTListItem() override { delete this->root_; }
 
     /*
-     * 构造一一个没有动态标签和ICON的NBTListItem
+     * Constructs an NBTListItem without a dynamic label and icon.
      */
     static NBTListItem *from(bl::palette::compound_tag *data, const QString &default_label, const QString &key = "") {
         auto *it = new NBTListItem();
@@ -53,7 +52,7 @@ struct NBTListItem : public QListWidgetItem {
     }
 };
 
-// 自身会持有数据，所以每次加载数据会析构之前的并复制一份
+// It will hold data itself, so each time data is loaded, it will destroy the previous one and make a copy.
 class NbtWidget : public QWidget {
 Q_OBJECT
 public:
@@ -120,7 +119,7 @@ private:
     void openNBTItem(bl::palette::compound_tag *root);
 
 private:
-    // 不存数据，只引用数据
+    // Do not store data, only reference it.
     Ui::NbtWidget *ui;
     bool modify_allowed_{false};
     std::function<void(compound_tag *)> extra_load_event_{[](const compound_tag *) {}};

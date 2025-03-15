@@ -59,9 +59,9 @@ void MapWidget::showContextMenu(const QPoint &p) {
     auto area = this->getRenderSelectArea();
     QMenu contextMenu(this);
     if (this->has_selected_ && area.contains(p)) {
-        QAction removeChunkAction("删除区块", this);
-        QAction clearAreaAction("取消选中", this);
-        QAction screenShotAction("另存为图像", this);
+        QAction removeChunkAction("Delete a chunk", this);
+        QAction clearAreaAction("Deselect", this);
+        QAction screenShotAction("Save as Image", this);
         connect(&clearAreaAction, &QAction::triggered, this, [this] { this->has_selected_ = false; });
         connect(&removeChunkAction, SIGNAL(triggered()), this, SLOT(delete_chunks()));
         connect(&screenShotAction, &QAction::triggered, this, [this] { this->saveImageAction(false); });
@@ -73,35 +73,35 @@ void MapWidget::showContextMenu(const QPoint &p) {
     } else {
         auto pos = this->getCursorBlockPos();
         // for single chunk
-        QAction gotoAction("前往坐标", this);
+        QAction gotoAction("Go to position", this);
         connect(&gotoAction, &QAction::triggered, this, [this] { this->gotoPositionAction(); });
         auto blockInfo = this->mw_->levelLoader()->getBlockTips(pos, this->dim_type_);
         // block name
-        QAction copyBlockNameAction("复制方块名称: " + QString(blockInfo.block_name.c_str()), this);
+        QAction copyBlockNameAction("Copy Block Name: " + QString(blockInfo.block_name.c_str()), this);
         connect(&copyBlockNameAction, &QAction::triggered, this,
                 [cb, &blockInfo] { cb->setText(blockInfo.block_name.c_str()); });
 
         // biome
-        //        QAction copyBiomeAction(("复制群系名称: " + bl::get_biome_name(blockInfo.biome)).c_str(), this);
-        QAction copyBiomeAction(("复制群系名称: " + QString::number(blockInfo.biome)), this);
+        //        QAction copyBiomeAction(("Copy Biome Name: " + bl::get_biome_name(blockInfo.biome)).c_str(), this);
+        QAction copyBiomeAction(("Copy Biome Name: " + QString::number(blockInfo.biome)), this);
         connect(&copyBiomeAction, &QAction::triggered, this, [cb, &blockInfo] {
             //            cb->setText(bl::get_biome_name(blockInfo.biome).c_str());
         });
 
         // height
-        QAction copyHeightAction("复制高度信息: " + QString::number(blockInfo.height), this);
+        QAction copyHeightAction("Copy height information: " + QString::number(blockInfo.height), this);
 
         connect(&copyHeightAction, &QAction::triggered, this,
                 [cb, &blockInfo] { cb->setText(QString::number(blockInfo.height)); });
         auto tpCmd = QString("tp @s %1 ~ %2").arg(QString::number(pos.x), QString::number(pos.z));
-        QAction copyTpCommandAction("复制TP命令: " + tpCmd, this);
+        QAction copyTpCommandAction("Copy TP command: " + tpCmd, this);
         connect(&copyTpCommandAction, &QAction::triggered, this, [cb, &tpCmd] { cb->setText(tpCmd); });
 
-        QAction screenShotAction("另存为图像", this);
+        QAction screenShotAction("Save as Image", this);
         connect(&screenShotAction, &QAction::triggered, this, [this] { this->saveImageAction(true); });
 
         // chunk editor
-        QAction openInChunkEditor("在区块编辑器中打开", this);
+        QAction openInChunkEditor("Open in Block Editor", this);
         connect(&openInChunkEditor, &QAction::triggered, this, [pos, this] {
             auto cp = pos.to_chunk_pos();
             cp.dim = static_cast<int>(this->dim_type_);
@@ -248,7 +248,7 @@ void MapWidget::foreachRegionInCamera(const std::function<void(const region_pos 
 }
 
 void MapWidget::drawGrid(QPaintEvent *event, QPainter *painter) {
-    // 细区块边界线
+    // Thin chunk boundaries
     QPen pen;
     pen.setColor(QColor(200 - 20, 200 - 20, 200 - 20));
     pen.setWidth(1);
@@ -258,8 +258,8 @@ void MapWidget::drawGrid(QPaintEvent *event, QPainter *painter) {
         if (this->cw_ >= 64) painter->drawRect(QRect(p.x(), p.y(), this->cw_, this->cw_));
     });
 
-    // 粗经纬线
-    // 根据bw计算几个区块合一起
+    // Thick longitude and latitude lines
+    // Calculate several chunks based on bw and combine them together
     pen.setWidth(3);
     painter->setPen(pen);
     auto [minChunk, maxChunk, renderRange] = this->getRenderRange(this->camera_);
@@ -268,9 +268,9 @@ void MapWidget::drawGrid(QPaintEvent *event, QPainter *painter) {
             bl::chunk_pos{minChunk.x / cfg::GRID_WIDTH * cfg::GRID_WIDTH,
                           minChunk.z / cfg::GRID_WIDTH * cfg::GRID_WIDTH, 0};
 
-    // 纵轴线起始x坐标
+    // Starting x of the vertical axis
     int xStart = (alignedMinChunkPos.x - minChunk.x) * this->cw_ + renderRange.x();
-    // 横轴线起始x坐标
+    // Starting x of the horizontal axis
     int yStart = (alignedMinChunkPos.z - minChunk.z) * this->cw_ + renderRange.y();
 
     const int step = cfg::GRID_WIDTH * this->cw_;
@@ -344,7 +344,7 @@ void MapWidget::drawDebugWindow(QPaintEvent *event, QPainter *painter) {
 }
 
 /**
- * 重写这里，采用缓存机制
+ * Rewrite here and implement cache system
  * @param event
  * @param painter
  */
@@ -444,15 +444,15 @@ void MapWidget::drawActors(QPaintEvent *event, QPainter *painter) {
 void MapWidget::gotoBlockPos(int x, int z) {
     int px = this->camera_.width() / 2;
     int py = this->camera_.height() / 2;
-    // 坐标换算
+    // Position conversion
     this->origin_ = {px - static_cast<int>(x * BW()), static_cast<int>(py - z * BW())};
     this->update();
 }
 
 std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> MapWidget::getRenderRange(const QRect &camera) {
-    // 需要的参数
-    //  origin  焦点原点在什么地方
-    //  bw 像素宽度
+    // Required parameters
+    //  origin  Where is the focus origin?
+    //  bw Pixel Width
     const int CHUNK_WIDTH = this->cw_;
     int renderX = (camera.x() - origin_.x()) / CHUNK_WIDTH * CHUNK_WIDTH + origin_.x();
     int renderY = (camera.y() - origin_.y()) / CHUNK_WIDTH * CHUNK_WIDTH + origin_.y();
@@ -472,7 +472,7 @@ std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> MapWidget::getRenderRange(const 
 
 void MapWidget::saveImageAction(bool full_screen) {
     bool ok;
-    int i = QInputDialog::getInt(this, tr("另存为"), tr("设置缩放比例"), 1, 1, 16, 1, &ok);
+    int i = QInputDialog::getInt(this, tr("Save as"), tr("Set the zoom ratio"), 1, 1, 16, 1, &ok);
 
     if (!ok) return;
     QPixmap img;
@@ -500,10 +500,10 @@ void MapWidget::delete_chunks() {
 
 // https://www.cnblogs.com/grandyang/p/6263929.html
 void MapWidget::gotoPositionAction() {
-    // 后面可能需要两个输入框
+    // Two input boxes may be required later
     QDialog dialog(this);
     dialog.setMinimumWidth(300);
-    dialog.setWindowTitle("前往坐标");
+    dialog.setWindowTitle("Go to position");
 
     QFormLayout form(&dialog);
     auto *x_edit = new QLineEdit(&dialog);

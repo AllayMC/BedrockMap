@@ -16,17 +16,16 @@
 namespace {
 
 //    QImage *bg_{nullptr};
-    QImage *unloaded_region_image_{nullptr};  // 未加载的区域
-    QImage *null_region_image_{nullptr};      // 确定没有有效区块的空区域
+    QImage *unloaded_region_image_{nullptr};  // Unloaded regions.
+    QImage *null_region_image_{nullptr};      // Empty areas with no valid chunks.
     //    QImage *transparent_region_img_{nullptr};
 }  // namespace
 
-// 软件基本信息
 const std::string cfg::SOFTWARE_NAME = "BedrockMap";
 const std::string cfg::SOFTWARE_VERSION = "v0.4.0";
-// 不可配置的
+// Not configurable
 const int cfg::GRID_WIDTH = 32;
-// 配置文件下面是可配置的(都有默认值)
+// Configurable (all have default values)
 int cfg::SHADOW_LEVEL = 128;
 float cfg::ZOOM_SPEED = 1.2;
 int cfg::THREAD_NUM = 8;
@@ -39,10 +38,10 @@ bool cfg::LOAD_GLOBAL_DATA = true;
 bool cfg::OPEN_NBT_EDITOR_ONLY = false;
 std::string cfg::COLOR_THEME = "developing";
 int cfg::FONT_SIZE = 10;
-//运行时可变的
+//Runtime mutable
 bool cfg::transparent_void = false;
 
-//三个重要文件的路径，直接内置
+//The paths to three important files are directly built-in.
 #ifdef QT_DEBUG
 const std::string cfg::CONFIG_FILE_PATH = R"(../config.json)";
 const std::string cfg::BLOCK_FILE_PATH = R"(../bedrock-level/data/colors/block_color.json)";

@@ -27,7 +27,7 @@ QImage *BlockActorNBTIcon(const QString &key);
 
 QImage *EntityNBTIcon(const QString &key);
 
-// 下面是新的API
+// New APIs vvv
 
 struct IconManager {
     IconManager() = delete;

@@ -165,11 +165,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 }
 
 void MainWindow::resetToInitUI() {
-    // main_splitter: 分割按钮 +  主要UI
-    // map_splitter: 分割按钮面板 + 地图 + 区块编辑器
+    // main_splitter: Split Button + Main UI
+    // map_splitter: Split Button Panel + Map + Chunk Editor
     ui->main_splitter->setVisible(false);
 
-    // 全局nbt panel的状态
+    // global nbt panel states
     ui->global_nbt_pannel->setVisible(false);
     this->village_editor_->setVisible(false);
     this->player_editor_->setVisible(false);
@@ -185,7 +185,7 @@ void MainWindow::resetToInitUI() {
     updateButtonBackground(ui->grid_btn, true);
 
     this->chunk_editor_widget_->setVisible(false);
-    ui->open_level_btn->setText("未打开存档");
+    ui->open_level_btn->setText("Please open a mc level.");
     ui->open_level_btn->setVisible(true);
     ui->open_level_btn->setEnabled(true);
     this->setGeometry(centerMainWindowGeometry(0.6));
@@ -204,13 +204,13 @@ void MainWindow::updateXZEdit(int x, int z) {
 }
 
 bool MainWindow::openChunkEditor(const bl::chunk_pos &p) {
-    if (!CHECK_CONDITION(this->level_loader_->isOpen(), "未打开存档")) {
+    if (!CHECK_CONDITION(this->level_loader_->isOpen(), "Please open a mc level.")) {
         return false;
     }
     // add a watcher
     qDebug() << "Try load chunk: " << p.to_string().c_str();
     auto chunk = this->level_loader_->getChunkDirect(p);
-    if (!CHECK_CONDITION((chunk), "无法打开区块数据")) {
+    if (!CHECK_CONDITION((chunk), "Unable to open chunk data")) {
         return false;
     }
 
@@ -227,7 +227,7 @@ void MainWindow::openLevel() {
                 "/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds";
     // #endif
     QString root =
-            QFileDialog::getExistingDirectory(this, tr("打开存档根目录"), path,
+            QFileDialog::getExistingDirectory(this, tr("Open the level (rootdir)"), path,
                                               QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (root.size() == 0) {
         return;
@@ -235,30 +235,30 @@ void MainWindow::openLevel() {
 
     this->closeLevel();
     qDebug() << "Level root path is " << root;
-    ui->open_level_btn->setText("正在打开...");
+    ui->open_level_btn->setText("Opening...");
     ui->open_level_btn->setEnabled(false);
     auto res = this->level_loader_->open(root.toStdString());
     if (!res) {
         this->level_loader_->close();
         qInfo() << "Can not open level: " << root;
-        WARN("无法打开存档,请确认这是一个合法的存档根目录");
+        WARN("Unable to open the level, please confirm that is valid.");
         this->resetToInitUI();
         return;
     }
 
-    // 打开了存档
-    this->setWindowTitle(getStaticTitle());  // 刷新标题
-    ui->main_splitter->setVisible(true);     // 显示GUI
-    ui->open_level_btn->setVisible(false);   // 隐藏窗口
-    // 设置出生点坐标
+    // Opened
+    this->setWindowTitle(getStaticTitle());  // refresh windows title
+    ui->main_splitter->setVisible(true);     // show GUI
+    ui->open_level_btn->setVisible(false);   // hide window
+    // Set the birth point
     auto sp = this->level_loader_->level().dat().spawn_position();
     this->map_widget_->gotoBlockPos(sp.x, sp.z);
-    // 写入level.dat数据
+    // write into level.dat
     auto *ld = dynamic_cast<bl::palette::compound_tag *>(this->level_loader_->level().dat().root());
     this->level_dat_editor_->loadNewData(
             {NBTListItem::from(dynamic_cast<bl::palette::compound_tag *>(ld->copy()), "level.dat")});
     qDebug() << "Loading global data in background thread...";
-    // 后台加载全局数据
+    // load global data on background
     this->loading_global_data_ = true;
     auto future = QtConcurrent::run(
             [this](const QString &path) -> bool {
@@ -268,7 +268,7 @@ void MainWindow::openLevel() {
                         this->level_loader_->level().foreach_global_keys(
                                 [this, &result](const std::string &key, const std::string &value) {
                                     if (!this->loading_global_data_) {
-                                        throw std::logic_error("EXIT");  // 手动中止
+                                        throw std::logic_error("EXIT");  // Manual Abort
                                     }
                                     if (key.find("player") != std::string::npos) {
                                         result.playerData.append_nbt(key, value);
@@ -328,7 +328,7 @@ void MainWindow::openNBTEditor() {
 
 void MainWindow::openMapItemEditor() {
     if (!this->level_loader_->isOpen() || !this->global_data_loaded_) {
-        WARN("请打开存档且等待全局数据加载完成后再打开");
+        WARN("Please open the level and wait for the global data to load before opening it again");
         return;
     }
 
@@ -340,11 +340,11 @@ void MainWindow::openMapItemEditor() {
 
 void MainWindow::deleteChunks(const bl::chunk_pos &min, const bl::chunk_pos &max) {
     if (!this->level_loader_->isOpen()) {
-        QMessageBox::information(nullptr, "警告", "还没有打开世界", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(nullptr, "WARN", "The world has not yet been opened", QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
     if (!this->write_mode_) {
-        QMessageBox::information(nullptr, "警告", "当前为只读模式，无法删除区块", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(nullptr, "WARN", "Currently in read-only mode, chunks cannot be deleted", QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
     auto future = this->level_loader_->dropChunk(min, max);
@@ -352,7 +352,7 @@ void MainWindow::deleteChunks(const bl::chunk_pos &min, const bl::chunk_pos &max
 }
 
 void MainWindow::handle_chunk_delete_finished() {
-    INFO("区块删除成功");
+    INFO("Chunk deleted successfully");
     this->level_loader_->clearAllCache();
 }
 
@@ -415,12 +415,12 @@ void MainWindow::prepareGlobalData(GlobalNBTLoadResult &res) {
 void MainWindow::handle_level_open_finished() {
     auto res = this->load_global_data_watcher_.result();
     if (!res) {
-        if (!this->loading_global_data_) {  // 说明是主动停止的
+        if (!this->loading_global_data_) {  // Instructions are to stop manually
             qDebug() << "Stop loading global data (by user)";
             return;
         }
         qDebug() << "Load global data failed";
-        WARN("无法加载全局NBT数据，但是你仍然可以查看地图和区块数据");
+        WARN("Unable to load global NBT data, but you can still view map and chunk data");
     }
     qInfo() << "Load global data finished";
     this->village_editor_->setVisible(true);
@@ -432,37 +432,37 @@ void MainWindow::handle_level_open_finished() {
     ui->player_nbt_loading_label->setVisible(false);
     ui->village_nbt_loading_label->setVisible(false);
     ui->other_nbt_loading_label->setVisible(false);
-    // 打开完成了设置为可用（虽然）
+    // complete and set button state
     ui->open_level_btn->setEnabled(true);
     this->global_data_loaded_ = true;
 }
 
 void MainWindow::on_save_leveldat_btn_clicked() {
-    if (!CHECK_CONDITION(this->write_mode_, "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->write_mode_, "Write mode is not enabled")) return;
     auto nbts = this->level_dat_editor_->getPaletteCopy();
     if (nbts.size() == 1 && nbts[0]) {
         this->level_loader_->modifyLeveldat(nbts[0]);
         this->setWindowTitle(getStaticTitle());
-        INFO("成功保存level.dat文件");
+        INFO("Successfully saved level.dat file");
     } else {
-        INFO("无法保存level.dat文件");
+        INFO("Unable to save level.dat file");
     }
 }
 
 void MainWindow::on_save_village_btn_clicked() {
-    if (!CHECK_CONDITION(this->write_mode_, "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->write_mode_, "Write mode is not enabled")) return;
     CHECK_DATA_SAVE(this->level_loader_->modifyDBGlobal(this->village_editor_->getModifyCache()));
     this->village_editor_->clearModifyCache();
 }
 
 void MainWindow::on_save_players_btn_clicked() {
-    if (!CHECK_CONDITION(this->write_mode_, "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->write_mode_, "Write mode is not enabled")) return;
     CHECK_DATA_SAVE(this->level_loader_->modifyDBGlobal(this->player_editor_->getModifyCache()));
     this->player_editor_->clearModifyCache();
 }
 
 void MainWindow::on_save_other_btn_clicked() {
-    if (!CHECK_CONDITION(this->write_mode_, "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->write_mode_, "Write mode is not enabled")) return;
     CHECK_DATA_SAVE(this->level_loader_->modifyDBGlobal(this->other_nbt_editor_->getModifyCache()));
     this->other_nbt_editor_->clearModifyCache();
 }

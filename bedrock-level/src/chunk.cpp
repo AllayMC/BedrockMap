@@ -48,9 +48,9 @@ namespace bl {
 
     /**
      *
-     * @param cx 区块内x
-     * @param y  区块内y(同时也是主世界y)
-     * @param cz 区块内z
+     * @param cx x inside chunk
+     * @param y  y inside chunk (Also the overworld y)
+     * @param cz y inside chunk
      * @return
      */
     block_info chunk::get_block(int cx, int y, int cz) {
@@ -100,7 +100,7 @@ namespace bl {
     biome chunk::get_biome(int cx, int y, int cz) { return this->d3d_.get_biome(cx, y, cz); }
 
     bool chunk::load_subchunks(bedrock_level &level) {
-        // 默认先用new,因为version字段太怪，看不懂版本
+        // By default, new is used first, because the version field is too strange and I can't understand the version.
         auto [min_index, max_index] = this->pos_.get_subchunk_index_range(ChunkVersion::New);
         for (auto sub_index = min_index; sub_index <= max_index; sub_index++) {
             // load all sub chunks
@@ -123,7 +123,7 @@ namespace bl {
         }
 
         if (!this->sub_chunks_.empty()) {
-            // 根据subchunk格式猜测一个 version，后面可能需要修改
+            // Guess a version based on the subchunk format, which may need to be modified later
             this->version = this->sub_chunks_.begin()->second->version() == 9 ? New : Old;
         }
         return true;
@@ -185,7 +185,7 @@ namespace bl {
         // 2. read actor from actor keys [actorprefix+uid]
         bl::actor_digest_key key{this->pos_};
         std::string raw;
-        // 没啥要解析的，不用管错误
+        // Nothing to parse, ignore the error
         if (!load_raw(level.db(), key.to_raw(), raw)) {
             return;
         }
@@ -259,7 +259,7 @@ namespace bl {
 
         if (!fast_load) {
             this->load_block_entities(level);
-            this->load_pending_ticks(level);  // 有bug
+            this->load_pending_ticks(level);  // bug
         }
         this->load_hsa(level);
         this->fast_load_mode_ = fast_load;
@@ -267,7 +267,7 @@ namespace bl {
         return this->loaded_;
     }
 
-    // 从0开始的数据
+    // Data starting from 0
     int chunk::get_height(int cx, int cz) { return this->d3d_.height(cx, cz); }
     biome chunk::get_top_biome(int cx, int cz) { return this->d3d_.get_top_biome(cx, cz); }
 

@@ -15,7 +15,7 @@
 ChunkEditorWidget::ChunkEditorWidget(MainWindow *mw, QWidget *parent) : QWidget(parent), ui(new Ui::ChunkEditorWidget), mw_(mw) {
     ui->setupUi(this);
     // terrain tab
-    ui->base_info_label->setText("无数据");
+    ui->base_info_label->setText("No data");
     this->chunk_section_ = new ChunkSectionWidget();
 
     ui->terrain_tab->layout()->addWidget(this->chunk_section_);
@@ -144,7 +144,7 @@ void ChunkEditorWidget::mousePressEvent(QMouseEvent *event) {
 }
 
 void ChunkEditorWidget::on_save_actor_btn_clicked() {
-    if (!CHECK_CONDITION(this->mw_->enable_write(), "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->mw_->enable_write(), "Write mode is not enabled")) return;
 
     auto palettes = this->actor_editor_->getPaletteCopy();
     std::vector<bl::actor *> actors;
@@ -163,12 +163,12 @@ void ChunkEditorWidget::on_save_actor_btn_clicked() {
 }
 
 void ChunkEditorWidget::on_save_block_actor_btn_clicked() {
-    if (!CHECK_CONDITION(this->mw_->enable_write(), "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->mw_->enable_write(), "Write mode is not enabled")) return;
     CHECK_DATA_SAVE(this->mw_->levelLoader()->modifyChunkBlockEntities(this->cp_, this->block_entity_editor_->getCurrentPaletteRaw()));
 }
 
 void ChunkEditorWidget::on_save_pt_btn_clicked() {
-    if (!CHECK_CONDITION(this->mw_->enable_write(), "未开启写模式")) return;
+    if (!CHECK_CONDITION(this->mw_->enable_write(), "Write mode is not enabled")) return;
     CHECK_DATA_SAVE(this->mw_->levelLoader()->modifyChunkPendingTicks(this->cp_, this->pending_tick_editor_->getCurrentPaletteRaw()));
 }
 

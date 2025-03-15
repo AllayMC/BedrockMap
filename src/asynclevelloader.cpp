@@ -29,7 +29,7 @@ AsyncLevelLoader::AsyncLevelLoader() {
     }
     this->slime_chunk_cache_ = new QCache<region_pos, QImage>(8192);
     /**
-     * 不要相信bedrock_level的任何数据，不在库内做任何长期的缓存
+     * Do not trust any data from bedrock_level and do not cache it for a long time in the database.
      */
     this->level_.set_cache(false);
 }
@@ -86,7 +86,7 @@ void LoadRegionTask::run() {
     auto *region = new ChunkRegion();
     bl::chunk *chunks_[cfg::RW * cfg::RW]{nullptr};
 
-    //读取区块数据
+    //Read chunk data
     for (int i = 0; i < cfg::RW; i++) {
         for (int j = 0; j < cfg::RW; j++) {
             bl::chunk_pos p{this->pos_.x + i, this->pos_.z + j, this->pos_.dim};
@@ -98,7 +98,7 @@ void LoadRegionTask::run() {
     std::chrono::steady_clock::time_point load_end = std::chrono::steady_clock::now();
 #endif
 
-    //如果有合法区块，当前区域就是有效的
+    //If there is a legal chunk, the current area is valid
     for (auto &chunk: chunks_) {
         if (chunk && chunk->loaded()) {
             region->valid = true;
@@ -107,8 +107,8 @@ void LoadRegionTask::run() {
     }
 
     const auto IMG_WIDTH = cfg::RW << 4;
-    //有效的才开始渲染
-    if (region->valid) {  // 尝试烘焙
+    //Only start rendering when it is valid
+    if (region->valid) {  // try bake
         for (int rw = 0; rw < cfg::RW; rw++) {
             for (int rh = 0; rh < cfg::RW; rh++) {
                 auto *chunk = chunks_[rw * cfg::RW + rh];
@@ -135,7 +135,7 @@ void LoadRegionTask::run() {
         }
     }
 
-    // 烘焙
+    // bake
 
     if (cfg::FANCY_TERRAIN_RENDER) {
         for (int i = 0; i < IMG_WIDTH; i++) {
@@ -190,12 +190,12 @@ void LoadRegionTask::run() {
 void AsyncLevelLoader::close() {
     if (!this->loaded_) return;
     qInfo() << "Try close level";
-    this->loaded_ = false;      // 阻止UI层请求数据
-    this->processing_.clear();  // 队列清除
-    this->pool_.clear();        // 清除所有任务
-    this->pool_.waitForDone();  // 等待当前任务完成
+    this->loaded_ = false;      // Forbid the UI layer from requesting data
+    this->processing_.clear();  // Clear queue.
+    this->pool_.clear();        // Clear all tasks.
+    this->pool_.waitForDone();  // Wait for current task.
     qInfo() << "Clear work pool";
-    this->level_.close();  // 关闭存档
+    this->level_.close();  // Close level.
     this->clearAllCache();
 }
 
@@ -305,7 +305,7 @@ bool AsyncLevelLoader::modifyChunkActors(const bl::chunk_pos &cp, const bl::Chun
             digest += ac->uid_raw();
         }
 
-        // 写入摘要
+        // Write digests.
         batch.Put(chunk_digest_key.to_raw(), digest);
     }
     auto s = this->level_.db()->Write(leveldb::WriteOptions(), &batch);

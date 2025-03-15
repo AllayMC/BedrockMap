@@ -27,10 +27,10 @@ namespace bl::bits {
     //        uint8_t offset{0};
     //        const uint8_t R_OFF = 8 - bit_len;
     //        while (true) {
-    //            // 开读
+    //            // Start reading...
     //            uint8_t v = data[index];
     //            auto next = bit_len + offset;
-    //            if (next < 8) {  // 内部偏移即可
+    //            if (next < 8) {  // Just offset internally
     //                res.push_back((uint8_t) (v << offset) >> R_OFF);
     //                offset = next;
     //            } else if (next == 8) {

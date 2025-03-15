@@ -74,14 +74,14 @@ void NbtWidget::on_load_btn_clicked() {
     if (fileName.isEmpty()) return;
     auto data = bl::utils::read_file(fileName.toStdString());
     if (data.empty()) {
-        WARN("无法打开文件");
+        WARN("Unable to open file");
         return;
     }
 
     auto palette = bl::palette::read_palette_to_end(data.data(), data.size());
 
     if (palette.empty()) {
-        QMessageBox::information(nullptr, "警告", "无法解析NBT数据(请确定是基岩版格式)", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(nullptr, "WARN", "Unable to parse NBT data (please make sure it is Bedrock Edition format)", QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
 
@@ -109,7 +109,7 @@ void NbtWidget::openNBTItem(bl::palette::compound_tag *root) {
 void NbtWidget::on_list_widget_itemDoubleClicked(QListWidgetItem *item) {
     auto *nbtItem = TN(item);
     if (!nbtItem) {
-        QMessageBox::information(nullptr, "警告", "空的nbt数据", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(nullptr, "WARN", "Empty NBT data", QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
     this->current_opened_ = nbtItem;
@@ -125,10 +125,10 @@ void NbtWidget::on_save_btn_clicked() { this->saveNBTs(false); }
 void NbtWidget::prepareTreeWidgetMenu(const QPoint &pos) {}
 
 void NbtWidget::prepareListWidgetMenu(const QPoint &pos) {
-    // 单选模式
+    // Single selection mode
     if (ui->list_widget->selectionMode() == QAbstractItemView::SingleSelection) {
-        auto *removeAction = new QAction("删除", this);
-        auto *exportAction = new QAction("导出选中", this);
+        auto *removeAction = new QAction("Delete", this);
+        auto *exportAction = new QAction("Export Selected", this);
         QMenu menu(this);
         menu.addAction(exportAction);
         if (modify_allowed_) {
@@ -146,16 +146,16 @@ void NbtWidget::prepareListWidgetMenu(const QPoint &pos) {
         QObject::connect(exportAction, &QAction::triggered, [this, pos](bool) { this->saveNBTs(true); });
         menu.exec(ui->list_widget->mapToGlobal(pos));
     } else {
-        // 多选模式
-        auto *removeSelect = new QAction("删除选中", this);
-        auto *unselectAll = new QAction("全不选", this);
-        auto *exportAction = new QAction("导出选中", this);
+        // Multiple selection mode
+        auto *removeSelect = new QAction("Delete Selected", this);
+        auto *unselectAll = new QAction("Select none", this);
+        auto *exportAction = new QAction("Export Selected", this);
 
         QObject::connect(removeSelect, &QAction::triggered, [this, pos](bool) {
             if (!this->modify_allowed_) return;
             for (auto &item : ui->list_widget->selectedItems()) {
                 auto *nbtItem = dynamic_cast<NBTListItem *>(item);
-                // 防止闪退
+                // Prevent flashbacks
                 if (nbtItem == this->current_opened_) ui->tree_widget->clear();
                 this->putModifyCache(nbtItem->raw_key.toStdString(), "");
                 ui->list_widget->removeItemWidget(item);
@@ -184,8 +184,8 @@ void NbtWidget::prepareListWidgetMenu(const QPoint &pos) {
 void NbtWidget::on_tree_widget_itemDoubleClicked(QTreeWidgetItem *item, int column) {
     using namespace bl::palette;
     auto *it = dynamic_cast<NBTTreeItem *>(item);
-    if (!it || !it->root_) {  // 正常来说不会出现
-        QMessageBox::information(nullptr, "信息", "当前nbt已损坏", QMessageBox::Yes, QMessageBox::Yes);
+    if (!it || !it->root_) {  // Normally it won't appear
+        QMessageBox::information(nullptr, "INFO", "The current nbt is damaged", QMessageBox::Yes, QMessageBox::Yes);
         return;
     }
     auto t = it->root_->type();
@@ -206,13 +206,13 @@ void NbtWidget::on_tree_widget_itemDoubleClicked(QTreeWidgetItem *item, int colu
 
     QInputDialog d;
     d.setLabelText(it->root_->key().c_str());
-    d.setOkButtonText("确定");
-    d.setCancelButtonText("取消");
+    d.setOkButtonText("Confirm");
+    d.setCancelButtonText("Cancel");
     d.resize(600, 400);
     d.setWindowIcon(it->icon(0));
     auto *r = it->root_;
     if (t == bl::palette::String) {
-        d.setWindowTitle("编辑字符串");
+        d.setWindowTitle("Edit strings");
         d.setTextValue(it->root_->value_string().c_str());
         d.setInputMode(QInputDialog::InputMode::TextInput);
     } else if (t == Float || t == Double) {
@@ -223,12 +223,12 @@ void NbtWidget::on_tree_widget_itemDoubleClicked(QTreeWidgetItem *item, int colu
             d.setDoubleRange(std::numeric_limits<double>::min(), std::numeric_limits<double>::max());
             d.setDoubleValue(dynamic_cast<double_tag *>(r)->value);
         }
-        d.setWindowTitle("编辑浮点数");
+        d.setWindowTitle("Edit floating");
         d.setInputMode(QInputDialog::InputMode::DoubleInput);
 
         d.setDoubleDecimals(10);
     } else {
-        d.setWindowTitle("编辑整数");
+        d.setWindowTitle("Edit integer");
         d.setInputMode(QInputDialog::InputMode::IntInput);
         int min{INT32_MIN};
         int max{INT32_MAX};
@@ -410,7 +410,7 @@ void NbtWidget::putModifyCache(const std::string &key, const std::string &value)
     if (enable_modify_cache_) {
         this->modified_cache_[key] = value;
     };
-    // 日志不受影响
+    // Logs are not affected
     if (value.empty()) {
         qDebug() << "Delete key: " << key.c_str();
     } else {

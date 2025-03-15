@@ -21,7 +21,7 @@ namespace {
 
 RenderFilterDialog::RenderFilterDialog(QWidget *parent) : QDialog(parent), ui(new Ui::RenderFilterDialog) {
     ui->setupUi(this);
-    this->setWindowTitle("配置地图过滤器");
+    this->setWindowTitle("Configuring Map Filters");
     ui->layer_slider->setSingleStep(1);
     ui->layer_slider->setRange(-63, 319);
 }
@@ -88,16 +88,16 @@ void RenderFilterDialog::on_layer_slider_valueChanged(int value) {
 
 
 /**
- * 根据查找情况渲染一个方块的数据
- * @param f  MapFilter 对象
- * @param ch 区块对象
- * @param chx 区块内x坐标
- * @param chz 区块内z坐标
- * @param y   y坐标
- * @param rw  区域坐标w
- * @param rh 区域坐标h
- * @param region  区域数据对象
- */
+* Render a block's data based on the search results
+* @param f MapFilter object
+* @param ch block object
+* @param chx x coordinate in the block
+* @param chz z coordinate in the block
+* @param y y coordinate
+* @param rw region coordinate w
+* @param rh region coordinate h
+* @param region region data object
+*/
 void
 setRegionBlockData(const MapFilter *f, bl::chunk *ch, int chx, int chz, int y, int rw, int rh, ChunkRegion *region) {
     if (!ch || !f)return;
@@ -112,7 +112,7 @@ setRegionBlockData(const MapFilter *f, bl::chunk *ch, int chx, int chz, int y, i
                                                            info.color.a));
 
     if ((f->biomes_list_.count(biome) == 0) == f->biome_black_mode_) {
-        // 群系过滤(只是不显示，没有查找功能)
+        // Biome filtering (just don't display, no search function)
         auto biome_color = bl::get_biome_color(biome);
         region->biome_bake_image_.setPixelColor(X, Z,
                                                 QColor(biome_color.r, biome_color.g, biome_color.b,
@@ -126,12 +126,12 @@ setRegionBlockData(const MapFilter *f, bl::chunk *ch, int chx, int chz, int y, i
     tips.height = static_cast<int16_t>(y);
 }
 
-//地形，群系渲染以及坐标数据设置
+//Terrain, biome rendering and coordinate data settings
 void MapFilter::renderImages(bl::chunk *ch, int rw, int rh, ChunkRegion *region) const {
     if (!ch || !region) return;
     auto [miny, maxy] = ch->get_pos().get_y_range(ch->get_version());
     if (this->enable_layer_) {
-        //选层模式
+        //Layer Selection Mode
         if (this->layer > maxy || this->layer < miny)return;
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
@@ -143,7 +143,7 @@ void MapFilter::renderImages(bl::chunk *ch, int rw, int rh, ChunkRegion *region)
         }
 
     } else {
-        // 无层，从上往下寻找白名单方块
+        // No layers, search for whitelist blocks from top to bottom
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 int y = ch->get_height(i, j);

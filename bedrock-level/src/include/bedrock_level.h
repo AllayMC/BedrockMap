@@ -23,18 +23,18 @@ namespace bl {
         bedrock_level();
 
         /*
-         * 返回存档是否已经正常打开
+         * Returns whether the level has been opened normally
          */
         [[nodiscard]] bool is_open() const { return this->is_open_; }
 
         /**
-         * 打开存档
-         * @param root 存档根目录，即level.dat所在的目录
+         * Open a level
+         * @param root level root, that is, the directory where level.dat is located
          * @return
          */
         bool open(const std::string &root);
 
-        // 返回db的引用
+        // Returns a reference to db
         leveldb::DB *&db() { return this->db_; }
 
         void close();
@@ -49,7 +49,7 @@ namespace bl {
         bl::general_kv_nbts &other_item_data() { return this->other_data_; }
 
         /**
-         * 获取缓存的区块的的数量
+         * Get the number of cached blocks
          * @return
          */
         [[nodiscard]] inline size_t cached_chunk_size() const {
@@ -57,14 +57,14 @@ namespace bl {
         };
 
         /**
-         * 获取level.dat文件的对象wrapper
+         * Get the object wrapper of the level.dat file
          * @return
          */
         level_dat &dat() { return this->dat_; }
 
         /**
-         * 开启时，Level会缓存读取过的区块数据，没有容量限制（后面可以改成cache）
-         * 关闭时，会清空内容
+         * When enabled, Level will cache the read block data, with no capacity limit (can be changed to cache later)
+         * When closed, the content will be cleared
          * @param enable
          */
         void set_cache(bool enable);
@@ -86,8 +86,8 @@ namespace bl {
 
        private:
         /**
-         * 从数据库中读取一个区块的所有数据
-         * @param cp 区块坐标
+         * Read all data of a chunk from the database
+         * @param cp ChunkPos
          * @return
          */
         chunk *read_chunk_from_db(const bl::chunk_pos &cp, bool fast_load);

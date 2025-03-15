@@ -119,10 +119,10 @@ void ChunkSectionWidget::showContextMenu(const QPoint &p) {
     auto paletteString = QString(data.block_palette.c_str());
     auto blockNameString = QString(data.block_name.c_str());
 
-    QAction posAction("坐标: " + posString, this);
-    QAction blockNameAction("方块名称: " + blockNameString, this);
+    QAction posAction("Position: " + posString, this);
+    QAction blockNameAction("Block name: " + blockNameString, this);
     QAction blockPaletteAction(("Palette: " + getDisplayedPalette(paletteString.toStdString())).c_str(), this);
-    QAction biomeAction("群系: " + biomeString, this);
+    QAction biomeAction("Biome: " + biomeString, this);
 
     auto *cb = QApplication::clipboard();
 

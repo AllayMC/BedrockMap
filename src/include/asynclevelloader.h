@@ -173,11 +173,11 @@ public:
     QFuture<bool> dropChunk(const bl::chunk_pos &min, const ::bl::chunk_pos &max);
 
     /**
-     * 批量修改数据库
-     * 对于 @modifies中的没一个key 和value
-     * 如果value是空的，就往db中删除key
-     * 如果value不是空的，就更新key
-     * 注意不会更新内存中的bedrock_level对象
+     * Batch modify database
+     * For each key and value in @modifies
+     * If the value is empty, delete the key from the db
+     * If the value is not empty, update the key
+     * Note that the bedrock_level object in memory will not be updated
      * @param modifies
      * @return
      */
@@ -213,7 +213,7 @@ private:
     TaskBuffer<region_pos> processing_;
     std::vector<QCache<region_pos, ChunkRegion> *> region_cache_;
     std::vector<QCache<region_pos, char> *> invalid_cache_;
-    // 主要是缓存图像，计算不是重点
+    // Mainly cache images, calculation is not the focus.
     QCache<region_pos, QImage> *slime_chunk_cache_;
     QThreadPool pool_;
     MapFilter map_filter_;
