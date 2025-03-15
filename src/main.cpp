@@ -2,11 +2,11 @@
 #include <QCache>
 #include <QCoreApplication>
 #include <QDebug>
-#include <QDesktopWidget>
 #include <QFontDatabase>
 #include <QIcon>
 #include <QImage>
 #include <QTextCodec>
+#include <QFile>
 #include <chrono>
 #include <filesystem>
 
@@ -62,7 +62,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
     QFile outFile(LOG_FILE_NAME);
     outFile.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream ts(&outFile);
-    ts << txt << endl;
+    ts << txt << Qt::endl;
     ts.flush();
 }
 
@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
         auto *w = new NbtWidget();
         const int ext = 100;
         w->setWindowTitle("NBT Editor");
-        auto const rec = QApplication::desktop()->screenGeometry();
+        auto const rec = QApplication::primaryScreen()->geometry();
         auto const height = static_cast<int>(rec.height() * 0.6);
         auto const width = static_cast<int>(rec.width() * 0.6);
         w->setGeometry({(rec.width() - width) / 2, (rec.height() - height) / 2, width, height});

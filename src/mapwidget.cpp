@@ -15,7 +15,6 @@
 #include <QClipboard>
 #include <QColor>
 #include <QDebug>
-#include <QDesktopWidget>
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QFontMetrics>
@@ -160,12 +159,12 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event) {
     static QPoint lastMove;
     if (event->buttons() & Qt::LeftButton) {
         if (this->dragging_) {
-            this->origin_ += QPoint{event->x() - lastMove.x(), event->y() - lastMove.y()};
+            this->origin_ += QPoint{static_cast<int>(event->position().x()) - lastMove.x(), static_cast<int>(event->position().y()) - lastMove.y()};
             this->update();
         } else {
             this->dragging_ = true;
         }
-        lastMove = {event->x(), event->y()};
+        lastMove = {static_cast<int>(event->position().x()), static_cast<int>(event->position().y())};
     } else if (event->buttons() & Qt::MiddleButton) {
         if (!selecting_) {
             this->select_pos_1_ = getCursorBlockPos().to_chunk_pos();
@@ -316,7 +315,8 @@ void MapWidget::drawChunkPosText(QPaintEvent *event, QPainter *painter) {
     this->forEachChunkInCamera([event, this, painter, &fm, &pen](const bl::chunk_pos &ch, const QPoint &p) {
         if ((ch.x % cfg::GRID_WIDTH == 0 && ch.z % cfg::GRID_WIDTH == 0) || this->cw_ >= 128) {
             auto text = QString("%1,%2").arg(QString::number(ch.x << 4), QString::number(ch.z << 4));
-            auto rect = QRect{p.x() + 2, p.y() + 2, fm.width(text) + 4, fm.height() + 4};
+            auto f_rect = fm.boundingRect(text);
+            auto rect = QRect{p.x() + 2, p.y() + 2, f_rect.width() + 4, f_rect.height() + 4};
             painter->fillRect(rect, QBrush(QColor(22, 22, 22, 90)));
             painter->drawText(rect, Qt::AlignCenter, text);
         }
@@ -330,7 +330,7 @@ void MapWidget::drawDebugWindow(QPaintEvent *event, QPainter *painter) {
     dbgInfo.push_back(QString("Memory usage: %1 MiB").arg(QString::number(getMemUsage())));
     int max_len = 1;
     for (auto &i: dbgInfo) {
-        max_len = std::max(max_len, fm.width(i));
+        max_len = std::max(max_len, fm.boundingRect(i).width());
     }
     painter->fillRect(QRectF(0, 0, max_len + 10, static_cast<qreal>(fm.height() * (dbgInfo.size() + 1))),
                       QBrush(QColor(22, 22, 22, 90)));

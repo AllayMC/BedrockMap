@@ -13,15 +13,14 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS -utf8)
 # include bedrock-lib from absolute path
 
 set(BEDROCK_LEVEL_ROOT "${PROJECT_SOURCE_DIR}/bedrock-level")
 
 set(BEDROCK_LIBS
         ${BEDROCK_LEVEL_ROOT}/build/libbedrock-level.a
-        ${BEDROCK_LEVEL_ROOT}/libs/libleveldb-mingw64.a
-        ${BEDROCK_LEVEL_ROOT}/libs/libz-mingw64.a
+        ${BEDROCK_LEVEL_ROOT}/libs/libleveldb.a
+        ${BEDROCK_LEVEL_ROOT}/libs/libz.a
 )
 
 include_directories(
@@ -32,8 +31,8 @@ include_directories(
         ${CMAKE_CURRENT_BINARY_DIR}/BedrockMap_autogen/include
 )
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Concurrent REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Concurrent REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets Concurrent Core5Compat REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Concurrent Core5Compat REQUIRED)
 
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/icon.rc")
 
@@ -52,6 +51,9 @@ add_executable(BedrockMap
 target_link_libraries(BedrockMap PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets
         Qt${QT_VERSION_MAJOR}::Concurrent
+        Qt6::Core5Compat
+        zstd
+        snappy
         ${BEDROCK_LIBS})
 
 if (CMAKE_BUILD_TYPE STREQUAL "Release")

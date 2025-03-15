@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 
 #include <QDesktopServices>
-#include <QDesktopWidget>
 #include <QDialog>
 #include <QDir>
 #include <QFileDialog>
@@ -29,7 +28,7 @@ namespace {
 
     [[nodiscard]] QRect centerMainWindowGeometry(double rate) {
         // finished adjust size
-        auto const rec = QApplication::desktop()->screenGeometry();
+        auto const rec = QApplication::primaryScreen()->geometry();
         auto const height = static_cast<int>(rec.height() * rate);
         auto const width = static_cast<int>(rec.width() * rate);
         return {(rec.width() - width) / 2, (rec.height() - height) / 2, width, height};
