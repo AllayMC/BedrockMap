@@ -85,9 +85,9 @@ void MapWidget::showContextMenu(const QPoint& p) {
         // biome
         //        QAction copyBiomeAction(("Copy Biome Name: " + bl::get_biome_name(blockInfo.biome)).c_str(), this);
         QAction copyBiomeAction(("Copy Biome Name: " + QString::number(blockInfo.biome)), this);
-        connect(&copyBiomeAction, &QAction::triggered, this, [cb, &blockInfo] {
-            //            cb->setText(bl::get_biome_name(blockInfo.biome).c_str());
-        });
+        // connect(&copyBiomeAction, &QAction::triggered, this, [cb, &blockInfo] {
+        //     cb->setText(bl::get_biome_name(blockInfo.biome).c_str());
+        // });
 
         // height
         QAction copyHeightAction("Copy height information: " + QString::number(blockInfo.height), this);
@@ -262,7 +262,7 @@ void MapWidget::drawGrid(QPaintEvent* event, QPainter* painter) {
     pen.setWidth(1);
     painter->setPen(pen);
     painter->setBrush(QBrush(QColor(0, 0, 0, 0)));
-    this->forEachChunkInCamera([event, this, painter](const bl::chunk_pos& ch, const QPoint& p) {
+    this->forEachChunkInCamera([this, painter](const bl::chunk_pos& ch, const QPoint& p) {
         if (this->cw_ >= 64) painter->drawRect(QRect(p.x(), p.y(), this->cw_, this->cw_));
     });
 
@@ -325,7 +325,7 @@ void MapWidget::drawChunkPosText(QPaintEvent* event, QPainter* painter) {
     QPen pen(QColor(255, 255, 255));
     painter->setPen(pen);
 
-    this->forEachChunkInCamera([event, this, painter, &fm, &pen](const bl::chunk_pos& ch, const QPoint& p) {
+    this->forEachChunkInCamera([this, painter, &fm](const bl::chunk_pos& ch, const QPoint& p) {
         if ((ch.x % cfg::GRID_WIDTH == 0 && ch.z % cfg::GRID_WIDTH == 0) || this->cw_ >= 128) {
             auto text   = QString("%1,%2").arg(QString::number(ch.x << 4), QString::number(ch.z << 4));
             auto f_rect = fm.boundingRect(text);
@@ -419,7 +419,7 @@ void MapWidget::drawHSAs(QPaintEvent* event, QPainter* painter) {
         QColor(0, 121, 255, 255),   // 5PillagerOutpost
         QColor(0, 0, 0, 0),
     };
-    this->foreachRegionInCamera([event, this, painter, colors](const bl::chunk_pos& rp, const QPoint& p) {
+    this->foreachRegionInCamera([this, painter, colors](const bl::chunk_pos& rp, const QPoint& p) {
         auto hss = this->mw_->levelLoader()->getHSAs(rp);
         for (auto& hsa : hss) {
             int  x            = static_cast<int>((hsa.min_pos.x - rp.x * 16) * this->BW()) + p.x();

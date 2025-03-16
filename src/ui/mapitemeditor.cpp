@@ -9,7 +9,7 @@
 #include "ui/mainwindow.h"
 #include "ui_mapitemeditor.h"
 
-MapItemEditor::MapItemEditor(MainWindow* mw, QWidget* parent) : QWidget(parent), mw_(mw), ui(new Ui::MapItemEditor) {
+MapItemEditor::MapItemEditor(MainWindow* mw, QWidget* parent) : QWidget(parent), ui(new Ui::MapItemEditor), mw_(mw) {
     ui->setupUi(this);
     this->setWindowTitle("Map Item Editor");
     this->map_nbt_editor_ = new NbtWidget();

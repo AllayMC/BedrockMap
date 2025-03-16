@@ -50,7 +50,7 @@ void M_Assert(const char* expr_str, bool expr, const char* file, int line, const
 namespace bl::utils {
 
 std::vector<byte_t> read_file(const std::string& file_name) {
-    std::ifstream input(std::filesystem::u8path(file_name), std::ios::binary);
+    std::ifstream input(std::filesystem::path(file_name), std::ios::binary);
     if (!input.is_open()) {
         BL_ERROR("Can not open file %s", file_name.c_str());
         return {};

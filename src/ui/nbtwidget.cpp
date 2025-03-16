@@ -145,7 +145,7 @@ void NbtWidget::prepareListWidgetMenu(const QPoint& pos) {
             menu.addAction(removeAction);
         }
 
-        QObject::connect(removeAction, &QAction::triggered, [this, pos](bool) {
+        QObject::connect(removeAction, &QAction::triggered, [this](bool) {
             auto* nbtItem = dynamic_cast<NBTListItem*>(this->ui->list_widget->currentItem());
             if (nbtItem == this->current_opened_) ui->tree_widget->clear();
             this->putModifyCache(nbtItem->raw_key.toStdString(), "");
@@ -153,7 +153,7 @@ void NbtWidget::prepareListWidgetMenu(const QPoint& pos) {
             this->refreshLabel();
             delete nbtItem;
         });
-        QObject::connect(exportAction, &QAction::triggered, [this, pos](bool) { this->saveNBTs(true); });
+        QObject::connect(exportAction, &QAction::triggered, [this](bool) { this->saveNBTs(true); });
         menu.exec(ui->list_widget->mapToGlobal(pos));
     } else {
         // Multiple selection mode
@@ -161,7 +161,7 @@ void NbtWidget::prepareListWidgetMenu(const QPoint& pos) {
         auto* unselectAll  = new QAction("Select none", this);
         auto* exportAction = new QAction("Export Selected", this);
 
-        QObject::connect(removeSelect, &QAction::triggered, [this, pos](bool) {
+        QObject::connect(removeSelect, &QAction::triggered, [this](bool) {
             if (!this->modify_allowed_) return;
             for (auto& item : ui->list_widget->selectedItems()) {
                 auto* nbtItem = dynamic_cast<NBTListItem*>(item);
@@ -174,11 +174,11 @@ void NbtWidget::prepareListWidgetMenu(const QPoint& pos) {
             }
         });
 
-        QObject::connect(unselectAll, &QAction::triggered, [this, pos](bool) {
+        QObject::connect(unselectAll, &QAction::triggered, [this](bool) {
             ui->list_widget->clearSelection();
             this->refreshLabel();
         });
-        QObject::connect(exportAction, &QAction::triggered, [this, pos](bool) { this->saveNBTs(true); });
+        QObject::connect(exportAction, &QAction::triggered, [this](bool) { this->saveNBTs(true); });
 
         QMenu menu(this);
         if (modify_allowed_) {
