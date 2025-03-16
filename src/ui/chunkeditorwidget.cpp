@@ -1,4 +1,4 @@
-#include "chunkeditorwidget.h"
+#include "ui/chunkeditorwidget.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -7,9 +7,9 @@
 
 #include "chunksectionwidget.h"
 #include "resourcemanager.h"
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 #include "msg.h"
-#include "nbtwidget.h"
+#include "ui/nbtwidget.h"
 #include "ui_chunkeditorwidget.h"
 
 ChunkEditorWidget::ChunkEditorWidget(MainWindow *mw, QWidget *parent) : QWidget(parent), ui(new Ui::ChunkEditorWidget), mw_(mw) {
@@ -85,7 +85,7 @@ void ChunkEditorWidget::loadChunkData(bl::chunk *chunk) {
     this->pending_tick_editor_->loadNewData(pt_items);
     qDebug() << "Load actors";
 
-#include "palette.h"
+#include "level/palette.h"
 
     auto actors = chunk->entities();
     std::vector<NBTListItem *> actor_items;

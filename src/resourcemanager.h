@@ -7,8 +7,8 @@
 
 #include <QImage>
 
-#include "bedrock_key.h"
-#include "palette.h"
+#include "level/bedrock_key.h"
+#include "level/palette.h"
 
 
 void initResources();

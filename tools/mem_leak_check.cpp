@@ -3,9 +3,9 @@
 //
 #include <iostream>
 
-#include "bedrock_level.h"
-#include "palette.h"
-#include "utils.h"
+#include "level/bedrock_level.h"
+#include "level/palette.h"
+#include "level/utils.h"
 
 void demo_check() { int *a = new int; }
 

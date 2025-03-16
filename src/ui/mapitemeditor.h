@@ -2,9 +2,9 @@
 #define MAPITEMEDITOR_H
 
 #include <QWidget>
-#include "palette.h"
-#include "nbtwidget.h"
-#include "global.h"
+#include "level/palette.h"
+#include "ui/nbtwidget.h"
+#include "level/global.h"
 
 namespace Ui {
     class MapItemEditor;

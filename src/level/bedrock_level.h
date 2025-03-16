@@ -10,10 +10,10 @@
 #include <string>
 #include <tuple>
 
-#include "bedrock_key.h"
-#include "chunk.h"
-#include "global.h"
-#include "level_dat.h"
+#include "level/bedrock_key.h"
+#include "level/chunk.h"
+#include "level/global.h"
+#include "level/level_dat.h"
 #include "leveldb/db.h"
 
 namespace bl {

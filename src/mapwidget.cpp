@@ -30,9 +30,9 @@
 #include <QRgb>
 #include <cmath>
 
-#include "color.h"
+#include "level/color.h"
 #include "config.h"
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 
 namespace {
 

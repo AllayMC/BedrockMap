@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include "chunk.h"
+#include "level/chunk.h"
 
 struct TerrainData {
     std::string block_palette{};

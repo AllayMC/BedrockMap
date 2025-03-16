@@ -1,9 +1,9 @@
-#include "renderfilterdialog.h"
+#include "ui/renderfilterdialog.h"
 
 #include <QColor>
 
 #include "asynclevelloader.h"
-#include "color.h"
+#include "level/color.h"
 #include "resourcemanager.h"
 #include "ui_renderfilterdialog.h"
 

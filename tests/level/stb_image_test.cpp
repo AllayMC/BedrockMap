@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "stb/stb_image_write.h"
-#include "utils.h"
+#include "level/utils.h"
 
 TEST(StbImage, WritePNG) {
     const int c = 3;

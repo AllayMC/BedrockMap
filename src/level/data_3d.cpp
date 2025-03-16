@@ -2,14 +2,14 @@
 // Created by xhy on 2023/3/30.
 //
 
-#include "data_3d.h"
+#include "level/data_3d.h"
 
 #include <cstdio>
 #include <memory>
 
-#include "bedrock_key.h"
-#include "chunk.h"
-#include "utils.h"
+#include "level/bedrock_key.h"
+#include "level/chunk.h"
+#include "level/utils.h"
 
 namespace bl {
     namespace {

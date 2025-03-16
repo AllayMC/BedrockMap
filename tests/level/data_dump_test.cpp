@@ -7,9 +7,9 @@
 #include <iostream>
 #include <string>
 
-#include "bedrock_key.h"
-#include "bedrock_level.h"
-#include "utils.h"
+#include "level/bedrock_key.h"
+#include "level/bedrock_level.h"
+#include "level/utils.h"
 
 const std::string TEST_WORLD_ROOT = R"(C:\Users\xhy\Desktop\t)";
 const std::string DUMP_ROOT = R"(C:\Users\xhy\dev\bedrock-level\data\dumps\)";

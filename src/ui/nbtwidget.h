@@ -7,7 +7,7 @@
 #include <QTreeWidgetItem>
 #include <QWidget>
 
-#include "palette.h"
+#include "level/palette.h"
 
 namespace Ui {
     class NbtWidget;

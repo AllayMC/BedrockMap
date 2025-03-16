@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-#include "bedrock_key.h"
+#include "level/bedrock_key.h"
 
 TEST(ChunkPos, VailidCheck) {
     using namespace bl;

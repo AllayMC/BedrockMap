@@ -8,7 +8,7 @@
 #include <QPainter>
 #include <QtDebug>
 
-#include "color.h"
+#include "level/color.h"
 
 namespace {
     std::string getDisplayedPalette(const std::string &value) {

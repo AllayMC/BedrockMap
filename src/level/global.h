@@ -4,9 +4,9 @@
 
 #ifndef BEDROCK_LEVEL_GLOBAL_H
 #define BEDROCK_LEVEL_GLOBAL_H
-#include "bedrock_key.h"
+#include "level/bedrock_key.h"
 #include "memory"
-#include "palette.h"
+#include "level/palette.h"
 namespace bl {
 
     class village_data {

@@ -2,11 +2,11 @@
 // Created by xhy on 2023/3/31.
 //
 
-#include "actor.h"
+#include "level/actor.h"
 
 #include <iostream>
 
-#include "palette.h"
+#include "level/palette.h"
 
 namespace bl {
 

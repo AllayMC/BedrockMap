@@ -10,8 +10,8 @@
 #include <tuple>
 
 #include "asynclevelloader.h"
-#include "bedrock_key.h"
-#include "nbtwidget.h"
+#include "level/bedrock_key.h"
+#include "ui/nbtwidget.h"
 
 class MainWindow;
 

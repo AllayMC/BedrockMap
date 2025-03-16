@@ -17,7 +17,7 @@
 #include <iostream>
 #include <unordered_map>
 
-#include "bedrock_key.h"
+#include "level/bedrock_key.h"
 
 namespace {
     QMap<QString, QImage *> actor_img_pool;

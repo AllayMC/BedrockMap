@@ -2,15 +2,17 @@
 // Created by xhy on 2023/6/18.
 //
 
-#include "color.h"
+#include "level/color.h"
 
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
 #include <unordered_set>
 
-#include "json/json.hpp"
-#include "palette.h"
+#include "nlohmann/json.hpp"
+#include "level/palette.h"
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
 
 namespace bl {

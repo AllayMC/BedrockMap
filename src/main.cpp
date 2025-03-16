@@ -13,7 +13,7 @@
 #include "asynclevelloader.h"
 #include "config.h"
 #include "resourcemanager.h"
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 
 QString LOG_FILE_NAME;
 

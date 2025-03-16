@@ -6,8 +6,8 @@
 
 #include <fstream>
 
-#include "palette.h"
-#include "utils.h"
+#include "level/palette.h"
+#include "level/utils.h"
 
 TEST(Palette, TagCopy) {
     using namespace bl::palette;

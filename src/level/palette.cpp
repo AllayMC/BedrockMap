@@ -2,12 +2,12 @@
 // Created by xhy on 2023/3/29.
 //
 
-#include "palette.h"
+#include "level/palette.h"
 
 #include <cstdlib>
 #include <cstring>
 
-#include "utils.h"
+#include "level/utils.h"
 
 namespace bl::palette {
 

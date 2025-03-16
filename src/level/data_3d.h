@@ -9,8 +9,8 @@
 #include <cstdint>
 #include <cstdio>
 
-#include "bedrock_key.h"
-#include "utils.h"
+#include "level/bedrock_key.h"
+#include "level/utils.h"
 namespace bl {
 
     // clang-format off

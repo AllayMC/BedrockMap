@@ -6,8 +6,8 @@
 #define BEDROCK_LEVEL_LEVEL_DAT_H
 #include <memory>
 
-#include "bedrock_key.h"
-#include "palette.h"
+#include "level/bedrock_key.h"
+#include "level/palette.h"
 namespace bl {
     class level_dat {
        public:

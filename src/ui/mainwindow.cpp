@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -14,15 +14,16 @@
 #include <QtDebug>
 #include <exception>
 
-#include "./ui_mainwindow.h"
-#include "aboutdialog.h"
+#include "ui_mainwindow.h"
+#include "ui/chunkeditorwidget.h"
 #include "resourcemanager.h"
-#include "mapitemeditor.h"
+#include "ui/mapitemeditor.h"
 #include "mapwidget.h"
 #include "msg.h"
-#include "nbtwidget.h"
-#include "palette.h"
-#include "renderfilterdialog.h"
+#include "ui/nbtwidget.h"
+#include "level/palette.h"
+#include "ui/renderfilterdialog.h"
+#include "ui/aboutdialog.h"
 
 namespace {
 

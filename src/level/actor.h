@@ -4,9 +4,9 @@
 
 #ifndef BEDROCK_LEVEL_ACRTOR_H
 #define BEDROCK_LEVEL_ACRTOR_H
-#include "bedrock_key.h"
-#include "palette.h"
-#include "utils.h"
+#include "level/bedrock_key.h"
+#include "level/palette.h"
+#include "level/utils.h"
 namespace bl {
     class actor {
        public:

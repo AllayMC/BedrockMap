@@ -13,11 +13,11 @@
 #include <vector>
 #include <bitset>
 
-#include "bedrock_key.h"
-#include "bedrock_level.h"
+#include "level/bedrock_key.h"
+#include "level/bedrock_level.h"
 #include "config.h"
-#include "palette.h"
-#include "renderfilterdialog.h"
+#include "level/palette.h"
+#include "ui/renderfilterdialog.h"
 
 class AsyncLevelLoader;
 namespace bl {

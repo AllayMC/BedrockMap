@@ -14,11 +14,11 @@
 #include <unordered_map>
 
 #include "asynclevelloader.h"
-#include "chunkeditorwidget.h"
-#include "mapitemeditor.h"
+#include "ui/chunkeditorwidget.h"
+#include "ui/mapitemeditor.h"
 #include "mapwidget.h"
-#include "nbtwidget.h"
-#include "renderfilterdialog.h"
+#include "ui/nbtwidget.h"
+#include "ui/renderfilterdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

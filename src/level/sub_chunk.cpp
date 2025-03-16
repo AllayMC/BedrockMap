@@ -2,12 +2,12 @@
 // Created by xhy on 2023/3/29.
 //
 
-#include "sub_chunk.h"
+#include "level/sub_chunk.h"
 
 #include <cstdio>
 
-#include "bit_tools.h"
-#include "utils.h"
+#include "level/bit_tools.h"
+#include "level/utils.h"
 
 // #include "nbt.hpp"
 #include <cstdio>
@@ -15,8 +15,8 @@
 #include <iostream>
 #include <sstream>
 
-#include "color.h"
-#include "palette.h"
+#include "level/color.h"
+#include "level/palette.h"
 
 namespace bl {
 

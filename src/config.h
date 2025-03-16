@@ -6,7 +6,7 @@
 #include <bitset>
 #include <cstdint>
 
-#include "bedrock_key.h"
+#include "level/bedrock_key.h"
 
 typedef bl::chunk_pos region_pos;
 

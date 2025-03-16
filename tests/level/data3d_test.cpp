@@ -4,9 +4,9 @@
 
 #include <gtest/gtest.h>
 
-#include "color.h"
-#include "data_3d.h"
-#include "utils.h"
+#include "level/color.h"
+#include "level/data_3d.h"
+#include "level/utils.h"
 
 TEST(Data3d, BasicRead) {
     auto data = bl::utils::read_file("../data/dumps/data3d/0_-1.data3d");

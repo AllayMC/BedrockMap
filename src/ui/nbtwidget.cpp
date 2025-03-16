@@ -1,4 +1,4 @@
-#include "nbtwidget.h"
+#include "ui/nbtwidget.h"
 
 #include <QFileDialog>
 #include <QFont>
@@ -13,9 +13,9 @@
 #include "config.h"
 #include "resourcemanager.h"
 #include "msg.h"
-#include "palette.h"
+#include "level/palette.h"
 #include "ui_nbtwidget.h"
-#include "utils.h"
+#include "level/utils.h"
 
 namespace {
 

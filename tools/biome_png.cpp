@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 
-#include "bedrock_level.h"
-#include "color.h"
+#include "level/bedrock_level.h"
+#include "level/color.h"
 
 int main() {
     //    bl::init_biome_color_palette_from_file(

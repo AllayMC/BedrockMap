@@ -2,12 +2,12 @@
 // Created by xhy on 2023/3/30.
 //
 
-#include "bedrock_key.h"
+#include "level/bedrock_key.h"
 
 #include <cstring>
 #include <random>
 
-#include "utils.h"
+#include "level/utils.h"
 namespace bl {
 
     const chunk_key chunk_key::INVALID_CHUNK_KEY =

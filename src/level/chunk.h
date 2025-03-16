@@ -10,11 +10,11 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "actor.h"
-#include "bedrock_key.h"
-#include "color.h"
-#include "data_3d.h"
-#include "sub_chunk.h"
+#include "level/actor.h"
+#include "level/bedrock_key.h"
+#include "level/color.h"
+#include "level/data_3d.h"
+#include "level/sub_chunk.h"
 namespace bl {
 
     class bedrock_level;

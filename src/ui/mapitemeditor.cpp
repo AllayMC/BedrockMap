@@ -1,11 +1,11 @@
-#include "mapitemeditor.h"
+#include "ui/mapitemeditor.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPainter>
 
-#include "mainwindow.h"
+#include "ui/mainwindow.h"
 #include "msg.h"
 #include "ui_mapitemeditor.h"
 

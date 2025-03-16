@@ -11,8 +11,8 @@
 #include <memory>
 #include <vector>
 
-#include "color.h"
-#include "palette.h"
+#include "level/color.h"
+#include "level/palette.h"
 namespace bl {
     struct block_info {
         std::string name{"minecraft:unknown"};

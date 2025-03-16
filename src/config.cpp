@@ -10,8 +10,8 @@
 #include <QtDebug>
 #include <fstream>
 
-#include "color.h"
-#include "json/json.hpp"
+#include "level/color.h"
+#include "nlohmann/json.hpp"
 
 namespace {
 
