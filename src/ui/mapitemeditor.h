@@ -1,7 +1,6 @@
 #pragma once
 
 #include "level/global.h"
-#include "level/palette.h"
 #include "ui/nbtwidget.h"
 #include <QWidget>
 

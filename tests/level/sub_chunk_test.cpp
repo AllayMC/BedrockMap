@@ -1,7 +1,6 @@
-#include "level/sub_chunk.h"
-
 #include <gtest/gtest.h>
 
+#include "level/sub_chunk.h"
 #include "level/utils.h"
 
 TEST(SubChunk, BasicRead) {

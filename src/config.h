@@ -1,11 +1,12 @@
 #pragma once
 
+#include "level/bedrock_key.h"
+
 #include <QColor>
 #include <QImage>
+
 #include <bitset>
 #include <cstdint>
-
-#include "level/bedrock_key.h"
 
 typedef bl::chunk_pos region_pos;
 

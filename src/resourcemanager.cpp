@@ -1,8 +1,6 @@
 #include "resourcemanager.h"
 
-#include <qicon.h>
-#include <qimage.h>
-#include <qpixmap.h>
+#include "level/bedrock_key.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -10,10 +8,8 @@
 #include <QMap>
 #include <QString>
 #include <QtDebug>
-#include <iostream>
-#include <unordered_map>
 
-#include "level/bedrock_key.h"
+#include <unordered_map>
 
 namespace {
 

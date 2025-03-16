@@ -8,6 +8,8 @@
 #endif
 
 #include "mapwidget.h"
+#include "config.h"
+#include "ui/mainwindow.h"
 
 #include <QAction>
 #include <QApplication>
@@ -28,11 +30,8 @@
 #include <QPen>
 #include <QRectF>
 #include <QRgb>
-#include <cmath>
 
-#include "config.h"
-#include "level/color.h"
-#include "ui/mainwindow.h"
+#include <cmath>
 
 namespace {
 

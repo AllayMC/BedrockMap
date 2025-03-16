@@ -1,8 +1,7 @@
-#include "level/bedrock_level.h"
-
 #include <gtest/gtest.h>
 
 #include "level/bedrock_key.h"
+#include "level/bedrock_level.h"
 #include "level/chunk.h"
 #include "level/sub_chunk.h"
 #include "level/utils.h"

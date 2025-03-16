@@ -1,9 +1,16 @@
 #pragma once
 
+#include "config.h"
+#include "level/bedrock_key.h"
+#include "level/bedrock_level.h"
+#include "level/palette.h"
+#include "ui/renderfilterdialog.h"
+
 #include <QCache>
 #include <QFuture>
 #include <QRunnable>
 #include <QThreadPool>
+
 #include <array>
 #include <atomic>
 #include <bitset>
@@ -11,12 +18,6 @@
 #include <mutex>
 #include <unordered_set>
 #include <vector>
-
-#include "config.h"
-#include "level/bedrock_key.h"
-#include "level/bedrock_level.h"
-#include "level/palette.h"
-#include "ui/renderfilterdialog.h"
 
 class AsyncLevelLoader;
 namespace bl {

@@ -1,9 +1,8 @@
 #include "level/palette.h"
+#include "level/utils.h"
 
 #include <cstdlib>
 #include <cstring>
-
-#include "level/utils.h"
 
 namespace bl::palette {
 

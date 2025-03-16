@@ -1,8 +1,7 @@
 #include "level/actor.h"
+#include "level/palette.h"
 
 #include <iostream>
-
-#include "level/palette.h"
 
 namespace bl {
 

@@ -1,7 +1,7 @@
-#include "level/color.h"
+#include <gtest/gtest.h>
 
+#include "level/color.h"
 #include "level/data_3d.h"
-#include "gtest/gtest.h"
 
 TEST(Color, readColorPalette) {
     bl::init_biome_color_palette_from_file(R"(C:\Users\xhy\dev\bedrock-level\data\colors\biome.json)");

@@ -1,18 +1,9 @@
 #include "level/sub_chunk.h"
-
-#include <cstdio>
-
-#include "level/bit_tools.h"
-#include "level/utils.h"
-
-// #include "nbt.hpp"
-#include <cstdio>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
 #include "level/color.h"
 #include "level/palette.h"
+#include "level/utils.h"
+
+#include <cstdio>
 
 namespace bl {
 

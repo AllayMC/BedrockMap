@@ -1,5 +1,7 @@
 #include "chunksectionwidget.h"
 
+#include "level/color.h"
+
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
@@ -7,8 +9,6 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QtDebug>
-
-#include "level/color.h"
 
 namespace {
 

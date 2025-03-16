@@ -1,5 +1,5 @@
-#include "level/utils.h"
-#include "stb/stb_image_write.h"
+#include <stb/stb_image_write.h>
+
 #include <gtest/gtest.h>
 
 TEST(StbImage, WritePNG) {

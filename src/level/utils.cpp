@@ -1,7 +1,6 @@
 #include "level/utils.h"
 
 #include <cstdarg>
-#include <cstdint>
 #include <cstdio>
 #include <fstream>
 #include <iostream>

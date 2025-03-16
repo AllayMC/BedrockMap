@@ -1,11 +1,11 @@
 #pragma once
 
+#include "level/bedrock_key.h"
+#include "level/utils.h"
+
 #include <array>
 #include <cstdint>
 #include <cstdio>
-
-#include "level/bedrock_key.h"
-#include "level/utils.h"
 
 namespace bl {
 

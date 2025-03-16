@@ -1,11 +1,9 @@
 #include "level/data_3d.h"
+#include "level/bedrock_key.h"
+#include "level/utils.h"
 
 #include <cstdio>
-#include <memory>
-
-#include "level/bedrock_key.h"
-#include "level/chunk.h"
-#include "level/utils.h"
+#include <cstring>
 
 namespace bl {
 

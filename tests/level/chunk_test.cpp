@@ -1,6 +1,6 @@
-#include "level/chunk.h"
-
 #include <gtest/gtest.h>
+
+#include "level/chunk.h"
 
 void check_map(int y, int index, int offset) {
     int i, o;

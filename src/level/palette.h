@@ -1,15 +1,14 @@
 #pragma once
 
+#include "level/utils.h"
+
 #include <cstdlib>
 #include <cstring>
 #include <map>
 #include <ostream>
 #include <string>
-#include <unordered_map>
 #include <utility>
 #include <vector>
-
-#include "level/utils.h"
 
 namespace bl::palette {
 

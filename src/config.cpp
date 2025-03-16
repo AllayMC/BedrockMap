@@ -1,14 +1,13 @@
 #include "config.h"
 
-#include <qglobal.h>
-#include <qnumeric.h>
+#include "level/color.h"
 
 #include <QDir>
 #include <QtDebug>
-#include <fstream>
 
-#include "level/color.h"
-#include "nlohmann/json.hpp"
+#include <nlohmann/json.hpp>
+
+#include <fstream>
 
 namespace {
 

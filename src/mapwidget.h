@@ -1,16 +1,15 @@
 #pragma once
 
+#include "config.h"
+#include "level/bedrock_key.h"
+
 #include <QObject>
 #include <QPaintEvent>
 #include <QTimer>
 #include <QWidget>
 #include <QtDebug>
-#include <array>
-#include <tuple>
 
-#include "asynclevelloader.h"
-#include "level/bedrock_key.h"
-#include "ui/nbtwidget.h"
+#include <tuple>
 
 class MainWindow;
 

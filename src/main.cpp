@@ -7,13 +7,13 @@
 #include <QIcon>
 #include <QImage>
 #include <QTextCodec>
-#include <chrono>
-#include <filesystem>
 
-#include "asynclevelloader.h"
 #include "config.h"
 #include "resourcemanager.h"
 #include "ui/mainwindow.h"
+
+#include <chrono>
+#include <filesystem>
 
 QString LOG_FILE_NAME;
 

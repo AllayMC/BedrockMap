@@ -1,15 +1,12 @@
 #pragma once
 
-// cached chunks
-
-#include <unordered_map>
-#include <unordered_set>
-
 #include "level/actor.h"
 #include "level/bedrock_key.h"
 #include "level/color.h"
 #include "level/data_3d.h"
 #include "level/sub_chunk.h"
+
+// cached chunks
 
 namespace bl {
 

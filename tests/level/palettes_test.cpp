@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <fstream>
-
 #include "level/palette.h"
 #include "level/utils.h"
 

@@ -1,5 +1,3 @@
-#include "ui/chunkeditorwidget.h"
-
 #include <QIcon>
 
 #include "aboutdialog.h"

@@ -3,13 +3,11 @@
 #include <QObject>
 #include <QtConcurrent>
 #include <QtDebug>
-#include <chrono>
-#include <thread>
 
 #include "config.h"
 #include "leveldb/write_batch.h"
-#include "qdebug.h"
-#include "resourcemanager.h"
+
+#include <chrono>
 
 namespace {
 

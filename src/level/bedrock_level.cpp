@@ -1,18 +1,15 @@
 #include "level/bedrock_level.h"
+#include "level/bedrock_key.h"
+#include "level/chunk.h"
+
+#include <leveldb/cache.h>
+#include <leveldb/comparator.h>
+#include <leveldb/db.h>
+#include <leveldb/env.h>
+#include <leveldb/filter_policy.h>
+#include <leveldb/write_batch.h>
 
 #include <filesystem>
-#include <fstream>
-#include <iostream>
-
-#include "level/bedrock_key.h"
-#include "level/bit_tools.h"
-#include "level/chunk.h"
-#include "leveldb/cache.h"
-#include "leveldb/comparator.h"
-#include "leveldb/db.h"
-#include "leveldb/env.h"
-#include "leveldb/filter_policy.h"
-#include "leveldb/write_batch.h"
 
 class SlowEnv : public leveldb::Env {};
 

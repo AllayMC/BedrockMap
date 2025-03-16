@@ -10,7 +10,6 @@
 #include <QTreeWidgetItem>
 #include <QtDebug>
 
-#include "config.h"
 #include "level/palette.h"
 #include "level/utils.h"
 #include "msg.h"

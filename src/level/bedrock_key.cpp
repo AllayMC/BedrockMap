@@ -3,8 +3,6 @@
 #include <cstring>
 #include <random>
 
-#include "level/utils.h"
-
 namespace bl {
 
 const chunk_key chunk_key::INVALID_CHUNK_KEY = chunk_key{chunk_key::Unknown, bl::chunk_pos(), 0};

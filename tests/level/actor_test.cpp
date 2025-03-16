@@ -1,7 +1,6 @@
-#include "level/actor.h"
-
 #include <gtest/gtest.h>
 
+#include "level/actor.h"
 #include "level/utils.h"
 
 TEST(Actor, BaicRead) {

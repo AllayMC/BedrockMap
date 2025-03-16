@@ -2,10 +2,8 @@
 
 #include <QDialog>
 #include <QtDebug>
-#include <unordered_set>
 
-#include "level/bedrock_key.h"
-#include "level/data_3d.h"
+#include <unordered_set>
 
 namespace Ui {
 class RenderFilterDialog;

@@ -1,6 +1,6 @@
-#include "level/utils.h"
-
 #include <gtest/gtest.h>
+
+#include "level/utils.h"
 
 TEST(Utils, Logger) {
     int a = 1;

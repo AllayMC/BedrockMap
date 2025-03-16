@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QWidget>
-
 #include "level/chunk.h"
+
+#include <QWidget>
 
 struct TerrainData {
     std::string block_palette{};

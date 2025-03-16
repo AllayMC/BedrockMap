@@ -1,10 +1,10 @@
 #pragma once
 
+#include "level/utils.h"
+
 #include <cassert>
 #include <cstdint>
 #include <vector>
-
-#include "level/utils.h"
 
 namespace bl::bits {
 

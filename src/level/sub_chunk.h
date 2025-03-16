@@ -1,13 +1,11 @@
 #pragma once
 
-#include <array>
-#include <cstdint>
-#include <cstdio>
-#include <memory>
-#include <vector>
-
 #include "level/color.h"
 #include "level/palette.h"
+
+#include <cstdint>
+#include <cstdio>
+#include <vector>
 
 namespace bl {
 
