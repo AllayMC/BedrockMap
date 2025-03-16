@@ -9,7 +9,7 @@ def resize_image_128x(name: str):
         print(image.size)
         x = image.resize((128, 128), Image.Resampling.BOX)
         x.save(name)
-    except:
+    except Exception:
         print("can not process image {}".format(name))
 
 
