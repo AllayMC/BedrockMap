@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icon.qrc">
-    <normaloff>:/res/ui/global_nbt.png</normaloff>:/res/ui/global_nbt.png</iconset>
+    <normaloff>:/ui/global_nbt.png</normaloff>:/ui/global_nbt.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,8">
    <property name="spacing">

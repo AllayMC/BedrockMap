@@ -7,3 +7,6 @@
 # xmake
 .xmake
 build
+
+# qt
+assets/*.qrc

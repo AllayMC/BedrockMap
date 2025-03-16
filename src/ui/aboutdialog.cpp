@@ -8,7 +8,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent), ui(new Ui::AboutDia
     ui->setupUi(this);
     setWindowTitle(QString("About ") + cfg::SOFTWARE_NAME.c_str());
     ui->info_label->setText(ui->info_label->text().replace("{NAME_VERSION}", cfg::VERSION_STRING()));
-    ui->logo->setPixmap(QPixmap(":/res/icon.png").scaled(128, 128));
+    ui->logo->setPixmap(QPixmap(":/ui/icon.png").scaled(128, 128));
 }
 
 AboutDialog::~AboutDialog() { delete ui; }

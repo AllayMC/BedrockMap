@@ -18,7 +18,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../icon.qrc">
-    <normaloff>:/res/ui/icon.png</normaloff>:/res/ui/icon.png</iconset>
+    <normaloff>:/ui/icon.png</normaloff>:/ui/icon.png</iconset>
   </property>
   <property name="autoFillBackground">
    <bool>false</bool>
@@ -154,7 +154,7 @@ margin: 20px;</string>
               <string/>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/grid.png);
+              <string notr="true">qproperty-icon: url(:/ui/grid.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -186,7 +186,7 @@ border:none;</string>
               <string>显示坐标</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/coord.png);
+              <string notr="true">qproperty-icon: url(:/ui/coord.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -228,7 +228,7 @@ border:none;</string>
               <string>主世界</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/overworld.png);
+              <string notr="true">qproperty-icon: url(:/ui/overworld.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -272,7 +272,7 @@ border:none;</string>
               <string>下界</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/nether.png);
+              <string notr="true">qproperty-icon: url(:/ui/nether.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -304,7 +304,7 @@ border:none;</string>
               <string>末地</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/theend.png);
+              <string notr="true">qproperty-icon: url(:/ui/theend.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -346,7 +346,7 @@ border:none;</string>
               <string>地图</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/map.png);
+              <string notr="true">qproperty-icon: url(:/ui/map.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -378,7 +378,7 @@ border:none;</string>
               <string>群系</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/biome.png);
+              <string notr="true">qproperty-icon: url(:/ui/biome.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -416,7 +416,7 @@ border:none;</string>
               <string>高度</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/height.png);
+              <string notr="true">qproperty-icon: url(:/ui/height.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -458,7 +458,7 @@ border:none;</string>
               <string>史莱姆区块</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/slime.png);
+              <string notr="true">qproperty-icon: url(:/ui/slime.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -490,7 +490,7 @@ border:none;</string>
               <string>实体</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/actor.png);
+              <string notr="true">qproperty-icon: url(:/ui/actor.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -522,7 +522,7 @@ border:none;</string>
               <string>村庄</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/village.png);
+              <string notr="true">qproperty-icon: url(:/ui/village.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -554,7 +554,7 @@ border:none;</string>
               <string>HSA</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/hsa.png);
+              <string notr="true">qproperty-icon: url(:/ui/hsa.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -596,7 +596,7 @@ border:none;</string>
               <string>过滤器</string>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/filter.png);
+              <string notr="true">qproperty-icon: url(:/ui/filter.png);
 border:none;</string>
              </property>
              <property name="text">
@@ -625,7 +625,7 @@ border:none;</string>
               </size>
              </property>
              <property name="styleSheet">
-              <string notr="true">qproperty-icon: url(:/res/ui/global_nbt.png);
+              <string notr="true">qproperty-icon: url(:/ui/global_nbt.png);
 border:none;</string>
              </property>
              <property name="text">

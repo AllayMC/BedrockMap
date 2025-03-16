@@ -85,7 +85,7 @@ QImage* scale2(const QImage& img) {
 } // namespace
 
 void initResources() {
-    QDirIterator it(":/res/entity", QDirIterator::Subdirectories);
+    QDirIterator it(":/mc/entity", QDirIterator::Subdirectories);
     while (it.hasNext()) {
         auto img              = QImage(it.next());
         auto key              = it.fileName().replace(".png", "");
@@ -100,29 +100,29 @@ void initResources() {
     // village icons
 
     // using vkt = bl::village_key::key_type;
-    // village_icon_pool()[vkt::DWELLERS] = QIcon(QPixmap::fromImage(QImage(":/res/village/dwellers.png")));
-    // village_icon_pool()[vkt::PLAYERS] = QIcon(QPixmap::fromImage(QImage(":/res/village/players.png")));
-    // village_icon_pool()[vkt::INFO] = QIcon(QPixmap::fromImage(QImage(":/res/village/info.png")));
-    // village_icon_pool()[vkt::POI] = QIcon(QPixmap::fromImage(QImage(":/res/village/poi.png")));
-    // village_icon_pool()[vkt::PLAYERS] = QIcon(QPixmap::fromImage(QImage(":/res/village/players.png")));
+    // village_icon_pool()[vkt::DWELLERS] = QIcon(QPixmap::fromImage(QImage(":/ui/village/dwellers.png")));
+    // village_icon_pool()[vkt::PLAYERS] = QIcon(QPixmap::fromImage(QImage(":/ui/village/players.png")));
+    // village_icon_pool()[vkt::INFO] = QIcon(QPixmap::fromImage(QImage(":/ui/village/info.png")));
+    // village_icon_pool()[vkt::POI] = QIcon(QPixmap::fromImage(QImage(":/ui/village/poi.png")));
+    // village_icon_pool()[vkt::PLAYERS] = QIcon(QPixmap::fromImage(QImage(":/ui/village/players.png")));
 
-    village_dwellers_nbt = scale2(QImage(":/res/village/dwellers.png"));
-    village_players_nbt  = scale2(QImage(":/res/village/players.png"));
-    village_info_nbt     = scale2(QImage(":/res/village/info.png"));
-    village_poi_nbt      = scale2(QImage(":/res/village/poi.png"));
-    player_nbt           = scale2(QImage(":/res/village/players.png"));
-    other_nbt            = scale2(QImage(":/res/village/info.png"));
+    village_dwellers_nbt = scale2(QImage(":/ui/village/dwellers.png"));
+    village_players_nbt  = scale2(QImage(":/ui/village/players.png"));
+    village_info_nbt     = scale2(QImage(":/ui/village/info.png"));
+    village_poi_nbt      = scale2(QImage(":/ui/village/poi.png"));
+    player_nbt           = scale2(QImage(":/ui/village/players.png"));
+    other_nbt            = scale2(QImage(":/ui/village/info.png"));
 
-    unknown_img = new QImage(":/res/what.png");
+    unknown_img = new QImage(":/ui/what.png");
 
-    QDirIterator it2(":/res/block_actor", QDirIterator::Subdirectories);
+    QDirIterator it2(":/mc/block_actor", QDirIterator::Subdirectories);
     while (it2.hasNext()) {
         auto img                   = QImage(it2.next());
         auto key                   = it2.fileName().replace(".png", "");
         block_actor_icon_pool[key] = scale2(img);
     }
 
-    QDirIterator it3(":/res/nbt/", QDirIterator::Subdirectories);
+    QDirIterator it3(":/ui/nbt/", QDirIterator::Subdirectories);
     while (it3.hasNext()) {
         auto img = QImage(it3.next());
         auto key = it3.fileName().replace(".png", "").replace("TAG_", "");

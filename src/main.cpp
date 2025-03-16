@@ -67,15 +67,15 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext&, const QString& 
 }
 
 void setupFont(QApplication& a) {
-    auto id = QFontDatabase::addApplicationFont(":/res/fonts/JetBrainsMono-Regular.ttf");
-    if (id == -1) {
-        qWarning() << "Can not load font";
-    }
-
-    QFont font;
-    font.setPointSize(cfg::FONT_SIZE);
-    font.setFamily("微软雅黑");
-    QApplication::setFont(font);
+    // auto id = QFontDatabase::addApplicationFont(":/res/fonts/JetBrainsMono-Regular.ttf");
+    // if (id == -1) {
+    //     qWarning() << "Can not load font";
+    // }
+    //
+    // QFont font;
+    // font.setPointSize(cfg::FONT_SIZE);
+    // font.setFamily("微软雅黑");
+    // QApplication::setFont(font);
 }
 
 int main(int argc, char* argv[]) {

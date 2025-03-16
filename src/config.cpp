@@ -38,15 +38,9 @@ int         cfg::FONT_SIZE               = 10;
 bool cfg::transparent_void = false;
 
 // The paths to three important files are directly built-in.
-#ifdef QT_DEBUG
-const std::string cfg::CONFIG_FILE_PATH = R"(../config.json)";
-const std::string cfg::BLOCK_FILE_PATH  = R"(../bedrock-level/data/colors/block_color.json)";
-const std::string cfg::BIOME_FILE_PATH  = R"(../bedrock-level/data/colors/biome_color.json)";
-#else
 const std::string cfg::CONFIG_FILE_PATH = "config.json";
 const std::string cfg::BLOCK_FILE_PATH  = "block_color.json";
 const std::string cfg::BIOME_FILE_PATH  = "biome_color.json";
-#endif
 
 region_pos cfg::c2r(const bl::chunk_pos& ch) {
     auto cx = ch.x < 0 ? ch.x - cfg::RW + 1 : ch.x;
