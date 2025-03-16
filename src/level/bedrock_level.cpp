@@ -37,9 +37,8 @@ bool bedrock_level::open(const std::string& root) {
 bool bedrock_level::read_db() { // NOLINT
     namespace fs = std::filesystem;
     fs::path path(this->root_name_);
-    path /= bl::bedrock_level::LEVEL_DB;
-    leveldb::Status status =
-        leveldb::DB::Open(this->options_, bl::utils::UTF8ToGBEx(path.string().c_str()), &this->db_);
+    path                   /= bl::bedrock_level::LEVEL_DB;
+    leveldb::Status status  = leveldb::DB::Open(this->options_, path.string(), &this->db_);
     if (!status.ok()) {
         BL_ERROR("Can not open level database: [%s].", status.ToString().c_str());
     }

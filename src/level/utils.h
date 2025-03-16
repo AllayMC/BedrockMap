@@ -17,10 +17,6 @@ typedef int64_t                            microsecond_t;
 
 #define DEBUG
 
-// #ifdef WIN32
-// #define FN (__builtin_strrchr(__FILE__, '\\') ? __builtin_strrchr(__FILE__, '\\') + 1 : __FILE__)
-// #else
-// #define FN (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 #define FN ""
 // #endif
 #define BL_LOGGER(...) log(FN, __FUNCTION__, __LINE__, __VA_ARGS__)
@@ -57,7 +53,5 @@ namespace bl::utils {
 std::vector<byte_t> read_file(const std::string& file_name);
 
 void write_file(const std::string& file_name, const byte_t* data, size_t len);
-
-std::string UTF8ToGBEx(const char* utf8);
 
 } // namespace bl::utils
