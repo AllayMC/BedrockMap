@@ -14,38 +14,39 @@
 #include <QtDebug>
 #include <exception>
 
-#include "ui_mainwindow.h"
-#include "ui/chunkeditorwidget.h"
-#include "resourcemanager.h"
-#include "ui/mapitemeditor.h"
+#include "level/palette.h"
 #include "mapwidget.h"
 #include "msg.h"
-#include "ui/nbtwidget.h"
-#include "level/palette.h"
-#include "ui/renderfilterdialog.h"
+#include "resourcemanager.h"
 #include "ui/aboutdialog.h"
+#include "ui/chunkeditorwidget.h"
+#include "ui/mapitemeditor.h"
+#include "ui/nbtwidget.h"
+#include "ui/renderfilterdialog.h"
+#include "ui_mainwindow.h"
 
 namespace {
 
-    [[nodiscard]] QRect centerMainWindowGeometry(double rate) {
-        // finished adjust size
-        auto const rec = QApplication::primaryScreen()->geometry();
-        auto const height = static_cast<int>(rec.height() * rate);
-        auto const width = static_cast<int>(rec.width() * rate);
-        return {(rec.width() - width) / 2, (rec.height() - height) / 2, width, height};
-    }
+[[nodiscard]] QRect centerMainWindowGeometry(double rate) {
+    // finished adjust size
+    auto const rec    = QApplication::primaryScreen()->geometry();
+    auto const height = static_cast<int>(rec.height() * rate);
+    auto const width  = static_cast<int>(rec.width() * rate);
+    return {(rec.width() - width) / 2, (rec.height() - height) / 2, width, height};
+}
 
-    void updateButtonBackground(QPushButton *btn, bool enable) {
-        auto color = enable ? QColor(180, 180, 180, 200) : QColor(255, 255, 255, 0);
-        QPalette pal = btn->palette();
-        pal.setColor(QPalette::Button, color);
-        btn->setAutoFillBackground(true);
-        btn->setPalette(pal);
-        btn->update();
-    }
-}  // namespace
+void updateButtonBackground(QPushButton* btn, bool enable) {
+    auto     color = enable ? QColor(180, 180, 180, 200) : QColor(255, 255, 255, 0);
+    QPalette pal   = btn->palette();
+    pal.setColor(QPalette::Button, color);
+    btn->setAutoFillBackground(true);
+    btn->setPalette(pal);
+    btn->update();
+}
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
+} // namespace
+
+MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
     // level loader
     this->level_loader_ = new AsyncLevelLoader();
@@ -53,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->map_widget_ = new MapWidget(this, nullptr);
     this->map_widget_->gotoBlockPos(0, 0);
     ui->map_visual_layout->addWidget(this->map_widget_);
-    connect(this->map_widget_, SIGNAL(mouseMove(int, int)), this, SLOT(updateXZEdit(int, int)));  // NOLINT
+    connect(this->map_widget_, SIGNAL(mouseMove(int, int)), this, SLOT(updateXZEdit(int, int))); // NOLINT
     // init chunk editor layout
     this->chunk_editor_widget_ = new ChunkEditorWidget(this);
     ui->map_splitter->addWidget(this->chunk_editor_widget_);
@@ -63,13 +64,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // basic layer btns group
 
-    this->layer_btns_ = {{MapWidget::MainRenderType::Biome,   ui->biome_layer_btn},
-                         {MapWidget::MainRenderType::Terrain, ui->terrain_layer_btn},
-                         {MapWidget::MainRenderType::Height,  ui->height_layer_btn}};
+    this->layer_btns_ = {
+        {MapWidget::MainRenderType::Biome,   ui->biome_layer_btn  },
+        {MapWidget::MainRenderType::Terrain, ui->terrain_layer_btn},
+        {MapWidget::MainRenderType::Height,  ui->height_layer_btn }
+    };
 
-    for (auto &kv: this->layer_btns_) {
+    for (auto& kv : this->layer_btns_) {
         QObject::connect(kv.second, &QPushButton::clicked, [this, &kv]() {
-            for (auto &x: this->layer_btns_) {
+            for (auto& x : this->layer_btns_) {
                 updateButtonBackground(x.second, x.first == kv.first);
             }
             this->map_widget_->changeLayer(kv.first);
@@ -78,14 +81,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     // dimension btns group
     this->dim_btns_ = {
-            {MapWidget::DimType::OverWorld, ui->overwrold_btn},
-            {MapWidget::DimType::Nether,    ui->nether_btn},
-            {MapWidget::DimType::TheEnd,    ui->theend_btn},
+        {MapWidget::DimType::OverWorld, ui->overwrold_btn},
+        {MapWidget::DimType::Nether,    ui->nether_btn   },
+        {MapWidget::DimType::TheEnd,    ui->theend_btn   },
     };
 
-    for (auto &kv: this->dim_btns_) {
+    for (auto& kv : this->dim_btns_) {
         QObject::connect(kv.second, &QPushButton::clicked, [this, &kv]() {
-            for (auto &x: this->dim_btns_) {
+            for (auto& x : this->dim_btns_) {
                 updateButtonBackground(x.second, x.first == kv.first);
             }
             this->map_widget_->changeDimension(kv.first);
@@ -122,8 +125,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     connect(ui->action_NBT, SIGNAL(triggered()), this, SLOT(openNBTEditor()));
     connect(ui->action_about, &QAction::triggered, this, []() { AboutDialog().exec(); });
 
-    connect(ui->action_settings, &QAction::triggered, this,
-            []() { QDesktopServices::openUrl(QUrl::fromLocalFile(cfg::CONFIG_FILE_PATH.c_str())); });
+    connect(ui->action_settings, &QAction::triggered, this, []() {
+        QDesktopServices::openUrl(QUrl::fromLocalFile(cfg::CONFIG_FILE_PATH.c_str()));
+    });
 
     connect(ui->action_map_item, &QAction::triggered, this, [this]() { openMapItemEditor(); });
 
@@ -154,10 +158,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     });
 
     // watcher
-    connect(&this->delete_chunks_watcher_, &QFutureWatcher<bool>::finished, this,
-            &MainWindow::handle_chunk_delete_finished);
-    connect(&this->load_global_data_watcher_, &QFutureWatcher<bool>::finished, this,
-            &MainWindow::handle_level_open_finished);
+    connect(
+        &this->delete_chunks_watcher_,
+        &QFutureWatcher<bool>::finished,
+        this,
+        &MainWindow::handle_chunk_delete_finished
+    );
+    connect(
+        &this->load_global_data_watcher_,
+        &QFutureWatcher<bool>::finished,
+        this,
+        &MainWindow::handle_level_open_finished
+    );
 
     // reset UI
 
@@ -204,7 +216,7 @@ void MainWindow::updateXZEdit(int x, int z) {
     this->setWindowTitle(this->getStaticTitle() + " @  [" + QString::number(x) + ", " + QString::number(z) + "]");
 }
 
-bool MainWindow::openChunkEditor(const bl::chunk_pos &p) {
+bool MainWindow::openChunkEditor(const bl::chunk_pos& p) {
     if (!CHECK_CONDITION(this->level_loader_->isOpen(), "Please open a mc level.")) {
         return false;
     }
@@ -224,12 +236,15 @@ void MainWindow::openLevel() {
     // #ifdef  QT_DEBUG
     //     auto path = QString("D:\\MC\\saves");
     // #elif
-    auto path = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)[0] +
-                "/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds";
+    auto path = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation)[0]
+              + "/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/minecraftWorlds";
     // #endif
-    QString root =
-            QFileDialog::getExistingDirectory(this, tr("Open the level (rootdir)"), path,
-                                              QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    QString root = QFileDialog::getExistingDirectory(
+        this,
+        tr("Open the level (rootdir)"),
+        path,
+        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
+    );
     if (root.size() == 0) {
         return;
     }
@@ -248,55 +263,57 @@ void MainWindow::openLevel() {
     }
 
     // Opened
-    this->setWindowTitle(getStaticTitle());  // refresh windows title
-    ui->main_splitter->setVisible(true);     // show GUI
-    ui->open_level_btn->setVisible(false);   // hide window
+    this->setWindowTitle(getStaticTitle()); // refresh windows title
+    ui->main_splitter->setVisible(true);    // show GUI
+    ui->open_level_btn->setVisible(false);  // hide window
     // Set the birth point
     auto sp = this->level_loader_->level().dat().spawn_position();
     this->map_widget_->gotoBlockPos(sp.x, sp.z);
     // write into level.dat
-    auto *ld = dynamic_cast<bl::palette::compound_tag *>(this->level_loader_->level().dat().root());
+    auto* ld = dynamic_cast<bl::palette::compound_tag*>(this->level_loader_->level().dat().root());
     this->level_dat_editor_->loadNewData(
-            {NBTListItem::from(dynamic_cast<bl::palette::compound_tag *>(ld->copy()), "level.dat")});
+        {NBTListItem::from(dynamic_cast<bl::palette::compound_tag*>(ld->copy()), "level.dat")}
+    );
     qDebug() << "Loading global data in background thread...";
     // load global data on background
     this->loading_global_data_ = true;
-    auto future = QtConcurrent::run(
-            [this](const QString &path) -> bool {
-                auto result = GlobalNBTLoadResult();
-                try {
-                    if (cfg::LOAD_GLOBAL_DATA) {
-                        this->level_loader_->level().foreach_global_keys(
-                                [this, &result](const std::string &key, const std::string &value) {
-                                    if (!this->loading_global_data_) {
-                                        throw std::logic_error("EXIT");  // Manual Abort
-                                    }
-                                    if (key.find("player") != std::string::npos) {
-                                        result.playerData.append_nbt(key, value);
-                                    } else if (key == "portals" || key == "scoreboard" || key == "AutonomousEntities" ||
-                                               key == "BiomeData" ||
-                                               key == "Nether" || key == "Overworld" || key == "TheEnd" ||
-                                               key == "schedulerWT" || key == "mobevents") {
-                                        result.otherData.append_nbt(key, value);
-                                    } else if (key.find("map_") == 0) {
-                                        result.mapData.append_nbt(key, value);
-                                    } else {
-                                        bl::village_key vk = bl::village_key::parse(key);
-                                        if (vk.valid()) result.villageData.append_village(vk, value);
-                                    }
-                                });
-                    }
-                    this->prepareGlobalData(result);
-                    return true;
-                } catch (std::exception &e) {
-                    return false;
+    auto future                = QtConcurrent::run(
+        [this](const QString& path) -> bool {
+            auto result = GlobalNBTLoadResult();
+            try {
+                if (cfg::LOAD_GLOBAL_DATA) {
+                    this->level_loader_->level().foreach_global_keys(
+                        [this, &result](const std::string& key, const std::string& value) {
+                            if (!this->loading_global_data_) {
+                                throw std::logic_error("EXIT"); // Manual Abort
+                            }
+                            if (key.find("player") != std::string::npos) {
+                                result.playerData.append_nbt(key, value);
+                            } else if (key == "portals" || key == "scoreboard" || key == "AutonomousEntities"
+                                       || key == "BiomeData" || key == "Nether" || key == "Overworld" || key == "TheEnd"
+                                       || key == "schedulerWT" || key == "mobevents") {
+                                result.otherData.append_nbt(key, value);
+                            } else if (key.find("map_") == 0) {
+                                result.mapData.append_nbt(key, value);
+                            } else {
+                                bl::village_key vk = bl::village_key::parse(key);
+                                if (vk.valid()) result.villageData.append_village(vk, value);
+                            }
+                        }
+                    );
                 }
-            },
-            root);
+                this->prepareGlobalData(result);
+                return true;
+            } catch (std::exception& e) {
+                return false;
+            }
+        },
+        root
+    );
     this->load_global_data_watcher_.setFuture(future);
 }
 
-void MainWindow::closeLevel() {  // NOLINT
+void MainWindow::closeLevel() { // NOLINT
     // cancel background task
     if (!this->level_loader_->isOpen()) return;
     this->loading_global_data_ = false;
@@ -319,8 +336,8 @@ void MainWindow::close_and_exit() {
 }
 
 void MainWindow::openNBTEditor() {
-    auto *w = new NbtWidget();
-    auto g = this->geometry();
+    auto*     w   = new NbtWidget();
+    auto      g   = this->geometry();
     const int ext = 100;
     w->setWindowTitle("NBT Editor");
     w->setGeometry(QRect(g.x() + ext, g.y() + ext, g.width() - ext * 2, g.height() - ext * 2));
@@ -334,18 +351,30 @@ void MainWindow::openMapItemEditor() {
     }
 
     const int ext = 100;
-    auto g = this->geometry();
+    auto      g   = this->geometry();
     this->map_item_editor_->setGeometry(QRect(g.x() + ext * 2, g.y() + ext, g.width() - ext * 4, g.height() - ext * 2));
     this->map_item_editor_->show();
 }
 
-void MainWindow::deleteChunks(const bl::chunk_pos &min, const bl::chunk_pos &max) {
+void MainWindow::deleteChunks(const bl::chunk_pos& min, const bl::chunk_pos& max) {
     if (!this->level_loader_->isOpen()) {
-        QMessageBox::information(nullptr, "WARN", "The world has not yet been opened", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(
+            nullptr,
+            "WARN",
+            "The world has not yet been opened",
+            QMessageBox::Yes,
+            QMessageBox::Yes
+        );
         return;
     }
     if (!this->write_mode_) {
-        QMessageBox::information(nullptr, "WARN", "Currently in read-only mode, chunks cannot be deleted", QMessageBox::Yes, QMessageBox::Yes);
+        QMessageBox::information(
+            nullptr,
+            "WARN",
+            "Currently in read-only mode, chunks cannot be deleted",
+            QMessageBox::Yes,
+            QMessageBox::Yes
+        );
         return;
     }
     auto future = this->level_loader_->dropChunk(min, max);
@@ -357,14 +386,14 @@ void MainWindow::handle_chunk_delete_finished() {
     this->level_loader_->clearAllCache();
 }
 
-void MainWindow::prepareGlobalData(GlobalNBTLoadResult &res) {
+void MainWindow::prepareGlobalData(GlobalNBTLoadResult& res) {
     // load players
     qInfo() << "Loading player data...";
-    auto &playerData = res.playerData.data();
-    std::vector<NBTListItem *> playerNBTList;
-    for (auto &kv: playerData) {
-        auto *item = NBTListItem::from(dynamic_cast<compound_tag *>(kv.second->copy()), kv.first.c_str(),
-                                       kv.first.c_str());
+    auto&                     playerData = res.playerData.data();
+    std::vector<NBTListItem*> playerNBTList;
+    for (auto& kv : playerData) {
+        auto* item =
+            NBTListItem::from(dynamic_cast<compound_tag*>(kv.second->copy()), kv.first.c_str(), kv.first.c_str());
         item->setIcon(QIcon(QPixmap::fromImage(*PlayerNBTIcon())));
         playerNBTList.push_back(item);
     }
@@ -374,11 +403,11 @@ void MainWindow::prepareGlobalData(GlobalNBTLoadResult &res) {
 
     // load other items
     qInfo() << "Loading other data...";
-    auto &otherData = res.otherData.data();
-    std::vector<NBTListItem *> otherNBTList;
-    for (auto &kv: otherData) {
-        auto *item = NBTListItem::from(dynamic_cast<compound_tag *>(kv.second->copy()), kv.first.c_str(),
-                                       kv.first.c_str());
+    auto&                     otherData = res.otherData.data();
+    std::vector<NBTListItem*> otherNBTList;
+    for (auto& kv : otherData) {
+        auto* item =
+            NBTListItem::from(dynamic_cast<compound_tag*>(kv.second->copy()), kv.first.c_str(), kv.first.c_str());
         item->setIcon(QIcon(QPixmap::fromImage(*OtherNBTIcon())));
         otherNBTList.push_back(item);
     }
@@ -387,19 +416,19 @@ void MainWindow::prepareGlobalData(GlobalNBTLoadResult &res) {
 
     // load villages
     qInfo() << "Loading village data...";
-    auto &villData = res.villageData.data();
+    auto& villData = res.villageData.data();
     this->collect_villages(villData);
-    std::vector<NBTListItem *> villNBTList;
-    for (auto &kv: villData) {
+    std::vector<NBTListItem*> villNBTList;
+    for (auto& kv : villData) {
         int index = 0;
-        for (auto &p: kv.second) {
+        for (auto& p : kv.second) {
             if (p) {
-                auto key = kv.first + "_" +
-                           bl::village_key::village_key_type_to_str(static_cast<bl::village_key::key_type>(index));
-                auto *item = NBTListItem::from(dynamic_cast<compound_tag *>(p->copy()), key.c_str(),
-                                               ("VILLAGE_" + key).c_str());
-                item->setIcon(
-                        QIcon(QPixmap::fromImage(*VillageNBTIcon(static_cast<bl::village_key::key_type>(index)))));
+                auto key = kv.first + "_"
+                         + bl::village_key::village_key_type_to_str(static_cast<bl::village_key::key_type>(index));
+                auto* item =
+                    NBTListItem::from(dynamic_cast<compound_tag*>(p->copy()), key.c_str(), ("VILLAGE_" + key).c_str());
+                item->setIcon(QIcon(QPixmap::fromImage(*VillageNBTIcon(static_cast<bl::village_key::key_type>(index))))
+                );
                 villNBTList.push_back(item);
             }
             index++;
@@ -410,13 +439,12 @@ void MainWindow::prepareGlobalData(GlobalNBTLoadResult &res) {
     qInfo() << "Load village data finished";
     // load map data
     this->map_item_editor_->load_map_data(res.mapData);
-
 }
 
 void MainWindow::handle_level_open_finished() {
     auto res = this->load_global_data_watcher_.result();
     if (!res) {
-        if (!this->loading_global_data_) {  // Instructions are to stop manually
+        if (!this->loading_global_data_) { // Instructions are to stop manually
             qDebug() << "Stop loading global data (by user)";
             return;
         }
@@ -468,20 +496,26 @@ void MainWindow::on_save_other_btn_clicked() {
     this->other_nbt_editor_->clearModifyCache();
 }
 
-void
-MainWindow::collect_villages(const std::unordered_map<std::string, std::array<bl::palette::compound_tag *, 4>> &vs) {
+void MainWindow::collect_villages(const std::unordered_map<std::string, std::array<bl::palette::compound_tag*, 4>>& vs
+) {
     qInfo() << "Collect " << vs.size() << " villages";
-    for (auto kv: vs) {
-        auto *nbt = kv.second[static_cast<int>(bl::village_key::key_type::INFO)];
+    for (auto kv : vs) {
+        auto* nbt = kv.second[static_cast<int>(bl::village_key::key_type::INFO)];
         if (!nbt) continue;
-        auto x0 = dynamic_cast<bl::palette::int_tag *>(nbt->get("X0"));
-        auto z0 = dynamic_cast<bl::palette::int_tag *>(nbt->get("Z0"));
-        auto x1 = dynamic_cast<bl::palette::int_tag *>(nbt->get("X1"));
-        auto z1 = dynamic_cast<bl::palette::int_tag *>(nbt->get("Z1"));
+        auto x0 = dynamic_cast<bl::palette::int_tag*>(nbt->get("X0"));
+        auto z0 = dynamic_cast<bl::palette::int_tag*>(nbt->get("Z0"));
+        auto x1 = dynamic_cast<bl::palette::int_tag*>(nbt->get("X1"));
+        auto z1 = dynamic_cast<bl::palette::int_tag*>(nbt->get("Z1"));
         if (x0 && z0 && x1 && z1) {
-            this->villages_.insert(kv.first.c_str(),
-                                   QRect(std::min(x0->value, x1->value), std::min(z0->value, z1->value),
-                                         std::abs(x0->value - x1->value), std::abs(z0->value - z1->value)));
+            this->villages_.insert(
+                kv.first.c_str(),
+                QRect(
+                    std::min(x0->value, x1->value),
+                    std::min(z0->value, z1->value),
+                    std::abs(x0->value - x1->value),
+                    std::abs(z0->value - z1->value)
+                )
+            );
             qDebug() << x0->value << " " << z0->value << " ~ " << x1->value << " " << z1->value;
         }
     }
@@ -500,7 +534,7 @@ void MainWindow::applyFilter() {
 
 #include <QPainter>
 
-void MainWindow::paintEvent(QPaintEvent *event) {
+void MainWindow::paintEvent(QPaintEvent* event) {
     //    if (this->levelLoader()->isOpen()) return;
     //    auto sz = this->size();
     //    const int w = static_cast<int>(std::min(sz.width(), sz.height()) * 1.2);
@@ -555,14 +589,14 @@ QString MainWindow::getStaticTitle() {
     return cfg::VERSION_STRING() + " " + level_name.c_str();
 }
 
-void MainWindow::resizeEvent(QResizeEvent *event) { this->chunk_editor_widget_->setMaximumWidth(this->height() / 2); }
+void MainWindow::resizeEvent(QResizeEvent* event) { this->chunk_editor_widget_->setMaximumWidth(this->height() / 2); }
 
 void MainWindow::setupShortcuts() {
     // map move
-    auto *up = new QShortcut(QKeySequence(Qt::Key_Up), this);
-    auto *down = new QShortcut(QKeySequence(Qt::Key_Down), this);
-    auto *left = new QShortcut(QKeySequence(Qt::Key_Left), this);
-    auto *right = new QShortcut(QKeySequence(Qt::Key_Right), this);
+    auto*     up    = new QShortcut(QKeySequence(Qt::Key_Up), this);
+    auto*     down  = new QShortcut(QKeySequence(Qt::Key_Down), this);
+    auto*     left  = new QShortcut(QKeySequence(Qt::Key_Left), this);
+    auto*     right = new QShortcut(QKeySequence(Qt::Key_Right), this);
     const int speed = 16;
     connect(up, &QShortcut::activated, this, [&]() { map_widget_->advancePos(0, speed); });
     connect(down, &QShortcut::activated, this, [&]() { map_widget_->advancePos(0, -speed); });
@@ -570,14 +604,14 @@ void MainWindow::setupShortcuts() {
     connect(right, &QShortcut::activated, this, [&]() { map_widget_->advancePos(-speed, 0); });
 
     // jump to
-    auto *go = new QShortcut(QKeySequence(Qt::Key_J), this);
+    auto* go = new QShortcut(QKeySequence(Qt::Key_J), this);
     go->setAutoRepeat(false);
     connect(go, &QShortcut::activated, this, [&]() { this->map_widget_->gotoPositionAction(); });
 
     // change dimensions
     const QKeySequence change_dimensions{Qt::Key_1, Qt::Key_2, Qt::Key_3};
     for (int i = 0; i < 3; i++) {
-        auto *sh = new QShortcut(change_dimensions[i], this);
+        auto* sh = new QShortcut(change_dimensions[i], this);
         connect(sh, &QShortcut::activated, this->dim_btns_[static_cast<MapWidget::DimType>(i)], &QPushButton::click);
     }
 }

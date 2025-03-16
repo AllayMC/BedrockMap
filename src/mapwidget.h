@@ -1,5 +1,4 @@
-#ifndef MAPWIDGET_H
-#define MAPWIDGET_H
+#pragma once
 
 #include <QObject>
 #include <QPaintEvent>
@@ -16,18 +15,14 @@
 class MainWindow;
 
 class MapWidget : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    enum MainRenderType {
-        Biome = 0, Terrain = 1, Height = 2
-    };
+    enum MainRenderType { Biome = 0, Terrain = 1, Height = 2 };
 
-    enum DimType {
-        OverWorld = 0, Nether = 1, TheEnd = 2
-    };
+    enum DimType { OverWorld = 0, Nether = 1, TheEnd = 2 };
 
-    MapWidget(MainWindow *w, QWidget *parent) : QWidget(parent), mw_(w) {
+    MapWidget(MainWindow* w, QWidget* parent) : QWidget(parent), mw_(w) {
         this->sync_refresh_timer_ = new QTimer();
         connect(this->sync_refresh_timer_, SIGNAL(timeout()), this, SLOT(asyncRefresh()));
         this->sync_refresh_timer_->start(100);
@@ -36,16 +31,16 @@ public:
         setFocusPolicy(Qt::FocusPolicy::StrongFocus);
     }
 
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent* event) override;
 
     // mouse event
-    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
 
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
 
-    void wheelEvent(QWheelEvent *event) override;
+    void wheelEvent(QWheelEvent* event) override;
 
-    void resizeEvent(QResizeEvent *event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
     bl::block_pos getCursorBlockPos();
 
@@ -98,7 +93,7 @@ public:
     // Go to position.
     void gotoPositionAction();
 
-    inline void selectChunk(const bl::chunk_pos &p) { this->opened_chunk_ = true, this->opened_chunk_pos_ = p; }
+    inline void selectChunk(const bl::chunk_pos& p) { this->opened_chunk_ = true, this->opened_chunk_pos_ = p; }
 
     inline void unselectChunk() {
         qDebug() << "Unselected";
@@ -109,14 +104,14 @@ public:
 
 signals:
 
-    void mouseMove(int x, int z);  // NOLINT
+    void mouseMove(int x, int z); // NOLINT
 
 public slots:
 
     void asyncRefresh();
 
     // https://stackoverflow.com/questions/24254006/rightclick-event-in-qt-to-open-a-context-menu
-    void showContextMenu(const QPoint &p);
+    void showContextMenu(const QPoint& p);
 
     void gotoBlockPos(int x, int z);
 
@@ -133,42 +128,43 @@ private:
 private:
     // for debug
 
-    void drawDebugWindow(QPaintEvent *event, QPainter *p);
+    void drawDebugWindow(QPaintEvent* event, QPainter* p);
 
-    void drawRegion(QPaintEvent *event, QPainter *p, const region_pos &pos, const QPoint &start, QImage *img) const;
+    void drawRegion(QPaintEvent* event, QPainter* p, const region_pos& pos, const QPoint& start, QImage* img) const;
 
-    void forEachChunkInCamera(const std::function<void(const bl::chunk_pos &, const QPoint &)> &f);
+    void forEachChunkInCamera(const std::function<void(const bl::chunk_pos&, const QPoint&)>& f);
 
-    void foreachRegionInCamera(const std::function<void(const region_pos &p, const QPoint &)> &f);
+    void foreachRegionInCamera(const std::function<void(const region_pos& p, const QPoint&)>& f);
 
     // function draw
 
-    void drawGrid(QPaintEvent *event, QPainter *p);
+    void drawGrid(QPaintEvent* event, QPainter* p);
 
-    void drawChunkPosText(QPaintEvent *event, QPainter *painter);
+    void drawChunkPosText(QPaintEvent* event, QPainter* painter);
 
-    void drawSlimeChunks(QPaintEvent *event, QPainter *p);
+    void drawSlimeChunks(QPaintEvent* event, QPainter* p);
 
-    void drawBiome(QPaintEvent *event, QPainter *p);
+    void drawBiome(QPaintEvent* event, QPainter* p);
 
-    void drawTerrain(QPaintEvent *event, QPainter *p);
+    void drawTerrain(QPaintEvent* event, QPainter* p);
 
-    void drawHeight(QPaintEvent *event, QPainter *p);
+    void drawHeight(QPaintEvent* event, QPainter* p);
 
-    void drawActors(QPaintEvent *event, QPainter *p);
+    void drawActors(QPaintEvent* event, QPainter* p);
 
-    void drawHSAs(QPaintEvent *event, QPainter *p);
+    void drawHSAs(QPaintEvent* event, QPainter* p);
 
-    void drawSelectArea(QPaintEvent *event, QPainter *p);
+    void drawSelectArea(QPaintEvent* event, QPainter* p);
 
-    void drawVillages(QPaintEvent *event, QPainter *p);
+    void drawVillages(QPaintEvent* event, QPainter* p);
 
-    void drawMarkers(QPaintEvent *event, QPainter *p);
+    void drawMarkers(QPaintEvent* event, QPainter* p);
 
     QRect getRenderSelectArea();
-    // Given a window, calculate the position data of all blocks that need to be rendered in the area and the coordinates of the rendering range.
+    // Given a window, calculate the position data of all blocks that need to be rendered in the area and the
+    // coordinates of the rendering range.
 
-    std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> getRenderRange(const QRect &camera);
+    std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> getRenderRange(const QRect& camera);
 
     ~MapWidget() override;
 
@@ -181,34 +177,32 @@ private:
     // select area
     bl::chunk_pos select_pos_1_;
     bl::chunk_pos select_pos_2_;
-    bool has_selected_{false};
+    bool          has_selected_{false};
 
     // operation control
     bool dragging_{false};
     bool selecting_{false};
     //
 
-    MainWindow *mw_{nullptr};
+    MainWindow* mw_{nullptr};
     // render control
-    QRect camera_{0, 0, width(), height()};  // 需要绘制的范围，后面设置成和widget等大即可
-    DimType dim_type_{DimType::OverWorld};
+    QRect          camera_{0, 0, width(), height()}; // 需要绘制的范围，后面设置成和widget等大即可
+    DimType        dim_type_{DimType::OverWorld};
     MainRenderType main_render_type_{MainRenderType::Terrain};
-    QTimer *sync_refresh_timer_;
+    QTimer*        sync_refresh_timer_;
     // extra layer
     bool draw_slime_chunk_{false};
     bool draw_actors_{false};
     bool draw_villages_{false};
     bool draw_HSA_{false};
 
-    int cw_{64};           // 每个区块需要几个像素
-    QPoint origin_{0, 0};  // 记录区块0,0的左上角相对widget左上角的坐标
-    bool draw_grid_{true};
-    bool draw_coords_{false};
-    bool draw_debug_window_{false};
+    int    cw_{64};       // 每个区块需要几个像素
+    QPoint origin_{0, 0}; // 记录区块0,0的左上角相对widget左上角的坐标
+    bool   draw_grid_{true};
+    bool   draw_coords_{false};
+    bool   draw_debug_window_{false};
 
     // opened chunk
-    bool opened_chunk_{false};
+    bool          opened_chunk_{false};
     bl::chunk_pos opened_chunk_pos_;
 };
-
-#endif  // MAPWIDGET_H

@@ -1,8 +1,7 @@
+#pragma once
+
 #include <QShortcut>
 #include <vector>
-
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
 
 #include <QDialog>
 #include <QFutureWatcher>
@@ -14,32 +13,32 @@
 #include <unordered_map>
 
 #include "asynclevelloader.h"
+#include "mapwidget.h"
 #include "ui/chunkeditorwidget.h"
 #include "ui/mapitemeditor.h"
-#include "mapwidget.h"
 #include "ui/nbtwidget.h"
 #include "ui/renderfilterdialog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
 struct LogoPos {
-    int angle{0};
+    int    angle{0};
     double x{0.5};
     double y{0.5};
 
     LogoPos() {
         srand(time(nullptr));
         angle = rand() % 360;
-        x = ((rand() % 100) / 100.0) * 0.6 + 0.2;
-        y = ((rand() % 100) / 100.0) * 0.6 + 0.2;
+        x     = ((rand() % 100) / 100.0) * 0.6 + 0.2;
+        y     = ((rand() % 100) / 100.0) * 0.6 + 0.2;
     }
 };
 
 struct GlobalNBTLoadResult {
-    bl::village_data villageData;
+    bl::village_data    villageData;
     bl::general_kv_nbts playerData;
     bl::general_kv_nbts mapData;
     bl::general_kv_nbts otherData;
@@ -48,16 +47,16 @@ struct GlobalNBTLoadResult {
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
 
     ~MainWindow() override;
 
-    AsyncLevelLoader *levelLoader() { return this->level_loader_; }
+    AsyncLevelLoader* levelLoader() { return this->level_loader_; }
 
-    MapWidget *mapWidget() { return this->map_widget_; }
+    MapWidget* mapWidget() { return this->map_widget_; }
 
 public slots:
 
@@ -66,22 +65,22 @@ public slots:
     void updateXZEdit(int x, int z);
 
     // public
-    bool openChunkEditor(const bl::chunk_pos &p);
+    bool openChunkEditor(const bl::chunk_pos& p);
 
-    void deleteChunks(const bl::chunk_pos &min, const bl::chunk_pos &max);
+    void deleteChunks(const bl::chunk_pos& min, const bl::chunk_pos& max);
 
     void handle_chunk_delete_finished();
 
     void handle_level_open_finished();
 
-    inline QMap<QString, QRect> &get_villages() { return this->villages_; }
+    inline QMap<QString, QRect>& get_villages() { return this->villages_; }
 
     void applyFilter();
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    void paintEvent(QPaintEvent* event) override;
 
-    void resizeEvent(QResizeEvent *event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
 private slots:
 
@@ -119,11 +118,11 @@ private slots:
 
     void on_global_data_btn_clicked();
 
-    void collect_villages(const std::unordered_map<std::string, std::array<bl::palette::compound_tag *, 4>> &vs);
+    void collect_villages(const std::unordered_map<std::string, std::array<bl::palette::compound_tag*, 4>>& vs);
 
     void on_save_other_btn_clicked();
 
-    void prepareGlobalData(GlobalNBTLoadResult &result);
+    void prepareGlobalData(GlobalNBTLoadResult& result);
 
     void setupShortcuts();
 
@@ -131,14 +130,14 @@ private:
     QString getStaticTitle();
 
 private:
-    Ui::MainWindow *ui;
-    std::unordered_map<MapWidget::MainRenderType, QPushButton *> layer_btns_;
-    std::unordered_map<MapWidget::DimType, QPushButton *> dim_btns_;
+    Ui::MainWindow*                                             ui;
+    std::unordered_map<MapWidget::MainRenderType, QPushButton*> layer_btns_;
+    std::unordered_map<MapWidget::DimType, QPushButton*>        dim_btns_;
 
-    MapWidget *map_widget_;
-    ChunkEditorWidget *chunk_editor_widget_;
+    MapWidget*         map_widget_;
+    ChunkEditorWidget* chunk_editor_widget_;
     // data source
-    AsyncLevelLoader *level_loader_{nullptr};
+    AsyncLevelLoader* level_loader_{nullptr};
 
     bool write_mode_{false};
 
@@ -147,25 +146,23 @@ private:
     QFutureWatcher<bool> load_global_data_watcher_;
 
     // global nbt editors
-    NbtWidget *level_dat_editor_;
-    NbtWidget *player_editor_;
-    NbtWidget *village_editor_;
-    NbtWidget *other_nbt_editor_;
+    NbtWidget* level_dat_editor_;
+    NbtWidget* player_editor_;
+    NbtWidget* village_editor_;
+    NbtWidget* other_nbt_editor_;
 
-    MapItemEditor *map_item_editor_;
+    MapItemEditor* map_item_editor_;
 
     // global data
     QMap<QString, QRect> villages_;
     // filter
     RenderFilterDialog render_filter_dialog_{this};
-    LogoPos logoPos{};
+    LogoPos            logoPos{};
 
     // loading global data?
     std::atomic_bool loading_global_data_{false};
     std::atomic_bool global_data_loaded_{false};
 
     // Shortcuts
-    std::vector<QShortcut *> shortcuts_;
+    std::vector<QShortcut*> shortcuts_;
 };
-
-#endif  // MAINWINDOW_H

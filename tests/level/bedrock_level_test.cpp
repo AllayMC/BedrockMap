@@ -1,6 +1,3 @@
-//
-// Created by xhy on 2023/4/1.
-//
 #include "level/bedrock_level.h"
 
 #include <gtest/gtest.h>
@@ -17,8 +14,8 @@ TEST(BedrockLevel, ZeroChunkTest) {
     bl::bedrock_level level;
     EXPECT_TRUE(level.open("./sample"));
     // auto *ch = level.get_chunk({-1, -1, 2});
-    auto cp = chunk_pos{-1, -1, 2};
-    auto key = chunk_key{chunk_key::SubChunkTerrain, cp, 3}.to_raw();
+    auto        cp  = chunk_pos{-1, -1, 2};
+    auto        key = chunk_key{chunk_key::SubChunkTerrain, cp, 3}.to_raw();
     std::string data;
     level.db()->Get(leveldb::ReadOptions(), key, &data);
 
@@ -32,7 +29,7 @@ TEST(BedrockLevel, ReadChunk) {
     using namespace bl;
     bl::bedrock_level level;
     EXPECT_TRUE(level.open("./sample"));
-    auto *ch = level.get_chunk({6, 0, 2});
+    auto* ch = level.get_chunk({6, 0, 2});
     EXPECT_TRUE(ch);
     if (ch) {
         for (int i = 0; i < 64; i++) {
@@ -59,7 +56,7 @@ TEST(BedrockLevel, ReadHeight) {
     using namespace bl;
     bl::bedrock_level level;
     EXPECT_TRUE(level.open("../data/worlds/a"));
-    auto *chunk = level.get_chunk({0, 0, 0});
+    auto* chunk = level.get_chunk({0, 0, 0});
     if (!chunk) {
         BL_ERROR("Can not load chunk");
         return;
@@ -78,6 +75,7 @@ TEST(BedrockLevel, ReadHeight) {
 //     auto [mi, ma] = level.get_range(0);
 //     BL_ERROR("%s -- %s", mi.to_string().c_str(), ma.to_string().c_str());
 // }
+
 TEST(BedrockLevel, CloseAndOpen) {
     bl::bedrock_level level;
     EXPECT_TRUE(level.open(root));

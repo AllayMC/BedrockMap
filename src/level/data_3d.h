@@ -1,9 +1,4 @@
-//
-// Created by xhy on 2023/3/30.
-//
-
-#ifndef BEDROCK_LEVEL_DATA_3D_H
-#define BEDROCK_LEVEL_DATA_3D_H
+#pragma once
 
 #include <array>
 #include <cstdint>
@@ -11,9 +6,10 @@
 
 #include "level/bedrock_key.h"
 #include "level/utils.h"
+
 namespace bl {
 
-    // clang-format off
+// clang-format off
 
     enum biome  : uint8_t {
         ocean                            = 0,
@@ -104,38 +100,34 @@ namespace bl {
         cherry_groves                    = 192,
         none                             = 255,
     };
-    // clang-format on
+// clang-format on
 
-    class biome3d {
-       public:
-        bool load_from_d3d(const byte_t *data, size_t len);
+class biome3d {
+public:
+    bool load_from_d3d(const byte_t* data, size_t len);
 
-        bool load_from_d2d(const byte_t *data, size_t len);
+    bool load_from_d2d(const byte_t* data, size_t len);
 
-        inline int height(int x, int z) {
-            auto [my, _] = this->pos_.get_y_range(this->version_);
-            return this->height_map_[x + z * 16] + my;
-        }
+    inline int height(int x, int z) {
+        auto [my, _] = this->pos_.get_y_range(this->version_);
+        return this->height_map_[x + z * 16] + my;
+    }
 
-        [[nodiscard]] inline std::array<int16_t, 256> height_map() const {
-            return this->height_map_;
-        }
+    [[nodiscard]] inline std::array<int16_t, 256> height_map() const { return this->height_map_; }
 
-        biome get_biome(int cx, int y, int cz);
+    biome get_biome(int cx, int y, int cz);
 
-        std::vector<std::vector<bl::biome>> get_biome_y(int y);
+    std::vector<std::vector<bl::biome>> get_biome_y(int y);
 
-        biome get_top_biome(int cx, int cz);
+    biome get_top_biome(int cx, int cz);
 
-        void set_chunk_pos(const bl::chunk_pos &cp) { this->pos_ = cp; }
-        void set_version(ChunkVersion version) { this->version_ = version; }
+    void set_chunk_pos(const bl::chunk_pos& cp) { this->pos_ = cp; }
+    void set_version(ChunkVersion version) { this->version_ = version; }
 
-       private:
-        std::array<int16_t, 256> height_map_;
-        std::vector<std::vector<std::vector<biome>>> biomes_;
-        bl::chunk_pos pos_;
-        ChunkVersion version_;
-    };
-}  // namespace bl
-
-#endif  // BEDROCK_LEVEL_DATA_3D_H
+private:
+    std::array<int16_t, 256>                     height_map_;
+    std::vector<std::vector<std::vector<biome>>> biomes_;
+    bl::chunk_pos                                pos_;
+    ChunkVersion                                 version_;
+};
+} // namespace bl

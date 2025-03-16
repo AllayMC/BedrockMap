@@ -1,7 +1,3 @@
-//
-// Created by xhy on 2023/3/31.
-//
-
 #include <gtest/gtest.h>
 
 #include "level/bedrock_key.h"
@@ -24,14 +20,14 @@ TEST(ChunkKey, Convert) {
     using namespace bl;
     chunk_pos p{1, 1, 0};
     chunk_key key{bl::chunk_key::RandomTicks, p, 0};
-    auto data = key.to_raw();
-    auto cov = chunk_key::parse(data);
+    auto      data = key.to_raw();
+    auto      cov  = chunk_key::parse(data);
     EXPECT_TRUE(cov.cp == key.cp);
     EXPECT_TRUE(cov.type == key.type);
 
-    key.type = bl::chunk_key::SubChunkTerrain;
+    key.type    = bl::chunk_key::SubChunkTerrain;
     key.y_index = 13;
-    cov = chunk_key::parse(key.to_raw());
+    cov         = chunk_key::parse(key.to_raw());
 
     EXPECT_TRUE(cov.cp == key.cp);
     EXPECT_TRUE(cov.type == key.type);
@@ -40,7 +36,7 @@ TEST(ChunkKey, Convert) {
 
 TEST(VillageKey, Convert) {
     const std::string raw_id = "VILLAGE_241c7732-221a-4266-9fe9-cdd40d9bdeb0_INFO";
-    bl::village_key key = bl::village_key::parse(raw_id);
+    bl::village_key   key    = bl::village_key::parse(raw_id);
     EXPECT_TRUE(key.valid());
     EXPECT_TRUE(key.uuid == "241c7732-221a-4266-9fe9-cdd40d9bdeb0");
     EXPECT_TRUE(key.type == bl::village_key::INFO);

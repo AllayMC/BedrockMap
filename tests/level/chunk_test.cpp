@@ -1,7 +1,3 @@
-//
-// Created by xhy on 2023/4/2.
-//
-
 #include "level/chunk.h"
 
 #include <gtest/gtest.h>

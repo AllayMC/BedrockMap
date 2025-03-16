@@ -1,43 +1,41 @@
-//
-// Created by xhy on 2023/6/21.
-//
+#pragma once
 
-#ifndef BEDROCK_LEVEL_LEVEL_DAT_H
-#define BEDROCK_LEVEL_LEVEL_DAT_H
 #include <memory>
 
 #include "level/bedrock_key.h"
 #include "level/palette.h"
+
 namespace bl {
-    class level_dat {
-       public:
-        bool load_from_file(const std::string& path);
 
-        bool load_from_raw_data(const std::vector<byte_t>& data);
+class level_dat {
+public:
+    bool load_from_file(const std::string& path);
 
-        void set_nbt(bl::palette::compound_tag* tag);
+    bool load_from_raw_data(const std::vector<byte_t>& data);
 
-        [[nodiscard]] inline bool loaded() const { return this->loaded_; }
-        [[nodiscard]] inline block_pos spawn_position() const { return this->spawn_position_; }
-        [[nodiscard]] inline uint64_t storage_version() const { return this->storage_version_; }
-        [[nodiscard]] inline std::string level_name() const { return this->level_name_; }
+    void set_nbt(bl::palette::compound_tag* tag);
 
-        [[nodiscard]] bl::palette::compound_tag* root() { return this->root_; }
+    [[nodiscard]] inline bool        loaded() const { return this->loaded_; }
+    [[nodiscard]] inline block_pos   spawn_position() const { return this->spawn_position_; }
+    [[nodiscard]] inline uint64_t    storage_version() const { return this->storage_version_; }
+    [[nodiscard]] inline std::string level_name() const { return this->level_name_; }
 
-        [[nodiscard]] std::string to_raw() const;
+    [[nodiscard]] bl::palette::compound_tag* root() { return this->root_; }
 
-        ~level_dat();
-       private:
-        bool preload_data();
+    [[nodiscard]] std::string to_raw() const;
 
-       private:
-        bool loaded_{false};
-        block_pos spawn_position_{0, 0, 0};
-        std::string level_name_;
-        int storage_version_{10};
-        bl::palette::compound_tag* root_{nullptr};
-        std::string header_;
-    };
-}  // namespace bl
+    ~level_dat();
 
-#endif  // BEDROCK_LEVEL_LEVEL_DAT_H
+private:
+    bool preload_data();
+
+private:
+    bool                       loaded_{false};
+    block_pos                  spawn_position_{0, 0, 0};
+    std::string                level_name_;
+    int                        storage_version_{10};
+    bl::palette::compound_tag* root_{nullptr};
+    std::string                header_;
+};
+
+} // namespace bl

@@ -30,33 +30,33 @@
 #include <QRgb>
 #include <cmath>
 
-#include "level/color.h"
 #include "config.h"
+#include "level/color.h"
 #include "ui/mainwindow.h"
 
 namespace {
 
-    double getMemUsage() {
+double getMemUsage() {
 #ifdef WIN32
-        PROCESS_MEMORY_COUNTERS_EX pmc;
-        GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS *) &pmc, sizeof(pmc));
-        return static_cast<double>(pmc.WorkingSetSize >> 20);
+    PROCESS_MEMORY_COUNTERS_EX pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), (PROCESS_MEMORY_COUNTERS*)&pmc, sizeof(pmc));
+    return static_cast<double>(pmc.WorkingSetSize >> 20);
 #else
-        return 0;
+    return 0;
 #endif
-    }
-}  // namespace
+}
+} // namespace
 
-void MapWidget::resizeEvent(QResizeEvent *event) {
+void MapWidget::resizeEvent(QResizeEvent* event) {
     this->camera_ = QRect(-10, -10, this->width() + 10, this->height() + 10);
 }
 
 void MapWidget::asyncRefresh() { this->update(); }
 
-// 显示右键菜单
-void MapWidget::showContextMenu(const QPoint &p) {
-    auto *cb = QApplication::clipboard();
-    auto area = this->getRenderSelectArea();
+// right-click menu
+void MapWidget::showContextMenu(const QPoint& p) {
+    auto* cb   = QApplication::clipboard();
+    auto  area = this->getRenderSelectArea();
     QMenu contextMenu(this);
     if (this->has_selected_ && area.contains(p)) {
         QAction removeChunkAction("Delete a chunk", this);
@@ -78,8 +78,9 @@ void MapWidget::showContextMenu(const QPoint &p) {
         auto blockInfo = this->mw_->levelLoader()->getBlockTips(pos, this->dim_type_);
         // block name
         QAction copyBlockNameAction("Copy Block Name: " + QString(blockInfo.block_name.c_str()), this);
-        connect(&copyBlockNameAction, &QAction::triggered, this,
-                [cb, &blockInfo] { cb->setText(blockInfo.block_name.c_str()); });
+        connect(&copyBlockNameAction, &QAction::triggered, this, [cb, &blockInfo] {
+            cb->setText(blockInfo.block_name.c_str());
+        });
 
         // biome
         //        QAction copyBiomeAction(("Copy Biome Name: " + bl::get_biome_name(blockInfo.biome)).c_str(), this);
@@ -91,9 +92,10 @@ void MapWidget::showContextMenu(const QPoint &p) {
         // height
         QAction copyHeightAction("Copy height information: " + QString::number(blockInfo.height), this);
 
-        connect(&copyHeightAction, &QAction::triggered, this,
-                [cb, &blockInfo] { cb->setText(QString::number(blockInfo.height)); });
-        auto tpCmd = QString("tp @s %1 ~ %2").arg(QString::number(pos.x), QString::number(pos.z));
+        connect(&copyHeightAction, &QAction::triggered, this, [cb, &blockInfo] {
+            cb->setText(QString::number(blockInfo.height));
+        });
+        auto    tpCmd = QString("tp @s %1 ~ %2").arg(QString::number(pos.x), QString::number(pos.z));
         QAction copyTpCommandAction("Copy TP command: " + tpCmd, this);
         connect(&copyTpCommandAction, &QAction::triggered, this, [cb, &tpCmd] { cb->setText(tpCmd); });
 
@@ -104,7 +106,7 @@ void MapWidget::showContextMenu(const QPoint &p) {
         QAction openInChunkEditor("Open in Block Editor", this);
         connect(&openInChunkEditor, &QAction::triggered, this, [pos, this] {
             auto cp = pos.to_chunk_pos();
-            cp.dim = static_cast<int>(this->dim_type_);
+            cp.dim  = static_cast<int>(this->dim_type_);
             if (this->mw_->openChunkEditor(cp)) {
                 this->selectChunk(cp);
             }
@@ -122,27 +124,27 @@ void MapWidget::showContextMenu(const QPoint &p) {
 }
 
 bl::block_pos MapWidget::getCursorBlockPos() {
-    auto cursor = this->mapFromGlobal(QCursor::pos());
+    auto cursor           = this->mapFromGlobal(QCursor::pos());
     auto [mi, ma, render] = this->getRenderRange(this->camera_);
-    int rx = cursor.x() - render.x();
-    int ry = cursor.y() - render.y();
-    int x = static_cast<int>(rx / (this->BW())) + mi.get_min_pos(bl::ChunkVersion::New).x;
-    int y = static_cast<int>(ry / (this->BW())) + mi.get_min_pos(bl::ChunkVersion::New).z;
+    int rx                = cursor.x() - render.x();
+    int ry                = cursor.y() - render.y();
+    int x                 = static_cast<int>(rx / (this->BW())) + mi.get_min_pos(bl::ChunkVersion::New).x;
+    int y                 = static_cast<int>(ry / (this->BW())) + mi.get_min_pos(bl::ChunkVersion::New).z;
     return bl::block_pos{x, 0, y};
 }
 
-void MapWidget::paintEvent(QPaintEvent *event) {
+void MapWidget::paintEvent(QPaintEvent* event) {
     QPainter p(this);
     switch (this->main_render_type_) {
-        case MapWidget::Biome:
-            drawBiome(event, &p);
-            break;
-        case MapWidget::Terrain:
-            drawTerrain(event, &p);
-            break;
-        case MapWidget::Height:
-            drawHeight(event, &p);
-            break;
+    case MapWidget::Biome:
+        drawBiome(event, &p);
+        break;
+    case MapWidget::Terrain:
+        drawTerrain(event, &p);
+        break;
+    case MapWidget::Height:
+        drawHeight(event, &p);
+        break;
     }
     if (draw_HSA_) this->drawHSAs(event, &p);
     if (draw_villages_) this->drawVillages(event, &p);
@@ -155,11 +157,14 @@ void MapWidget::paintEvent(QPaintEvent *event) {
     this->drawMarkers(event, &p);
 }
 
-void MapWidget::mouseMoveEvent(QMouseEvent *event) {
+void MapWidget::mouseMoveEvent(QMouseEvent* event) {
     static QPoint lastMove;
     if (event->buttons() & Qt::LeftButton) {
         if (this->dragging_) {
-            this->origin_ += QPoint{static_cast<int>(event->position().x()) - lastMove.x(), static_cast<int>(event->position().y()) - lastMove.y()};
+            this->origin_ += QPoint{
+                static_cast<int>(event->position().x()) - lastMove.x(),
+                static_cast<int>(event->position().y()) - lastMove.y()
+            };
             this->update();
         } else {
             this->dragging_ = true;
@@ -168,7 +173,7 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event) {
     } else if (event->buttons() & Qt::MiddleButton) {
         if (!selecting_) {
             this->select_pos_1_ = getCursorBlockPos().to_chunk_pos();
-            this->selecting_ = true;
+            this->selecting_    = true;
             this->has_selected_ = true;
         } else {
             this->select_pos_2_ = getCursorBlockPos().to_chunk_pos();
@@ -181,7 +186,7 @@ void MapWidget::mouseMoveEvent(QMouseEvent *event) {
     }
 }
 
-void MapWidget::mouseReleaseEvent(QMouseEvent *event) {
+void MapWidget::mouseReleaseEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         this->dragging_ = false;
     } else if (event->button() == Qt::MiddleButton) {
@@ -193,7 +198,7 @@ void MapWidget::mouseReleaseEvent(QMouseEvent *event) {
     }
 }
 
-void MapWidget::wheelEvent(QWheelEvent *event) {
+void MapWidget::wheelEvent(QWheelEvent* event) {
     auto angle = event->angleDelta().y();
 
     auto lastCW = this->cw_;
@@ -209,20 +214,23 @@ void MapWidget::wheelEvent(QWheelEvent *event) {
         this->cw_ = ncw;
     }
 
-    auto cursor = this->mapFromGlobal(QCursor::pos());
-    double ratio = this->cw_ * 1.0 / lastCW;
+    auto   cursor = this->mapFromGlobal(QCursor::pos());
+    double ratio  = this->cw_ * 1.0 / lastCW;
     this->origin_.setX(static_cast<int>((this->origin_.x() - cursor.x()) * ratio + cursor.x()));
     this->origin_.setY(static_cast<int>((this->origin_.y() - cursor.y()) * ratio + cursor.y()));
     this->update();
 }
 
-void MapWidget::drawRegion(QPaintEvent *e, QPainter *p, const region_pos &pos, const QPoint &start, QImage *img) const {
+void MapWidget::drawRegion(QPaintEvent* e, QPainter* p, const region_pos& pos, const QPoint& start, QImage* img) const {
     if (img)
-        p->drawImage(QRectF(start.x(), start.y(), this->cw_ * cfg::RW, this->cw_ * cfg::RW), *img,
-                     QRect(0, 0, img->width(), img->height()));
+        p->drawImage(
+            QRectF(start.x(), start.y(), this->cw_ * cfg::RW, this->cw_ * cfg::RW),
+            *img,
+            QRect(0, 0, img->width(), img->height())
+        );
 }
 
-void MapWidget::forEachChunkInCamera(const std::function<void(const bl::chunk_pos &, const QPoint &)> &f) {
+void MapWidget::forEachChunkInCamera(const std::function<void(const bl::chunk_pos&, const QPoint&)>& f) {
     auto [minChunk, maxChunk, renderRange] = this->getRenderRange(this->camera_);
     for (int i = minChunk.x; i <= maxChunk.x; i += 1) {
         for (int j = minChunk.z; j <= maxChunk.z; j += 1) {
@@ -233,10 +241,10 @@ void MapWidget::forEachChunkInCamera(const std::function<void(const bl::chunk_po
     }
 }
 
-void MapWidget::foreachRegionInCamera(const std::function<void(const region_pos &, const QPoint &)> &f) {
+void MapWidget::foreachRegionInCamera(const std::function<void(const region_pos&, const QPoint&)>& f) {
     auto [minChunk, maxChunk, renderRange] = this->getRenderRange(this->camera_);
-    auto reginMin = cfg::c2r(minChunk);
-    auto regionMax = cfg::c2r(maxChunk);
+    auto reginMin                          = cfg::c2r(minChunk);
+    auto regionMax                         = cfg::c2r(maxChunk);
 
     for (int i = reginMin.x; i <= regionMax.x; i += cfg::RW) {
         for (int j = reginMin.z; j <= regionMax.z; j += cfg::RW) {
@@ -247,14 +255,14 @@ void MapWidget::foreachRegionInCamera(const std::function<void(const region_pos 
     }
 }
 
-void MapWidget::drawGrid(QPaintEvent *event, QPainter *painter) {
+void MapWidget::drawGrid(QPaintEvent* event, QPainter* painter) {
     // Thin chunk boundaries
     QPen pen;
     pen.setColor(QColor(200 - 20, 200 - 20, 200 - 20));
     pen.setWidth(1);
     painter->setPen(pen);
     painter->setBrush(QBrush(QColor(0, 0, 0, 0)));
-    this->forEachChunkInCamera([event, this, painter](const bl::chunk_pos &ch, const QPoint &p) {
+    this->forEachChunkInCamera([event, this, painter](const bl::chunk_pos& ch, const QPoint& p) {
         if (this->cw_ >= 64) painter->drawRect(QRect(p.x(), p.y(), this->cw_, this->cw_));
     });
 
@@ -264,9 +272,11 @@ void MapWidget::drawGrid(QPaintEvent *event, QPainter *painter) {
     painter->setPen(pen);
     auto [minChunk, maxChunk, renderRange] = this->getRenderRange(this->camera_);
 
-    auto alignedMinChunkPos =
-            bl::chunk_pos{minChunk.x / cfg::GRID_WIDTH * cfg::GRID_WIDTH,
-                          minChunk.z / cfg::GRID_WIDTH * cfg::GRID_WIDTH, 0};
+    auto alignedMinChunkPos = bl::chunk_pos{
+        minChunk.x / cfg::GRID_WIDTH * cfg::GRID_WIDTH,
+        minChunk.z / cfg::GRID_WIDTH * cfg::GRID_WIDTH,
+        0
+    };
 
     // Starting x of the vertical axis
     int xStart = (alignedMinChunkPos.x - minChunk.x) * this->cw_ + renderRange.x();
@@ -283,7 +293,7 @@ void MapWidget::drawGrid(QPaintEvent *event, QPainter *painter) {
     }
 }
 
-void MapWidget::drawSelectArea(QPaintEvent *event, QPainter *p) {
+void MapWidget::drawSelectArea(QPaintEvent* event, QPainter* p) {
     if (!this->has_selected_) return;
     p->setPen(QPen(QColor(218, 255, 251), 6, Qt::DashLine));
     p->setBrush(QBrush(QColor(218, 255, 251, 100)));
@@ -299,45 +309,50 @@ QRect MapWidget::getRenderSelectArea() {
     auto maxX = std::max(this->select_pos_1_.x, this->select_pos_2_.x);
     auto maxZ = std::max(this->select_pos_1_.z, this->select_pos_2_.z);
 
-    QRect x((minX - minChunk.x) * cw_ + renderRange.x(), (minZ - minChunk.z) * cw_ + renderRange.y(),
-            (maxX - minX + 1) * cw_,
-            (maxZ - minZ + 1) * cw_);
+    QRect x(
+        (minX - minChunk.x) * cw_ + renderRange.x(),
+        (minZ - minChunk.z) * cw_ + renderRange.y(),
+        (maxX - minX + 1) * cw_,
+        (maxZ - minZ + 1) * cw_
+    );
     return x;
 }
 
-void MapWidget::drawChunkPosText(QPaintEvent *event, QPainter *painter) {
-    QFont font("JetBrains Mono", 8);
+void MapWidget::drawChunkPosText(QPaintEvent* event, QPainter* painter) {
+    QFont        font("JetBrains Mono", 8);
     QFontMetrics fm(font);
     painter->setFont(font);
     QPen pen(QColor(255, 255, 255));
     painter->setPen(pen);
 
-    this->forEachChunkInCamera([event, this, painter, &fm, &pen](const bl::chunk_pos &ch, const QPoint &p) {
+    this->forEachChunkInCamera([event, this, painter, &fm, &pen](const bl::chunk_pos& ch, const QPoint& p) {
         if ((ch.x % cfg::GRID_WIDTH == 0 && ch.z % cfg::GRID_WIDTH == 0) || this->cw_ >= 128) {
-            auto text = QString("%1,%2").arg(QString::number(ch.x << 4), QString::number(ch.z << 4));
+            auto text   = QString("%1,%2").arg(QString::number(ch.x << 4), QString::number(ch.z << 4));
             auto f_rect = fm.boundingRect(text);
-            auto rect = QRect{p.x() + 2, p.y() + 2, f_rect.width() + 4, f_rect.height() + 4};
+            auto rect   = QRect{p.x() + 2, p.y() + 2, f_rect.width() + 4, f_rect.height() + 4};
             painter->fillRect(rect, QBrush(QColor(22, 22, 22, 90)));
             painter->drawText(rect, Qt::AlignCenter, text);
         }
     });
 }
 
-void MapWidget::drawDebugWindow(QPaintEvent *event, QPainter *painter) {
-    QFont font("JetBrains Mono", 6);
+void MapWidget::drawDebugWindow(QPaintEvent* event, QPainter* painter) {
+    QFont        font("JetBrains Mono", 6);
     QFontMetrics fm(font);
-    auto dbgInfo = this->mw_->levelLoader()->debugInfo();
+    auto         dbgInfo = this->mw_->levelLoader()->debugInfo();
     dbgInfo.push_back(QString("Memory usage: %1 MiB").arg(QString::number(getMemUsage())));
     int max_len = 1;
-    for (auto &i: dbgInfo) {
+    for (auto& i : dbgInfo) {
         max_len = std::max(max_len, fm.boundingRect(i).width());
     }
-    painter->fillRect(QRectF(0, 0, max_len + 10, static_cast<qreal>(fm.height() * (dbgInfo.size() + 1))),
-                      QBrush(QColor(22, 22, 22, 90)));
+    painter->fillRect(
+        QRectF(0, 0, max_len + 10, static_cast<qreal>(fm.height() * (dbgInfo.size() + 1))),
+        QBrush(QColor(22, 22, 22, 90))
+    );
     painter->setFont(font);
     painter->setPen(QPen(QColor(255, 255, 255)));
     int i = 0;
-    for (auto &s: dbgInfo) {
+    for (auto& s : dbgInfo) {
         painter->drawText(QPoint(5, (i + 1) * fm.height()), s);
         i++;
     }
@@ -348,49 +363,44 @@ void MapWidget::drawDebugWindow(QPaintEvent *event, QPainter *painter) {
  * @param event
  * @param painter
  */
-void MapWidget::drawSlimeChunks(QPaintEvent *event, QPainter *painter) {
-    this->foreachRegionInCamera([event, this, painter](const region_pos &rp, const QPoint &p) {
+void MapWidget::drawSlimeChunks(QPaintEvent* event, QPainter* painter) {
+    this->foreachRegionInCamera([event, this, painter](const region_pos& rp, const QPoint& p) {
         auto top = this->mw_->levelLoader()->bakedSlimeChunkImage(rp);
         this->drawRegion(event, painter, rp, p, top);
     });
 }
 
-void MapWidget::drawBiome(QPaintEvent *event, QPainter *painter) {
-    this->foreachRegionInCamera([event, this, painter](const region_pos &rp, const QPoint &p) {
+void MapWidget::drawBiome(QPaintEvent* event, QPainter* painter) {
+    this->foreachRegionInCamera([event, this, painter](const region_pos& rp, const QPoint& p) {
         auto top = this->mw_->levelLoader()->bakedBiomeImage(rp);
         this->drawRegion(event, painter, rp, p, top);
     });
 }
 
-void MapWidget::drawTerrain(QPaintEvent *event, QPainter *painter) {
-    this->foreachRegionInCamera([event, this, painter](const bl::chunk_pos &rp, const QPoint &p) {
+void MapWidget::drawTerrain(QPaintEvent* event, QPainter* painter) {
+    this->foreachRegionInCamera([event, this, painter](const bl::chunk_pos& rp, const QPoint& p) {
         auto terrain = this->mw_->levelLoader()->bakedTerrainImage(rp);
         this->drawRegion(event, painter, rp, p, terrain);
     });
 }
 
-void MapWidget::drawHeight(QPaintEvent *event, QPainter *painter) {
-    this->foreachRegionInCamera([event, this, painter](const bl::chunk_pos &rp, const QPoint &p) {
+void MapWidget::drawHeight(QPaintEvent* event, QPainter* painter) {
+    this->foreachRegionInCamera([event, this, painter](const bl::chunk_pos& rp, const QPoint& p) {
         auto height = this->mw_->levelLoader()->bakedHeightImage(rp);
         this->drawRegion(event, painter, rp, p, height);
     });
 }
 
-void MapWidget::drawVillages(QPaintEvent *event, QPainter *p) {
-    auto &vs = this->mw_->get_villages();
+void MapWidget::drawVillages(QPaintEvent* event, QPainter* p) {
+    auto& vs              = this->mw_->get_villages();
     auto [mi, ma, render] = this->getRenderRange(this->camera_);
     for (auto i = vs.cbegin(), end = vs.cend(); i != end; ++i) {
         //        auto uuid = i.key();
         auto rect = i.value();
-        auto min = rect.topLeft();
-        auto x = (min.x() - mi.get_min_pos(bl::New).x) * this->BW() + render.x();
-        auto z = (min.y() - mi.get_min_pos(bl::New).z) * this->BW() + render.y();
-        auto rec = QRect(
-                static_cast<int>(x),
-                static_cast<int>(z),
-                rect.width() * BW(),
-                rect.height() * BW()
-        );
+        auto min  = rect.topLeft();
+        auto x    = (min.x() - mi.get_min_pos(bl::New).x) * this->BW() + render.x();
+        auto z    = (min.y() - mi.get_min_pos(bl::New).z) * this->BW() + render.y();
+        auto rec  = QRect(static_cast<int>(x), static_cast<int>(z), rect.width() * BW(), rect.height() * BW());
         if (rec.intersects(this->camera_)) {
             p->setPen(QPen(QColor(0, 223, 162), 3));
             p->setBrush(QBrush(QColor(0, 223, 162, 30)));
@@ -399,24 +409,29 @@ void MapWidget::drawVillages(QPaintEvent *event, QPainter *p) {
     }
 }
 
-void MapWidget::drawHSAs(QPaintEvent *event, QPainter *painter) {
+void MapWidget::drawHSAs(QPaintEvent* event, QPainter* painter) {
     QColor colors[]{
-            QColor(0, 0, 0, 0), QColor(0, 223, 162, 255),  // 1NetherFortress
-            QColor(255, 0, 96, 255),                               // 2SwampHut
-            QColor(246, 250, 112, 255),                            // 3OceanMonument
-            QColor(0, 0, 0, 0),                                    //
-            QColor(0, 121, 255, 255),                              // 5PillagerOutpost
-            QColor(0, 0, 0, 0),
+        QColor(0, 0, 0, 0),
+        QColor(0, 223, 162, 255),   // 1NetherFortress
+        QColor(255, 0, 96, 255),    // 2SwampHut
+        QColor(246, 250, 112, 255), // 3OceanMonument
+        QColor(0, 0, 0, 0),         //
+        QColor(0, 121, 255, 255),   // 5PillagerOutpost
+        QColor(0, 0, 0, 0),
     };
-    this->foreachRegionInCamera([event, this, painter, colors](const bl::chunk_pos &rp, const QPoint &p) {
+    this->foreachRegionInCamera([event, this, painter, colors](const bl::chunk_pos& rp, const QPoint& p) {
         auto hss = this->mw_->levelLoader()->getHSAs(rp);
-        for (auto &hsa: hss) {
-            int x = static_cast<int>((hsa.min_pos.x - rp.x * 16) * this->BW()) + p.x();
-            int y = static_cast<int>((hsa.min_pos.z - rp.z * 16) * this->BW()) + p.y();
+        for (auto& hsa : hss) {
+            int  x            = static_cast<int>((hsa.min_pos.x - rp.x * 16) * this->BW()) + p.x();
+            int  y            = static_cast<int>((hsa.min_pos.z - rp.z * 16) * this->BW()) + p.y();
             auto outlineColor = colors[static_cast<int>(hsa.type)];
             painter->setPen(QPen(outlineColor, 3));
-            auto rect = QRect(x, y, static_cast<int>(abs(hsa.max_pos.x - hsa.min_pos.x + 1) * this->BW()),
-                              static_cast<int>(abs(hsa.max_pos.z - hsa.min_pos.z + 1) * this->BW()));
+            auto rect = QRect(
+                x,
+                y,
+                static_cast<int>(abs(hsa.max_pos.x - hsa.min_pos.x + 1) * this->BW()),
+                static_cast<int>(abs(hsa.max_pos.z - hsa.min_pos.z + 1) * this->BW())
+            );
             painter->drawRect(rect);
             outlineColor.setAlpha(100);
             painter->fillRect(rect, QBrush(outlineColor));
@@ -424,16 +439,16 @@ void MapWidget::drawHSAs(QPaintEvent *event, QPainter *painter) {
     });
 }
 
-void MapWidget::drawActors(QPaintEvent *event, QPainter *painter) {
+void MapWidget::drawActors(QPaintEvent* event, QPainter* painter) {
     QPen pen(QColor(20, 20, 20));
     painter->setBrush(QBrush(QColor(255, 10, 10)));
-    this->foreachRegionInCamera([event, this, painter, &pen](const bl::chunk_pos &ch, const QPoint &p) {
+    this->foreachRegionInCamera([event, this, painter, &pen](const bl::chunk_pos& ch, const QPoint& p) {
         auto actors = this->mw_->levelLoader()->getActorList(ch);
-        for (auto &kv: actors) {
+        for (auto& kv : actors) {
             if (!kv.first) continue;
-            for (auto &actor: kv.second) {
-                float x = (actor.x - (float) ch.x * 16.0f) * (float) this->BW() + (float) p.x();
-                float y = (actor.z - (float) ch.z * 16.0f) * (float) this->BW() + (float) p.y();
+            for (auto& actor : kv.second) {
+                float     x = (actor.x - (float)ch.x * 16.0f) * (float)this->BW() + (float)p.x();
+                float     y = (actor.z - (float)ch.z * 16.0f) * (float)this->BW() + (float)p.y();
                 const int W = 18;
                 painter->drawImage(QRectF(x - W, y - W, W * 2, W * 2), *kv.first, QRect(0, 0, 18, 18));
             }
@@ -449,13 +464,13 @@ void MapWidget::gotoBlockPos(int x, int z) {
     this->update();
 }
 
-std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> MapWidget::getRenderRange(const QRect &camera) {
+std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> MapWidget::getRenderRange(const QRect& camera) {
     // Required parameters
     //  origin  Where is the focus origin?
     //  bw Pixel Width
     const int CHUNK_WIDTH = this->cw_;
-    int renderX = (camera.x() - origin_.x()) / CHUNK_WIDTH * CHUNK_WIDTH + origin_.x();
-    int renderY = (camera.y() - origin_.y()) / CHUNK_WIDTH * CHUNK_WIDTH + origin_.y();
+    int       renderX     = (camera.x() - origin_.x()) / CHUNK_WIDTH * CHUNK_WIDTH + origin_.x();
+    int       renderY     = (camera.y() - origin_.y()) / CHUNK_WIDTH * CHUNK_WIDTH + origin_.y();
     if (renderX >= camera.x()) renderX -= CHUNK_WIDTH;
     if (renderY >= camera.y()) renderY -= CHUNK_WIDTH;
     int chunk_w = (camera.x() + camera.width() - renderX) / CHUNK_WIDTH;
@@ -463,7 +478,7 @@ std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> MapWidget::getRenderRange(const 
     int chunk_h = (camera.y() + camera.height() - renderY) / CHUNK_WIDTH;
     if ((camera.y() + camera.height() - renderY) % CHUNK_WIDTH != 0) chunk_h++;
 
-    QRect renderRange(renderX, renderY, chunk_w * CHUNK_WIDTH, chunk_h * CHUNK_WIDTH);
+    QRect     renderRange(renderX, renderY, chunk_w * CHUNK_WIDTH, chunk_h * CHUNK_WIDTH);
     const int dim = static_cast<int>(this->dim_type_);
     auto minChunk = bl::chunk_pos{(renderX - origin_.x()) / CHUNK_WIDTH, (renderY - origin_.y()) / CHUNK_WIDTH, dim};
     auto maxChunk = bl::chunk_pos{minChunk.x + chunk_w - 1, minChunk.z + chunk_h - 1, dim};
@@ -472,7 +487,7 @@ std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> MapWidget::getRenderRange(const 
 
 void MapWidget::saveImageAction(bool full_screen) {
     bool ok;
-    int i = QInputDialog::getInt(this, tr("Save as"), tr("Set the zoom ratio"), 1, 1, 16, 1, &ok);
+    int  i = QInputDialog::getInt(this, tr("Save as"), tr("Set the zoom ratio"), 1, 1, 16, 1, &ok);
 
     if (!ok) return;
     QPixmap img;
@@ -484,8 +499,8 @@ void MapWidget::saveImageAction(bool full_screen) {
         img = this->grab();
     }
     auto new_img = img.scaled(img.width() * i, img.height() * i);
-    auto fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "/home/jana/untitled.png",
-                                                 tr("Images (*.png *.jpg)"));
+    auto fileName =
+        QFileDialog::getSaveFileName(this, tr("Save File"), "/home/jana/untitled.png", tr("Images (*.png *.jpg)"));
     if (fileName.isEmpty()) return;
     new_img.save(fileName);
 }
@@ -506,8 +521,8 @@ void MapWidget::gotoPositionAction() {
     dialog.setWindowTitle("Go to position");
 
     QFormLayout form(&dialog);
-    auto *x_edit = new QLineEdit(&dialog);
-    auto *z_edit = new QLineEdit(&dialog);
+    auto*       x_edit = new QLineEdit(&dialog);
+    auto*       z_edit = new QLineEdit(&dialog);
     x_edit->setText("0");
     z_edit->setText("0");
     x_edit->setValidator(new QIntValidator());
@@ -527,25 +542,26 @@ void MapWidget::gotoPositionAction() {
 }
 
 void MapWidget::advancePos(int x, int y) {
-    auto bp = this->getCursorBlockPos();
-    auto nx = this->origin_.x() + x;
-    auto ny = this->origin_.y() + y;
+    auto bp       = this->getCursorBlockPos();
+    auto nx       = this->origin_.x() + x;
+    auto ny       = this->origin_.y() + y;
     this->origin_ = QPoint(nx, ny);
     this->update();
 }
 
-void MapWidget::drawMarkers(QPaintEvent *event, QPainter *painter) {
+void MapWidget::drawMarkers(QPaintEvent* event, QPainter* painter) {
     if (this->opened_chunk_ && this->opened_chunk_pos_.dim == this->dim_type_) {
         auto [minChunk, maxChunk, renderRange] = this->getRenderRange(this->camera_);
-        int x = (this->opened_chunk_pos_.x - minChunk.x) * this->cw_ + renderRange.x();
-        int y = (this->opened_chunk_pos_.z - minChunk.z) * this->cw_ + renderRange.y();
+        int x                                  = (this->opened_chunk_pos_.x - minChunk.x) * this->cw_ + renderRange.x();
+        int y                                  = (this->opened_chunk_pos_.z - minChunk.z) * this->cw_ + renderRange.y();
 
-        int line_width = std::max(1, static_cast<int>(BW() * 2));
+        int  line_width = std::max(1, static_cast<int>(BW() * 2));
         QPen pen(QColor(34, 166, 153, 250), line_width);
         pen.setJoinStyle(Qt::MiterJoin);
         painter->setPen(pen);
-        painter->drawRect(QRect(x - static_cast<int>(BW()), y - static_cast<int>(BW()), this->cw_ + BW() * 2,
-                                this->cw_ + BW() * 2));
+        painter->drawRect(
+            QRect(x - static_cast<int>(BW()), y - static_cast<int>(BW()), this->cw_ + BW() * 2, this->cw_ + BW() * 2)
+        );
     }
 }
 

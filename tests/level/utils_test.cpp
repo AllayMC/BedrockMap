@@ -1,7 +1,3 @@
-//
-// Created by xhy on 2023/3/29.
-//
-
 #include "level/utils.h"
 
 #include <gtest/gtest.h>

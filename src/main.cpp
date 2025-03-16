@@ -2,11 +2,11 @@
 #include <QCache>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QFile>
 #include <QFontDatabase>
 #include <QIcon>
 #include <QImage>
 #include <QTextCodec>
-#include <QFile>
 #include <chrono>
 #include <filesystem>
 
@@ -23,12 +23,12 @@ void setupLog() {
         fs::create_directory("./logs");
     }
     const auto p1 = std::chrono::system_clock::now();
-    LOG_FILE_NAME = "./logs/" +
-                    QString::number(std::chrono::duration_cast<std::chrono::seconds>(p1.time_since_epoch()).count()) +
-                    ".log";
+    LOG_FILE_NAME = "./logs/"
+                  + QString::number(std::chrono::duration_cast<std::chrono::seconds>(p1.time_since_epoch()).count())
+                  + ".log";
 }
 
-void setupTheme(QApplication &a) {
+void setupTheme(QApplication& a) {
     //    auto theme_path = ":/light/stylesheet.qss";
     //    QFile f(theme_path);
     //    if (!f.exists()) {
@@ -40,24 +40,24 @@ void setupTheme(QApplication &a) {
     //    }
 }
 
-void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString &msg) {
+void myMessageHandler(QtMsgType type, const QMessageLogContext&, const QString& msg) {
     QString txt;
     switch (type) {
-        case QtDebugMsg:
-            txt = QString("Debug: %1").arg(msg);
-            break;
-        case QtWarningMsg:
-            txt = QString("Warning: %1").arg(msg);
-            break;
-        case QtCriticalMsg:
-            txt = QString("Critical: %1").arg(msg);
-            break;
-        case QtFatalMsg:
-            txt = QString("Fatal: %1").arg(msg);
-            abort();
-        case QtInfoMsg:
-            txt = QString("Info: %1").arg(msg);
-            break;
+    case QtDebugMsg:
+        txt = QString("Debug: %1").arg(msg);
+        break;
+    case QtWarningMsg:
+        txt = QString("Warning: %1").arg(msg);
+        break;
+    case QtCriticalMsg:
+        txt = QString("Critical: %1").arg(msg);
+        break;
+    case QtFatalMsg:
+        txt = QString("Fatal: %1").arg(msg);
+        abort();
+    case QtInfoMsg:
+        txt = QString("Info: %1").arg(msg);
+        break;
     }
     QFile outFile(LOG_FILE_NAME);
     outFile.open(QIODevice::WriteOnly | QIODevice::Append);
@@ -66,7 +66,7 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString 
     ts.flush();
 }
 
-void setupFont(QApplication &a) {
+void setupFont(QApplication& a) {
     auto id = QFontDatabase::addApplicationFont(":/res/fonts/JetBrainsMono-Regular.ttf");
     if (id == -1) {
         qWarning() << "Can not load font";
@@ -78,7 +78,7 @@ void setupFont(QApplication &a) {
     QApplication::setFont(font);
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
     setupLog();
 #ifndef QT_DEBUG
     qInstallMessageHandler(myMessageHandler);
@@ -95,12 +95,12 @@ int main(int argc, char *argv[]) {
         w.show();
         return QApplication::exec();
     } else {
-        auto *w = new NbtWidget();
+        auto*     w   = new NbtWidget();
         const int ext = 100;
         w->setWindowTitle("NBT Editor");
-        auto const rec = QApplication::primaryScreen()->geometry();
+        auto const rec    = QApplication::primaryScreen()->geometry();
         auto const height = static_cast<int>(rec.height() * 0.6);
-        auto const width = static_cast<int>(rec.width() * 0.6);
+        auto const width  = static_cast<int>(rec.width() * 0.6);
         w->setGeometry({(rec.width() - width) / 2, (rec.height() - height) / 2, width, height});
         w->show();
         return QApplication::exec();

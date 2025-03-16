@@ -11,8 +11,11 @@ add_requires('pmmp-leveldb  2021.10.9')
 target('BedrockMap')
     add_rules('qt.widgetapp')
     add_files('src/**.cpp') -- source files
-    add_files('src/**.ui')  -- qt widget ui
+    add_files('src/**.ui')  -- qt widgets
     add_files('src/**.h')   -- qt meta header
+
+    set_warnings('all')
+    set_languages('cxx23', 'c23')
     
     if is_plat('windows') then
         add_files('assets/icon.rc')
@@ -22,7 +25,7 @@ target('BedrockMap')
         'QtWidgets',
         'QtConcurrent',
 
-        -- TODO: fully migrated to Qt6
+        -- TODO: fully migrate to Qt6
         'QtCore5Compat'
     )
 
@@ -35,6 +38,3 @@ target('BedrockMap')
     add_includedirs(
         'src'
     )
-
-    set_warnings('all')
-    set_languages('cxx23', 'c23')

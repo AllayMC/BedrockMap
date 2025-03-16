@@ -1,9 +1,4 @@
-//
-// Created by xhy on 2023/7/8.
-//
-
-#ifndef BEDROCKMAP_RESOURCEMANAGER_H
-#define BEDROCKMAP_RESOURCEMANAGER_H
+#pragma once
 
 #include <QImage>
 
@@ -13,19 +8,19 @@
 
 void initResources();
 
-QImage *ActorImage(const QString &key);
+QImage* ActorImage(const QString& key);
 
-QImage *OtherNBTIcon();
+QImage* OtherNBTIcon();
 
-QImage *PlayerNBTIcon();
+QImage* PlayerNBTIcon();
 
-QImage *TagIcon(bl::palette::tag_type t);
+QImage* TagIcon(bl::palette::tag_type t);
 
-QImage *VillageNBTIcon(bl::village_key::key_type t);
+QImage* VillageNBTIcon(bl::village_key::key_type t);
 
-QImage *BlockActorNBTIcon(const QString &key);
+QImage* BlockActorNBTIcon(const QString& key);
 
-QImage *EntityNBTIcon(const QString &key);
+QImage* EntityNBTIcon(const QString& key);
 
 // New APIs vvv
 
@@ -34,5 +29,3 @@ struct IconManager {
 
     static void init();
 };
-
-#endif  // BEDROCKMAP_RESOURCEMANAGER_H
