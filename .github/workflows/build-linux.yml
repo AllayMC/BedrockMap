@@ -42,11 +42,18 @@ jobs:
         if: matrix.arch.os != 'amd64'
         run: |
           sudo dpkg --add-architecture ${{ matrix.arch.os }}
-          sudo tee -a /etc/apt/sources.list.d/ubuntu.sources > /dev/null <<EOF
+          sudo tee /etc/apt/sources.list.d/ubuntu.sources > /dev/null <<EOF
+          
+          Types: deb
+          URIs: mirror+file:/etc/apt/apt-mirrors.txt
+          Suites: noble noble-updates noble-backports noble-security
+          Components: main universe restricted multiverse
+          Architectures: amd64
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
           Types: deb
           URIs: http://ports.ubuntu.com/ubuntu-ports/
-          Suites: noble noble-updates noble-security
+          Suites: noble noble-updates noble-backports noble-security
           Components: main restricted universe multiverse
           Architectures: arm64 armhf ppc64el riscv64 s390x
           Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
