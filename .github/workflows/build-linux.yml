@@ -20,6 +20,7 @@ jobs:
 #            gcc: 'g++'
           - os: 'arm64'
             gcc: 'g++-14-aarch64-linux-gnu'
+            prefix: 'aarch64-linux-gnu-'
 #          - os: 'armhf'
 #            gcc: 'g++-14-arm-linux-gnueabihf'
 #          - os: 'ppc64el'
@@ -72,7 +73,7 @@ jobs:
 
       - name: Configure
         run: |
-          xmake f -a ${{ matrix.arch.os }} -m ${{ matrix.mode }} -p linux --toolchain=clang -v -y
+          xmake f -a ${{ matrix.arch.os }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.prefix }} -v -y
 
       - name: Build
         run: |
