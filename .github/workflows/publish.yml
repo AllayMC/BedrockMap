@@ -19,6 +19,7 @@ jobs:
 
       - name: Pack all artifacts
         run: |
+          cd arts
           for dir in */; do
             dirname="${dir%/}"
             zip -r "${dirname}.zip" "$dirname"
@@ -35,4 +36,4 @@ jobs:
           prerelease: true
           body: "> For testing only, don't use it in production!"
           files: |
-              arts/*
+              arts/*.zip
