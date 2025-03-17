@@ -14,21 +14,20 @@ jobs:
       fail-fast: false
       matrix:
         mode: [debug]
-        #       mode: [release, debug]
-        arch:
-#          - os: 'amd64'
-#            gcc: 'g++'
-          - os: 'arm64'
-            gcc: 'g++-aarch64-linux-gnu'
-            prefix: 'aarch64-linux-gnu'
-#          - os: 'armhf'
-#            gcc: 'g++-14-arm-linux-gnueabihf'
-#          - os: 'ppc64el'
-#            gcc: 'g++-14-powerpc64le-linux-gnu'
-#          - os: 'riscv64'
-#            gcc: 'g++-14-riscv64-linux-gnu'
-#          - os: 's390x'
-#            gcc: 'g++-14-s390x-linux-gnu'
+        # mode: [release, debug]
+        plat:
+          - arch: 'amd64'
+            triple: 'x86_64-linux-gnu'
+          - arch: 'arm64'
+            triple: 'aarch64-linux-gnu'
+          - arch: 'armhf'
+            triple: 'arm-linux-gnueabihf'
+          - arch: 'ppc64el'
+            triple: 'powerpc64le-linux-gnu'
+          - arch: 'riscv64'
+            triple: 'riscv64-linux-gnu'
+          - arch: 's390x'
+            triple: 's390x-linux-gnu'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -40,9 +39,9 @@ jobs:
           xmake-version: '2.9.8'
 
       - name: Setup ubuntu ports
-        if: matrix.arch.os != 'amd64'
+        if: matrix.plat.arch != 'amd64'
         run: |
-          sudo dpkg --add-architecture ${{ matrix.arch.os }}
+          sudo dpkg --add-architecture ${{ matrix.plat.arch }}
           sudo tee /etc/apt/sources.list.d/ubuntu.sources > /dev/null <<EOF
           
           Types: deb
@@ -65,16 +64,23 @@ jobs:
 
       - name: Setup qt environment
         run: |
-          sudo apt-get install qt6-base-dev:${{ matrix.arch.os }}
+          sudo apt-get install qt6-base-dev:${{ matrix.plat.arch }}
           sudo apt-get install qt6-base-dev # workaround to get header, xmake bug?
 
-      - name: Setup build toolchains
+      - name: Setup build toolchains (CROSS)
+        if: matrix.plat.arch != 'amd64'
         run: |
-          sudo apt-get install ${{ matrix.arch.gcc }} clang
+          sudo apt-get install g++-${{ matrix.plat.triple }}
 
-      - name: Configure
+      - name: Configure (HOST)
+        if: matrix.plat.arch == 'amd64'
         run: |
-          xmake f -a ${{ matrix.arch.os }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.arch.prefix }}- -v -y
+          xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux -v -y
+
+      - name: Configure (CROSS)
+        if: matrix.plat.arch != 'amd64'
+        run: |
+          xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.arch.triple }}- -v -y
 
       - name: Build
         run: |
@@ -83,6 +89,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bedrockmap-linux-${{ matrix.arch.os }}-${{ matrix.mode }}
+          name: bedrockmap-linux-${{ matrix.plat.arch }}-${{ matrix.mode }}
           path: |
-            build/linux/${{ matrix.arch.os }}/${{ matrix.mode }}
+            build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}
