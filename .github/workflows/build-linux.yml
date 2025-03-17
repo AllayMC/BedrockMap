@@ -11,23 +11,21 @@ on:
 jobs:
   build:
     strategy:
-      fail-fast: false
       matrix:
-        mode: [debug]
-        # mode: [release, debug]
+        mode: [release, debug]
         plat:
           - arch: 'amd64'
             triple: 'x86_64-linux-gnu'
           - arch: 'arm64'
             triple: 'aarch64-linux-gnu'
-          - arch: 'armhf'
-            triple: 'arm-linux-gnueabihf'
           - arch: 'ppc64el'
             triple: 'powerpc64le-linux-gnu'
           - arch: 'riscv64'
             triple: 'riscv64-linux-gnu'
-          - arch: 's390x'
-            triple: 's390x-linux-gnu'
+          # - arch: 'armhf' # Temporarily disabled because it's useless
+          #   triple: 'arm-linux-gnueabihf'
+          # - arch: 's390x'
+          #   triple: 's390x-linux-gnu'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -67,17 +65,17 @@ jobs:
           sudo apt-get install qt6-base-dev:${{ matrix.plat.arch }}
           sudo apt-get install qt6-base-dev # workaround to get header, xmake bug?
 
-      - name: Setup build toolchains (CROSS)
+      - name: Setup build toolchains
         if: matrix.plat.arch != 'amd64'
         run: |
           sudo apt-get install g++-${{ matrix.plat.triple }}
 
-      - name: Configure (HOST)
+      - name: Configure
         if: matrix.plat.arch == 'amd64'
         run: |
           xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux -v -y
 
-      - name: Configure (CROSS)
+      - name: Configure
         if: matrix.plat.arch != 'amd64'
         run: |
           xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.plat.triple }}- -v -y
@@ -92,3 +90,16 @@ jobs:
           name: bedrockmap-linux-${{ matrix.plat.arch }}-${{ matrix.mode }}
           path: |
             build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}
+
+      - name: Update nightly release
+        uses: andelf/nightly-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: nightly
+          name: 'Nightly Release $$'
+          prerelease: true
+          body: '> [!WARNING]\n> For testing only, do not use this in production!'
+          files: |
+            build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}/*
+            
