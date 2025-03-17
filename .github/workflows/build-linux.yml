@@ -80,7 +80,7 @@ jobs:
       - name: Configure (CROSS)
         if: matrix.plat.arch != 'amd64'
         run: |
-          xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.arch.triple }}- -v -y
+          xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.plat.triple }}- -v -y
 
       - name: Build
         run: |
