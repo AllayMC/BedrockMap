@@ -106,10 +106,9 @@ jobs:
 
   build_windows_amd64:
     strategy:
-      fail-fast: false
       matrix:
         mode: [release, debug]
-        arch: [amd64]
+        arch: [x64] # don't use amd64, xmake bug.
     runs-on: windows-latest
     steps:
       - name: Checkout
