@@ -11,8 +11,10 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        mode: [release, debug]
+        mode: [debug]
+#       mode: [release, debug]
         arch: 
           - os: 'amd64'
             gcc: 'g++'
