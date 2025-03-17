@@ -13,14 +13,19 @@ jobs:
     strategy:
       matrix:
         mode: [release, debug]
-        arch: [ 
-          { os: 'amd64,   gcc: 'g++' },
-          { os: 'arm64',  gcc: 'g++-14-aarch64-linux-gnu' },
-          { os: 'armhf',  gcc: 'g++-14-arm-linux-gnueabihf' },
-          { os: 'ppc64el' gcc: 'g++-14-powerpc64le-linux-gnu'},
-          { os: 'riscv64' gcc: 'g++-14-riscv64-linux-gnu'},
-          { os: 's390x'   gcc: 'g++-14-s390x-linux-gnu'}
-        ]
+        arch: 
+          - os: 'amd64'
+            gcc: 'g++'
+          - os: 'arm64'
+            gcc: 'g++-14-aarch64-linux-gnu'
+          - os: 'armhf'
+            gcc: 'g++-14-arm-linux-gnueabihf'
+          - os: 'ppc64el'
+            gcc: 'g++-14-powerpc64le-linux-gnu'
+          - os: 'riscv64'
+            gcc: 'g++-14-riscv64-linux-gnu'
+          - os: 's390x'
+            gcc: 'g++-14-s390x-linux-gnu'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
