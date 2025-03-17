@@ -6,7 +6,6 @@
 #include <QFontDatabase>
 #include <QIcon>
 #include <QImage>
-#include <QTextCodec>
 
 #include "config.h"
 #include "resourcemanager.h"

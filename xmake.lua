@@ -24,10 +24,7 @@ target('BedrockMap')
 
     add_frameworks(
         'QtWidgets',
-        'QtConcurrent',
-
-        -- TODO: fully migrate to Qt6
-        'QtCore5Compat'
+        'QtConcurrent'
     )
 
     add_packages(
