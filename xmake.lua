@@ -8,6 +8,10 @@ add_requires('stb           2024.6.1')
 
 add_requires('pmmp-leveldb  2021.10.9')
 
+if is_plat('windows') then
+    set_runtimes('MD')
+end
+
 target('BedrockMap')
     add_rules('qt.widgetapp')
     add_files('src/**.cpp') -- source files
