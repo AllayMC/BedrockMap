@@ -9,7 +9,6 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -17,6 +16,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
           path: arts
+
+      - name: Pack all artifacts
+        run: |
+          for dir in */; do
+            dirname="${dir%/}"
+            zip -r "${dirname}.zip" "$dirname"
+            rm -rf "$dirname"
+          done
 
       - name: Update nightly release
         uses: andelf/nightly-release@main
