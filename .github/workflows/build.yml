@@ -11,17 +11,18 @@ on:
 jobs:
   build_linux_multiarch:
     strategy:
+      fail-fast: false
       matrix:
         mode: [release, debug]
         plat:
-          - arch: 'amd64'
-            triple: 'x86_64-linux-gnu'
-          - arch: 'arm64'
-            triple: 'aarch64-linux-gnu'
-          - arch: 'ppc64el'
-            triple: 'powerpc64le-linux-gnu'
-          - arch: 'riscv64'
-            triple: 'riscv64-linux-gnu'
+          - arch: "amd64"
+            triple: "x86_64-linux-gnu"
+          - arch: "arm64"
+            triple: "aarch64-linux-gnu"
+          - arch: "ppc64el"
+            triple: "powerpc64le-linux-gnu"
+          - arch: "riscv64"
+            triple: "riscv64-linux-gnu"
           # - arch: 'armhf' # Temporarily disabled because it's useless
           #   triple: 'arm-linux-gnueabihf'
           # - arch: 's390x'
@@ -34,14 +35,14 @@ jobs:
       - name: Setup xmake
         uses: xmake-io/github-action-setup-xmake@v1
         with:
-          xmake-version: '2.9.8'
+          xmake-version: "2.9.8"
 
       - name: Setup ubuntu ports
         if: matrix.plat.arch != 'amd64'
         run: |
           sudo dpkg --add-architecture ${{ matrix.plat.arch }}
           sudo tee /etc/apt/sources.list.d/ubuntu.sources > /dev/null <<EOF
-          
+
           Types: deb
           URIs: mirror+file:/etc/apt/apt-mirrors.txt
           Suites: noble noble-updates noble-backports noble-security
@@ -50,12 +51,12 @@ jobs:
           Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
           Types: deb
-          URIs: http://ports.ubuntu.com/ubuntu-ports/
+          URIs: https://ports.ubuntu.com/ubuntu-ports
           Suites: noble noble-updates noble-backports noble-security
           Components: main restricted universe multiverse
           Architectures: arm64 armhf ppc64el riscv64 s390x
           Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-          
+
           EOF
 
           sudo apt-get update
@@ -69,6 +70,15 @@ jobs:
         if: matrix.plat.arch != 'amd64'
         run: |
           sudo apt-get install g++-${{ matrix.plat.triple }}
+
+      - name: Restore xmake cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.xmake
+          key: xmake-linux-${{ matrix.plat.arch }}-${{ hashFiles('xmake.lua') }}
+          restore-keys: |
+            xmake-linux-${{ matrix.plat.arch }}-
 
       - name: Configure
         if: matrix.plat.arch == 'amd64'

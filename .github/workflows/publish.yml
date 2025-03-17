@@ -2,14 +2,13 @@ name: Publish
 
 on:
   workflow_run:
-    workflows: [ "Build" ]
+    workflows: ["Build"]
     types:
       - completed
 
 jobs:
-  publish:
+  create_nightly_release:
     runs-on: ubuntu-latest
-
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -18,14 +17,22 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
           path: arts
 
+      - name: Pack all artifacts
+        run: |
+          cd arts
+          for dir in */; do
+            dirname="${dir%/}"
+            zip -r "${dirname}.zip" "$dirname"
+          done
+
       - name: Update nightly release
         uses: andelf/nightly-release@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: nightly
-          name: 'Nightly Release $$'
+          name: "Nightly Release $$"
           prerelease: true
           body: "> For testing only, don't use it in production!"
           files: |
-              arts/*
+            arts/*.zip
