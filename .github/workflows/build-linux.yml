@@ -90,21 +90,3 @@ jobs:
           name: bedrockmap-linux-${{ matrix.plat.arch }}-${{ matrix.mode }}
           path: |
             build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}
-
-      - name: Rename for release
-        run: |
-          cd build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}/
-          mv BedrockMap bedrockmap-linux-${{ matrix.plat.arch }}-${{ matrix.mode }}
-
-      - name: Update nightly release
-        uses: andelf/nightly-release@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: nightly
-          name: 'Nightly Release $$'
-          prerelease: true
-          body: "> For testing only, don't use it in production!"
-          files: |
-            build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}/*
-            
