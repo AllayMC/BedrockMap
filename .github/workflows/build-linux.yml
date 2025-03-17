@@ -48,6 +48,7 @@ jobs:
           URIs: http://ports.ubuntu.com/ubuntu-ports/
           Suites: noble noble-updates noble-security
           Components: main restricted universe multiverse
+          Architectures: arm64 armhf ppc64el riscv64 s390x
           Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
           
           EOF
