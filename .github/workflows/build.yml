@@ -1,0 +1,92 @@
+name: Build
+
+on:
+  push:
+    paths:
+      - .github/workflows/build.yml
+      - src/**
+      - xmake.lua
+  workflow_dispatch:
+
+jobs:
+  build_linux_multiarch:
+    strategy:
+      matrix:
+        mode: [release, debug]
+        plat:
+          - arch: 'amd64'
+            triple: 'x86_64-linux-gnu'
+          - arch: 'arm64'
+            triple: 'aarch64-linux-gnu'
+          - arch: 'ppc64el'
+            triple: 'powerpc64le-linux-gnu'
+          - arch: 'riscv64'
+            triple: 'riscv64-linux-gnu'
+          # - arch: 'armhf' # Temporarily disabled because it's useless
+          #   triple: 'arm-linux-gnueabihf'
+          # - arch: 's390x'
+          #   triple: 's390x-linux-gnu'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup xmake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: '2.9.8'
+
+      - name: Setup ubuntu ports
+        if: matrix.plat.arch != 'amd64'
+        run: |
+          sudo dpkg --add-architecture ${{ matrix.plat.arch }}
+          sudo tee /etc/apt/sources.list.d/ubuntu.sources > /dev/null <<EOF
+          
+          Types: deb
+          URIs: mirror+file:/etc/apt/apt-mirrors.txt
+          Suites: noble noble-updates noble-backports noble-security
+          Components: main universe restricted multiverse
+          Architectures: amd64
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+
+          Types: deb
+          URIs: http://ports.ubuntu.com/ubuntu-ports/
+          Suites: noble noble-updates noble-backports noble-security
+          Components: main restricted universe multiverse
+          Architectures: arm64 armhf ppc64el riscv64 s390x
+          Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+          
+          EOF
+
+          sudo apt-get update
+
+      - name: Setup qt environment
+        run: |
+          sudo apt-get install qt6-base-dev:${{ matrix.plat.arch }}
+          sudo apt-get install qt6-base-dev # workaround to get header, xmake bug?
+
+      - name: Setup build toolchains
+        if: matrix.plat.arch != 'amd64'
+        run: |
+          sudo apt-get install g++-${{ matrix.plat.triple }}
+
+      - name: Configure
+        if: matrix.plat.arch == 'amd64'
+        run: |
+          xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux -v -y
+
+      - name: Configure
+        if: matrix.plat.arch != 'amd64'
+        run: |
+          xmake f -a ${{ matrix.plat.arch }} -m ${{ matrix.mode }} -p linux --cross=${{ matrix.plat.triple }}- -v -y
+
+      - name: Build
+        run: |
+          xmake -v -y
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bedrockmap-linux-${{ matrix.plat.arch }}-${{ matrix.mode }}
+          path: |
+            build/linux/${{ matrix.plat.arch }}/${{ matrix.mode }}
