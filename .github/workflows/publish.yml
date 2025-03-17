@@ -1,0 +1,30 @@
+name: Publish
+on:
+  workflow_run:
+    workflows: [ "Build" ]
+    types:
+      - completed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: arts
+
+      - name: Update nightly release
+        uses: andelf/nightly-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: nightly
+          name: 'Nightly Release $$'
+          prerelease: true
+          body: "> For testing only, don't use it in production!"
+          files: |
+              arts/*
