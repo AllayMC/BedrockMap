@@ -42,7 +42,7 @@ target('BedrockMap')
 
     on_load(function (target)
         -- placeholder to prevent configure failure.
-        io.writefile('assets/autogen.qrc', 'This file will be automatically generated before building.')
+        io.writefile('assets/autogen.qrc', '<!--This file will be automatically generated before building.-->\n<RCC></RCC>')
     end)
     before_build(function (target)
         local assets_dir = 'assets/'
