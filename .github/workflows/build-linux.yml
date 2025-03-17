@@ -19,7 +19,7 @@ jobs:
 #          - os: 'amd64'
 #            gcc: 'g++'
           - os: 'arm64'
-            gcc: 'g++-14-aarch64-linux-gnu'
+            gcc: 'g++-aarch64-linux-gnu'
             prefix: 'aarch64-linux-gnu-'
 #          - os: 'armhf'
 #            gcc: 'g++-14-arm-linux-gnueabihf'
