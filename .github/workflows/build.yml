@@ -19,18 +19,18 @@ jobs:
       matrix:
         mode: [release, debug]
         plat:
-          - arch: "amd64"
-            triple: "x86_64-linux-gnu"
-          - arch: "arm64"
-            triple: "aarch64-linux-gnu"
-          - arch: "ppc64el"
-            triple: "powerpc64le-linux-gnu"
-          - arch: "riscv64"
-            triple: "riscv64-linux-gnu"
-          # - arch: 'armhf' # Temporarily disabled because it's useless
-          #   triple: 'arm-linux-gnueabihf'
-          # - arch: 's390x'
-          #   triple: 's390x-linux-gnu'
+          - arch: amd64
+            triple: x86_64-linux-gnu
+          - arch: arm64
+            triple: aarch64-linux-gnu
+          - arch: ppc64el
+            triple: powerpc64le-linux-gnu
+          - arch: riscv64
+            triple: riscv64-linux-gnu
+          # - arch: armhf # Temporarily disabled because it's useless
+          #   triple: arm-linux-gnueabihf
+          # - arch: s390x
+          #   triple: s390x-linux-gnu
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -60,7 +60,6 @@ jobs:
           Components: main restricted universe multiverse
           Architectures: arm64 armhf ppc64el riscv64 s390x
           Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
-
           EOF
 
           sudo apt-get update
@@ -125,8 +124,6 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
-          cache: true
-          cache-key-prefix: qt-macosx-${{ matrix.arch }}-
 
       - name: Restore xmake cache
         uses: actions/cache@v4
@@ -142,7 +139,7 @@ jobs:
 
       - name: Configure
         run: |
-          xmake f -a x64 -m ${{ matrix.mode }} -p windows -v -y
+          xmake f -a ${{ matrix.arch }} -m ${{ matrix.mode }} -p windows -v -y
 
       - name: Build
         run: |
@@ -174,8 +171,6 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: ${{ env.QT_VERSION }}
-          cache: true
-          cache-key-prefix: qt-macosx-${{ matrix.arch }}-
 
       - name: Restore xmake cache
         uses: actions/cache@v4
