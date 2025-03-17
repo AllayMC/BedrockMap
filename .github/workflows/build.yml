@@ -1,4 +1,4 @@
-name: Build (Linux, Multiarch)
+name: Build
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build_linux_multiarch:
     strategy:
       matrix:
         mode: [release, debug]
