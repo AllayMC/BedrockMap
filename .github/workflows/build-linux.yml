@@ -1,0 +1,63 @@
+name: Build (Linux, Multiarch)
+
+on:
+  push:
+    paths:
+      - .github/workflows/build-linux.yml
+      - src/**
+      - xmake.lua
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        mode: [release, debug]
+        arch: [ 
+          { os: 'amd64,   gcc: 'g++' },
+          { os: 'arm64',  gcc: 'g++-14-aarch64-linux-gnu' },
+          { os: 'armhf',  gcc: 'g++-14-arm-linux-gnueabihf' },
+          { os: 'ppc64el' gcc: 'g++-14-powerpc64le-linux-gnu'},
+          { os: 'riscv64' gcc: 'g++-14-riscv64-linux-gnu'},
+          { os: 's390x'   gcc: 'g++-14-s390x-linux-gnu'}
+        ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup XMake
+        uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: '2.9.8'
+
+      - name: Restore xmake cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.xmake
+          key: xmake-linux-${{ matrix.arch }}-${{ hashFiles('xmake.lua') }}
+          restore-keys: |
+            xmake-linux-${{ matrix.arch.os }}-
+
+      - name: Setup qt environment
+        run: |
+          sudo dpkg --add-architecture ${{ matrix.arch.os }}
+          sudo apt-get update
+          sudo apt-get install qt6-base-dev:${{ matrix.arch.os }}
+
+      - name: Setup build toolchains (Host)
+        run: |
+          sudo apt-get install ${{ matrix.arch.gcc }}
+
+      - name: Build for host
+        run: |
+          xmake f -a ${{ matrix.arch.os }} -m ${{ matrix.mode }} -p linux -v -y
+          xmake -v -y
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bedrockmap-linux-${{ matrix.arch }}-${{ matrix.mode }}
+          path: |
+            build/linux/${{ matrix.arch }}/${{ matrix.mode.os }}
