@@ -37,7 +37,9 @@ public:
 
 
 private:
-    inline std::array<std::array<TerrainData, 16>, 16>& get_layer_data(int y) { return this->data_[y + 64]; }
+    inline std::array<std::array<TerrainData, 16>, 16>& get_layer_data(int y) {
+        return this->data_[y + 64];
+    }
 
 
 private:

@@ -43,7 +43,9 @@ public:
      * Get the number of cached blocks
      * @return
      */
-    [[nodiscard]] inline size_t cached_chunk_size() const { return this->chunk_data_cache_.size(); };
+    [[nodiscard]] inline size_t cached_chunk_size() const {
+        return this->chunk_data_cache_.size();
+    };
 
     /**
      * Get the object wrapper of the level.dat file
@@ -52,8 +54,9 @@ public:
     level_dat& dat() { return this->dat_; }
 
     /**
-     * When enabled, Level will cache the read block data, with no capacity limit (can be changed to cache later)
-     * When closed, the content will be cleared
+     * When enabled, Level will cache the read block data, with no capacity
+     * limit (can be changed to cache later) When closed, the content will be
+     * cleared
      * @param enable
      */
     void set_cache(bool enable);
@@ -62,7 +65,9 @@ public:
 
     ~bedrock_level();
 
-    void foreach_global_keys(const std::function<void(const std::string&, const std::string&)>& f);
+    void foreach_global_keys(
+        const std::function<void(const std::string&, const std::string&)>& f
+    );
 
     void load_global_data();
     // write

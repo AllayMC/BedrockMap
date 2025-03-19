@@ -19,7 +19,9 @@ public:
     static void map_y_to_subchunk(int y, int& index, int& offset);
 
 public:
-    [[nodiscard]] inline bool fast_load() const { return this->fast_load_mode_; }
+    [[nodiscard]] inline bool fast_load() const {
+        return this->fast_load_mode_;
+    }
 
     block_info get_block(int cx, int y, int cz);
 
@@ -49,9 +51,13 @@ public:
 
     chunk() = delete;
 
-    [[nodiscard]] inline bool                loaded() const { return this->loaded_; }
-    std::vector<bl::palette::compound_tag*>& block_entities() { return this->block_entities_; }
-    std::vector<bl::palette::compound_tag*>& pending_ticks() { return this->pending_ticks_; }
+    [[nodiscard]] inline bool loaded() const { return this->loaded_; }
+    std::vector<bl::palette::compound_tag*>& block_entities() {
+        return this->block_entities_;
+    }
+    std::vector<bl::palette::compound_tag*>& pending_ticks() {
+        return this->pending_ticks_;
+    }
 
     std::vector<bl::actor*> entities() & { return this->entities_; }
 

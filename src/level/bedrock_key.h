@@ -14,11 +14,16 @@ struct chunk_pos {
     int32_t z{0};
     int32_t dim{-1};
 
-    chunk_pos(int32_t xx, int32_t zz, int32_t dimension) : x(xx), z(zz), dim(dimension) {}
+    chunk_pos(int32_t xx, int32_t zz, int32_t dimension)
+    : x(xx),
+      z(zz),
+      dim(dimension) {}
 
     chunk_pos() = default;
 
-    [[nodiscard]] bool valid() const { return this->dim >= 0 && this->dim <= 2; }
+    [[nodiscard]] bool valid() const {
+        return this->dim >= 0 && this->dim <= 2;
+    }
 
     [[nodiscard]] std::string to_string() const;
 
@@ -26,11 +31,13 @@ struct chunk_pos {
 
     bool operator<(const chunk_pos& rhs) const;
 
-    [[nodiscard]] std::tuple<int32_t, int32_t> get_y_range(ChunkVersion v) const;
+    [[nodiscard]] std::tuple<int32_t, int32_t> get_y_range(ChunkVersion v
+    ) const;
 
-    [[nodiscard]] std::tuple<int8_t, int8_t> get_subchunk_index_range(ChunkVersion v) const;
-    [[nodiscard]] block_pos                  get_min_pos(ChunkVersion v) const;
-    [[nodiscard]] block_pos                  get_max_pos(ChunkVersion v) const;
+    [[nodiscard]] std::tuple<int8_t, int8_t>
+                            get_subchunk_index_range(ChunkVersion v) const;
+    [[nodiscard]] block_pos get_min_pos(ChunkVersion v) const;
+    [[nodiscard]] block_pos get_max_pos(ChunkVersion v) const;
 
     [[nodiscard]] bool is_slime() const;
 };
@@ -86,7 +93,9 @@ struct chunk_key {
         Unknown             = -1
     };
 
-    [[nodiscard]] bool valid() const { return this->cp.valid() && this->type != Unknown; }
+    [[nodiscard]] bool valid() const {
+        return this->cp.valid() && this->type != Unknown;
+    }
 
     static std::string chunk_key_to_str(chunk_key::key_type key);
 
@@ -104,7 +113,9 @@ struct chunk_key {
 struct actor_key {
     int64_t actor_uid{static_cast<int64_t>(0xffffffffffffffff)};
 
-    [[nodiscard]] inline bool valid() const { return this->actor_uid != static_cast<int64_t>(0xffffffffffffffff); }
+    [[nodiscard]] inline bool valid() const {
+        return this->actor_uid != static_cast<int64_t>(0xffffffffffffffff);
+    }
 
     [[nodiscard]] std::string to_string() const;
 
@@ -128,7 +139,9 @@ struct village_key {
 
     static std::string village_key_type_to_str(key_type t);
 
-    [[nodiscard]] bool valid() const { return this->uuid.size() == 36 && this->type != Unknown; }
+    [[nodiscard]] bool valid() const {
+        return this->uuid.size() == 36 && this->type != Unknown;
+    }
 
     [[nodiscard]] std::string to_string() const;
 
@@ -140,7 +153,13 @@ struct village_key {
     key_type    type{Unknown};
 };
 
-enum HSAType : int8_t { NetherFortress = 1, SwampHut = 2, OceanMonument = 3, PillagerOutpost = 5, Unknown = 6 };
+enum HSAType : int8_t {
+    NetherFortress  = 1,
+    SwampHut        = 2,
+    OceanMonument   = 3,
+    PillagerOutpost = 5,
+    Unknown         = 6
+};
 
 struct hardcoded_spawn_area {
     HSAType   type{Unknown};

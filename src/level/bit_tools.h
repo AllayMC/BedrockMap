@@ -4,11 +4,14 @@
 
 namespace bl::bits {
 
-inline uint8_t mask(uint8_t low, uint8_t high) { return (0xff >> (7u - high) & (0xff << low)); }
+inline uint8_t mask(uint8_t low, uint8_t high) {
+    return (0xff >> (7u - high) & (0xff << low));
+}
 
 //
 //    template<typename T>
-//    std::vector<T> rearrange_bytes(size_t bit_len, const uint8_t *data, size_t len) {
+//    std::vector<T> rearrange_bytes(size_t bit_len, const uint8_t *data, size_t
+//    len) {
 //        Assert(bit_len > 0 || bit_len < 8, "Bit len should within [1,7]");
 //        Assert((len << 3) % bit_len == 0, "Invalid len of data");
 //        Assert(bit_len <= sizeof(T) << 3, "Container is too small");
@@ -46,16 +49,18 @@ inline uint8_t mask(uint8_t low, uint8_t high) { return (0xff >> (7u - high) & (
 //     * enum class Type : uint8_t {
 //	Paletted1 = 1,   // 32 blocks per word          --> 128 world (512bytes)
 //	Paletted2 = 2,   // 16 blocks per word          --> 256 world (1024bytes)
-//	Paletted3 = 3,   // 10 blocks and 2 bits of padding per word    409 word + 6block(?3bytes?)
-//	Paletted4 = 4,   // 8 blocks per word           --> 512 world (2048bytes)
-//	Paletted5 = 5,   // 6 blocks and 2 bits of padding per word     682word + 4block(?3bytes?)
-//	Paletted6 = 6,   // 5 blocks and 2 bits of padding per word     819word + 1block(?1bytes?)
-//	Paletted8  = 8,  // 4 blocks per word           --> 1024 world (4096bytes)
-//	Paletted16 = 16, // 2 blocks per word           --> 2048 word (8192bytes)
+//	Paletted3 = 3,   // 10 blocks and 2 bits of padding per word    409 word +
+//6block(?3bytes?) 	Paletted4 = 4,   // 8 blocks per word           --> 512 world
+//(2048bytes) 	Paletted5 = 5,   // 6 blocks and 2 bits of padding per word
+//682word + 4block(?3bytes?) 	Paletted6 = 6,   // 5 blocks and 2 bits of padding
+//per word     819word + 1block(?1bytes?) 	Paletted8  = 8,  // 4 blocks per word
+//--> 1024 world (4096bytes) 	Paletted16 = 16, // 2 blocks per word           -->
+//2048 word (8192bytes)
 //    }
 //     */
 //
 
-std::vector<uint16_t> rearrange_words(size_t bits_len, const byte_t* data, size_t len);
+std::vector<uint16_t>
+rearrange_words(size_t bits_len, const byte_t* data, size_t len);
 
 } // namespace bl::bits

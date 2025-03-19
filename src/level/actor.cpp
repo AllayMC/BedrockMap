@@ -40,9 +40,12 @@ bool actor::preload(bl::palette::compound_tag* root) {
     if (it != root->value.end()) {
         auto* pos_tag = dynamic_cast<bl::palette::list_tag*>(it->second);
         if (pos_tag && pos_tag->value.size() == 3) {
-            auto* tag_x = dynamic_cast<bl::palette::float_tag*>(pos_tag->value[0]);
-            auto* tag_y = dynamic_cast<bl::palette::float_tag*>(pos_tag->value[1]);
-            auto* tag_z = dynamic_cast<bl::palette::float_tag*>(pos_tag->value[2]);
+            auto* tag_x =
+                dynamic_cast<bl::palette::float_tag*>(pos_tag->value[0]);
+            auto* tag_y =
+                dynamic_cast<bl::palette::float_tag*>(pos_tag->value[1]);
+            auto* tag_z =
+                dynamic_cast<bl::palette::float_tag*>(pos_tag->value[2]);
             if (tag_x && tag_y && tag_z) {
                 this->pos_.x = tag_x->value;
                 this->pos_.y = tag_y->value;

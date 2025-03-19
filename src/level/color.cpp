@@ -83,9 +83,9 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
                 auto rgb = value["rgb"];
                 assert(rgb.size() == 3);
                 color c;
-                c.r                                     = static_cast<uint8_t>(rgb[0].get<int>());
-                c.g                                     = static_cast<uint8_t>(rgb[1].get<int>());
-                c.b                                     = static_cast<uint8_t>(rgb[2].get<int>());
+                c.r = static_cast<uint8_t>(rgb[0].get<int>());
+                c.g = static_cast<uint8_t>(rgb[1].get<int>());
+                c.b = static_cast<uint8_t>(rgb[2].get<int>());
                 biome_color_map[static_cast<biome>(id)] = c;
             }
 
@@ -94,9 +94,9 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
                 auto water = value["water"];
                 assert(water.size() == 3);
                 color c;
-                c.r                                     = static_cast<uint8_t>(water[0].get<int>());
-                c.g                                     = static_cast<uint8_t>(water[1].get<int>());
-                c.b                                     = static_cast<uint8_t>(water[2].get<int>());
+                c.r = static_cast<uint8_t>(water[0].get<int>());
+                c.g = static_cast<uint8_t>(water[1].get<int>());
+                c.b = static_cast<uint8_t>(water[2].get<int>());
                 biome_water_map[static_cast<biome>(id)] = c;
                 if (key == "default") default_water_color = c;
             }
@@ -105,9 +105,9 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
                 auto grass = value["grass"];
                 assert(grass.size() == 3);
                 color c;
-                c.r                                     = static_cast<uint8_t>(grass[0].get<int>());
-                c.g                                     = static_cast<uint8_t>(grass[1].get<int>());
-                c.b                                     = static_cast<uint8_t>(grass[2].get<int>());
+                c.r = static_cast<uint8_t>(grass[0].get<int>());
+                c.g = static_cast<uint8_t>(grass[1].get<int>());
+                c.b = static_cast<uint8_t>(grass[2].get<int>());
                 biome_grass_map[static_cast<biome>(id)] = c;
                 if (key == "default") default_grass_color = c;
             }
@@ -116,9 +116,9 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
                 auto leaves = value["leaves"];
                 assert(leaves.size() == 3);
                 color c;
-                c.r                                     = static_cast<uint8_t>(leaves[0].get<int>());
-                c.g                                     = static_cast<uint8_t>(leaves[1].get<int>());
-                c.b                                     = static_cast<uint8_t>(leaves[2].get<int>());
+                c.r = static_cast<uint8_t>(leaves[0].get<int>());
+                c.g = static_cast<uint8_t>(leaves[1].get<int>());
+                c.b = static_cast<uint8_t>(leaves[2].get<int>());
                 biome_leave_map[static_cast<biome>(id)] = c;
                 if (key == "default") default_leave_color = c;
             }
@@ -149,13 +149,16 @@ bool init_block_color_palette_from_file(const std::string& filename) {
             auto extra_data = item["extra_data"];
             auto block_name = item["name"].get<std::string>();
 
-            if (extra_data.contains("use_grass_color") && extra_data["use_grass_color"].get<bool>()) {
+            if (extra_data.contains("use_grass_color")
+                && extra_data["use_grass_color"].get<bool>()) {
                 grass_block_names.insert(block_name);
             }
-            if (extra_data.contains("use_leaves_color") && extra_data["use_leaves_color"].get<bool>()) {
+            if (extra_data.contains("use_leaves_color")
+                && extra_data["use_leaves_color"].get<bool>()) {
                 leaves_block_names.insert(block_name);
             }
-            if (extra_data.contains("use_water_color") && extra_data["use_water_color"].get<bool>()) {
+            if (extra_data.contains("use_water_color")
+                && extra_data["use_water_color"].get<bool>()) {
                 water_block_names.insert(block_name);
             }
 
@@ -177,20 +180,25 @@ bool init_block_color_palette_from_file(const std::string& filename) {
                             auto* t  = new string_tag(k);
                             t->value = v.get<std::string>();
                             stat_tag->put(t);
-                        } else if (v.type() == nlohmann::json::value_t::boolean) {
+                        } else if (v.type()
+                                   == nlohmann::json::value_t::boolean) {
                             auto* t  = new byte_tag(k);
                             t->value = v.get<bool>();
                             stat_tag->put(t);
-                        } else if (v.type() == nlohmann::json::value_t::number_float) {
+                        } else if (v.type()
+                                   == nlohmann::json::value_t::number_float) {
                             auto* t  = new float_tag(k);
                             t->value = v.get<float>();
                             stat_tag->put(t);
-                        } else if (v.type() == nlohmann::json::value_t::number_integer) {
+                        } else if (v.type()
+                                   == nlohmann::json::value_t::number_integer) {
                             auto* t  = new int_tag(k);
                             t->value = v.get<int>();
                             stat_tag->put(t);
 
-                        } else if (v.type() == nlohmann::json::value_t::number_unsigned) {
+                        } else if (v.type()
+                                   == nlohmann::json::value_t::
+                                       number_unsigned) {
                             auto* t  = new int_tag(k);
                             t->value = v.get<unsigned>();
                             stat_tag->put(t);
@@ -224,7 +232,11 @@ bool init_block_color_palette_from_file(const std::string& filename) {
     return true;
 }
 
-void export_image(const std::vector<std::vector<color>>& b, int ppi, const std::string& name) {
+void export_image(
+    const std::vector<std::vector<color>>& b,
+    int                                    ppi,
+    const std::string&                     name
+) {
     const int c = 3;
     const int h = (int)b.size() * ppi;
     const int w = (int)b[0].size() * ppi;
@@ -243,12 +255,18 @@ void export_image(const std::vector<std::vector<color>>& b, int ppi, const std::
     stbi_write_png(name.c_str(), w, h, c, data.data(), 0);
 }
 
-std::unordered_map<std::string, bl::color>& get_block_color_table() { return block_color_map; }
+std::unordered_map<std::string, bl::color>& get_block_color_table() {
+    return block_color_map;
+}
 
-bl::color blend_color_with_biome(const std::string& name, bl::color color, bl::biome b) {
-    if (water_block_names.count(name)) return blend_with_biome(biome_water_map, color, default_water_color, b);
-    if (grass_block_names.count(name)) return blend_with_biome(biome_grass_map, color, default_grass_color, b);
-    if (leaves_block_names.count(name)) return blend_with_biome(biome_leave_map, color, default_leave_color, b);
+bl::color
+blend_color_with_biome(const std::string& name, bl::color color, bl::biome b) {
+    if (water_block_names.count(name))
+        return blend_with_biome(biome_water_map, color, default_water_color, b);
+    if (grass_block_names.count(name))
+        return blend_with_biome(biome_grass_map, color, default_grass_color, b);
+    if (leaves_block_names.count(name))
+        return blend_with_biome(biome_leave_map, color, default_leave_color, b);
     return color;
 }
 

@@ -26,13 +26,19 @@ color get_block_color_from_SNBT(const std::string& name);
 //    bl::color get_leave_color(bl::color gray, bl::biome b);
 //    bl::color get_grass_color(bl::color gray, bl::biome b);
 
-bl::color blend_color_with_biome(const std::string& name, bl::color color, bl::biome b);
+bl::color
+blend_color_with_biome(const std::string& name, bl::color color, bl::biome b);
 
-[[maybe_unused]] std::unordered_map<std::string, bl::color>& get_block_color_table();
+[[maybe_unused]] std::unordered_map<std::string, bl::color>&
+     get_block_color_table();
 bool init_biome_color_palette_from_file(const std::string& filename);
 
 bool init_block_color_palette_from_file(const std::string& filename);
 
-[[maybe_unused]] void export_image(const std::vector<std::vector<color>>& c, int ppi, const std::string& name);
+[[maybe_unused]] void export_image(
+    const std::vector<std::vector<color>>& c,
+    int                                    ppi,
+    const std::string&                     name
+);
 
 } // namespace bl

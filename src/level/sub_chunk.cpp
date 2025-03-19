@@ -26,7 +26,11 @@ bool read_header(sub_chunk* sub_chunk, const byte_t* stream, int& read) {
     if (version == 9) {
         int8_t y_index = stream[2];
         if (y_index != sub_chunk->y_index()) {
-            BL_ERROR("Invalid Y index value(new(%d)  != default(%d))", y_index, sub_chunk->y_index());
+            BL_ERROR(
+                "Invalid Y index value(new(%d)  != default(%d))",
+                y_index,
+                sub_chunk->y_index()
+            );
         }
         sub_chunk->set_y_index(y_index);
         read++;
@@ -34,13 +38,20 @@ bool read_header(sub_chunk* sub_chunk, const byte_t* stream, int& read) {
     return true;
 }
 
-bool read_palettes(bl::sub_chunk::layer* layer, const byte_t* stream, size_t number, size_t len, int& read) {
+bool read_palettes(
+    bl::sub_chunk::layer* layer,
+    const byte_t*         stream,
+    size_t                number,
+    size_t                len,
+    int&                  read
+) {
     read = 0;
     for (auto i = 0u; i < number; i++) {
         int   r   = 0;
         auto* tag = bl::palette::read_one_palette(stream + read, r);
         if (tag) {
-            tag->remove("version"); // remove version tag(compatibility for color table)
+            tag->remove("version"
+            ); // remove version tag(compatibility for color table)
             layer->palettes.push_back(tag);
         } else {
             BL_ERROR("Can not read block palette");
@@ -51,7 +62,12 @@ bool read_palettes(bl::sub_chunk::layer* layer, const byte_t* stream, size_t num
     return true;
 }
 
-bool read_one_layer(bl::sub_chunk::layer* layer, const byte_t* stream, size_t len, int& read) {
+bool read_one_layer(
+    bl::sub_chunk::layer* layer,
+    const byte_t*         stream,
+    size_t                len,
+    int&                  read
+) {
     read                     = 0;
     constexpr auto BLOCK_NUM = 16 * 16 * 16;
     if (!layer || !stream) return false;
@@ -66,9 +82,12 @@ bool read_one_layer(bl::sub_chunk::layer* layer, const byte_t* stream, size_t le
         layer->blocks.resize(BLOCK_NUM);
         int position = 0;
         for (int wordi = 0; wordi < wordCount; wordi++) {
-            auto word = *reinterpret_cast<const int*>(stream + read + wordi * 4);
+            auto word =
+                *reinterpret_cast<const int*>(stream + read + wordi * 4);
             for (int block = 0; block < block_per_word; block++) {
-                int state = (word >> ((position % block_per_word) * layer->bits)) & ((1 << layer->bits) - 1);
+                int state =
+                    (word >> ((position % block_per_word) * layer->bits))
+                    & ((1 << layer->bits) - 1);
                 if (position < static_cast<int>(layer->blocks.size())) {
                     layer->blocks[position] = state;
                 }
@@ -86,7 +105,13 @@ bool read_one_layer(bl::sub_chunk::layer* layer, const byte_t* stream, size_t le
     }
     // palette header
     int palette_read = 0;
-    read_palettes(layer, stream + read, layer->palette_len, len - read, palette_read);
+    read_palettes(
+        layer,
+        stream + read,
+        layer->palette_len,
+        len - read,
+        palette_read
+    );
     read += palette_read;
     return true;
 }
@@ -100,7 +125,12 @@ bool sub_chunk::load(const byte_t* data, size_t len) {
     idx += read;
     for (auto i = 0; i < (int)this->layers_num_; i++) {
         this->layers_.push_back(new layer());
-        if (!read_one_layer(this->layers_.back(), data + idx, len - idx, read)) {
+        if (!read_one_layer(
+                this->layers_.back(),
+                data + idx,
+                len - idx,
+                read
+            )) {
             BL_ERROR("can not read layer %d", i);
             return false;
         }
@@ -158,7 +188,10 @@ block_info sub_chunk::get_block_fast(int rx, int ry, int rz) {
         return {};
     }
 
-    return {dynamic_cast<bl::palette::string_tag*>(id->second)->value, bl::color{}};
+    return {
+        dynamic_cast<bl::palette::string_tag*>(id->second)->value,
+        bl::color{}
+    };
 }
 
 palette::compound_tag* sub_chunk::get_block_raw(int rx, int ry, int rz) {

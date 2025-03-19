@@ -28,7 +28,8 @@ bool contains_key(leveldb::DB*& db, const std::string& raw_key) {
 } // namespace
 
 bool chunk::valid_in_chunk_pos(int cx, int y, int cz, int dim) {
-    if (cx < 0 || cx > 15 || cz < 0 || cz > 15 || dim < 0 || dim > 2) return false;
+    if (cx < 0 || cx > 15 || cz < 0 || cz > 15 || dim < 0 || dim > 2)
+        return false;
     int min_h[]{-64, 0, 0};
     int max_h[]{319, 127, 255};
     return y >= min_h[dim] && y <= max_h[dim];
@@ -91,14 +92,19 @@ palette::compound_tag* chunk::get_block_raw(int cx, int y, int cz) {
     return it->second->get_block_raw(cx, offset, cz);
 }
 
-biome chunk::get_biome(int cx, int y, int cz) { return this->d3d_.get_biome(cx, y, cz); }
+biome chunk::get_biome(int cx, int y, int cz) {
+    return this->d3d_.get_biome(cx, y, cz);
+}
 
 bool chunk::load_subchunks(bedrock_level& level) {
-    // By default, new is used first, because the version field is too strange and I can't understand the version.
-    auto [min_index, max_index] = this->pos_.get_subchunk_index_range(ChunkVersion::New);
+    // By default, new is used first, because the version field is too strange
+    // and I can't understand the version.
+    auto [min_index, max_index] =
+        this->pos_.get_subchunk_index_range(ChunkVersion::New);
     for (auto sub_index = min_index; sub_index <= max_index; sub_index++) {
         // load all sub chunks
-        auto        terrain_key = bl::chunk_key{chunk_key::SubChunkTerrain, this->pos_, sub_index};
+        auto terrain_key =
+            bl::chunk_key{chunk_key::SubChunkTerrain, this->pos_, sub_index};
         std::string raw;
         if (load_raw(level.db(), terrain_key.to_raw(), raw)) {
             auto* sb = new bl::sub_chunk();
@@ -107,7 +113,13 @@ bool chunk::load_subchunks(bedrock_level& level) {
                // //see
                // https://gist.github.com/Tomcc/a96af509e275b1af483b25c543cfbf37?permalink_comment_id=3901255#gistcomment-3901255
             if (!sb->load(raw.data(), raw.size())) {
-                BL_ERROR("Can not load sub chunk %d %d %d %d", pos_.x, pos_.z, pos_.dim, sub_index);
+                BL_ERROR(
+                    "Can not load sub chunk %d %d %d %d",
+                    pos_.x,
+                    pos_.z,
+                    pos_.dim,
+                    sub_index
+                );
                 delete sb; // delete error sub chunks
                 continue;
             }
@@ -116,8 +128,10 @@ bool chunk::load_subchunks(bedrock_level& level) {
     }
 
     if (!this->sub_chunks_.empty()) {
-        // Guess a version based on the subchunk format, which may need to be modified later
-        this->version = this->sub_chunks_.begin()->second->version() == 9 ? New : Old;
+        // Guess a version based on the subchunk format, which may need to be
+        // modified later
+        this->version =
+            this->sub_chunks_.begin()->second->version() == 9 ? New : Old;
     }
     return true;
 }
@@ -150,8 +164,12 @@ bool chunk::load_biomes(bedrock_level& level) {
 bool chunk::load_pending_ticks(bedrock_level& level) {
     auto        pt_key = bl::chunk_key{chunk_key::PendingTicks, this->pos_};
     std::string block_entity_raw;
-    if (load_raw(level.db(), pt_key.to_raw(), block_entity_raw) && !block_entity_raw.empty()) {
-        this->pending_ticks_ = palette::read_palette_to_end(block_entity_raw.data(), block_entity_raw.size());
+    if (load_raw(level.db(), pt_key.to_raw(), block_entity_raw)
+        && !block_entity_raw.empty()) {
+        this->pending_ticks_ = palette::read_palette_to_end(
+            block_entity_raw.data(),
+            block_entity_raw.size()
+        );
         //
     }
     return true;
@@ -161,8 +179,12 @@ void chunk::load_entities(bedrock_level& level) {
     // try read old version actors
     auto        entity_key = bl::chunk_key{chunk_key::Entity, this->pos_};
     std::string block_entity_raw;
-    if (load_raw(level.db(), entity_key.to_raw(), block_entity_raw) && !block_entity_raw.empty()) {
-        auto actors = palette::read_palette_to_end(block_entity_raw.data(), block_entity_raw.size());
+    if (load_raw(level.db(), entity_key.to_raw(), block_entity_raw)
+        && !block_entity_raw.empty()) {
+        auto actors = palette::read_palette_to_end(
+            block_entity_raw.data(),
+            block_entity_raw.size()
+        );
         for (auto& a : actors) {
             auto* ac = new actor;
             if (ac->load_from_nbt(a)) {
@@ -200,7 +222,7 @@ void chunk::load_entities(bedrock_level& level) {
 }
 
 void chunk::load_hsa(bedrock_level& level) {
-    auto        hsa_key = bl::chunk_key{chunk_key::HardCodedSpawnAreas, this->pos_};
+    auto hsa_key = bl::chunk_key{chunk_key::HardCodedSpawnAreas, this->pos_};
     std::string raw;
     if (!load_raw(level.db(), hsa_key.to_raw(), raw)) return;
     if (raw.size() < 4) return;
@@ -212,13 +234,14 @@ void chunk::load_hsa(bedrock_level& level) {
         hardcoded_spawn_area area;
         int                  offset = i * 25 + 4;
         area.min_pos.x              = *reinterpret_cast<const int*>(d + offset);
-        area.min_pos.y              = *reinterpret_cast<const int*>(d + offset + 4);
-        area.min_pos.z              = *reinterpret_cast<const int*>(d + offset + 8);
-        area.max_pos.x              = *reinterpret_cast<const int*>(d + offset + 12);
-        area.max_pos.y              = *reinterpret_cast<const int*>(d + offset + 16);
-        area.max_pos.z              = *reinterpret_cast<const int*>(d + offset + 20);
-        auto type                   = d[offset + 24];
-        if (type == SwampHut || type == OceanMonument || type == NetherFortress || type == PillagerOutpost) {
+        area.min_pos.y = *reinterpret_cast<const int*>(d + offset + 4);
+        area.min_pos.z = *reinterpret_cast<const int*>(d + offset + 8);
+        area.max_pos.x = *reinterpret_cast<const int*>(d + offset + 12);
+        area.max_pos.y = *reinterpret_cast<const int*>(d + offset + 16);
+        area.max_pos.z = *reinterpret_cast<const int*>(d + offset + 20);
+        auto type      = d[offset + 24];
+        if (type == SwampHut || type == OceanMonument || type == NetherFortress
+            || type == PillagerOutpost) {
             area.type = static_cast<HSAType>(type);
         }
         this->HSAs_.push_back(area);
@@ -228,8 +251,12 @@ void chunk::load_hsa(bedrock_level& level) {
 bool chunk::load_block_entities(bedrock_level& level) {
     auto        be_key = bl::chunk_key{chunk_key::BlockEntity, this->pos_};
     std::string block_entity_raw;
-    if (load_raw(level.db(), be_key.to_raw(), block_entity_raw) && !block_entity_raw.empty()) {
-        this->block_entities_ = palette::read_palette_to_end(block_entity_raw.data(), block_entity_raw.size());
+    if (load_raw(level.db(), be_key.to_raw(), block_entity_raw)
+        && !block_entity_raw.empty()) {
+        this->block_entities_ = palette::read_palette_to_end(
+            block_entity_raw.data(),
+            block_entity_raw.size()
+        );
     } else {
     }
 
@@ -238,8 +265,14 @@ bool chunk::load_block_entities(bedrock_level& level) {
 
 bool chunk::load_data(bedrock_level& level, bool fast_load) {
     if (this->loaded()) return true;
-    if ((!contains_key(level.db(), bl::chunk_key{chunk_key::VersionOld, this->pos_}.to_raw()))
-        && (!contains_key(level.db(), bl::chunk_key{chunk_key::VersionNew, this->pos_}.to_raw()))) {
+    if ((!contains_key(
+            level.db(),
+            bl::chunk_key{chunk_key::VersionOld, this->pos_}.to_raw()
+        ))
+        && (!contains_key(
+            level.db(),
+            bl::chunk_key{chunk_key::VersionNew, this->pos_}.to_raw()
+        ))) {
         return false;
     }
 
@@ -261,9 +294,13 @@ bool chunk::load_data(bedrock_level& level, bool fast_load) {
 // Data starting from 0
 int chunk::get_height(int cx, int cz) { return this->d3d_.height(cx, cz); }
 
-biome chunk::get_top_biome(int cx, int cz) { return this->d3d_.get_top_biome(cx, cz); }
+biome chunk::get_top_biome(int cx, int cz) {
+    return this->d3d_.get_top_biome(cx, cz);
+}
 
-std::vector<std::vector<biome>> chunk::get_biome_y(int y) { return this->d3d_.get_biome_y(y); }
+std::vector<std::vector<biome>> chunk::get_biome_y(int y) {
+    return this->d3d_.get_biome_y(y);
+}
 
 bl::chunk_pos chunk::get_pos() const { return this->pos_; }
 

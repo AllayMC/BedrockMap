@@ -32,14 +32,15 @@ struct BlockTipsInfo {
 struct ChunkRegion {
     ~ChunkRegion();
 
-    std::array<std::array<BlockTipsInfo, cfg::RW << 4>, cfg::RW << 4> tips_info_{};
-    std::bitset<cfg::RW * cfg::RW>                                    chunk_bit_map_;
-    QImage                                                            terrain_bake_image_;
-    QImage                                                            biome_bake_image_;
-    QImage                                                            height_bake_image_;
-    bool                                                              valid{false};
-    std::unordered_map<QImage*, std::vector<bl::vec3>>                actors_;
-    std::vector<bl::hardcoded_spawn_area>                             HSAs_;
+    std::array<std::array<BlockTipsInfo, cfg::RW << 4>, cfg::RW << 4>
+                                                       tips_info_{};
+    std::bitset<cfg::RW * cfg::RW>                     chunk_bit_map_;
+    QImage                                             terrain_bake_image_;
+    QImage                                             biome_bake_image_;
+    QImage                                             height_bake_image_;
+    bool                                               valid{false};
+    std::unordered_map<QImage*, std::vector<bl::vec3>> actors_;
+    std::vector<bl::hardcoded_spawn_area>              HSAs_;
 };
 
 struct RegionTimer {
@@ -96,7 +97,11 @@ class LoadRegionTask : public QObject, public QRunnable {
     Q_OBJECT
 
 public:
-    LoadRegionTask(bl::bedrock_level* level, const bl::chunk_pos& pos, const MapFilter* filter)
+    LoadRegionTask(
+        bl::bedrock_level*   level,
+        const bl::chunk_pos& pos,
+        const MapFilter*     filter
+    )
     : QRunnable(),
       level_(level),
       pos_(pos),
@@ -164,7 +169,8 @@ public:
 
     BlockTipsInfo getBlockTips(const bl::block_pos& p, int dim);
 
-    std::unordered_map<QImage*, std::vector<bl::vec3>> getActorList(const region_pos& rp);
+    std::unordered_map<QImage*, std::vector<bl::vec3>>
+    getActorList(const region_pos& rp);
 
     std::vector<bl::hardcoded_spawn_area> getHSAs(const region_pos& rp);
 
@@ -172,7 +178,8 @@ public:
     bl::chunk* getChunkDirect(const bl::chunk_pos& p);
 
     // modify
-    QFuture<bool> dropChunk(const bl::chunk_pos& min, const ::bl::chunk_pos& max);
+    QFuture<bool>
+    dropChunk(const bl::chunk_pos& min, const ::bl::chunk_pos& max);
 
     /**
      * Batch modify database
@@ -183,23 +190,34 @@ public:
      * @param modifies
      * @return
      */
-    bool modifyDBGlobal(const std::unordered_map<std::string, std::string>& modifies);
+    bool
+    modifyDBGlobal(const std::unordered_map<std::string, std::string>& modifies
+    );
 
     bool modifyLeveldat(bl::palette::compound_tag* nbt);
 
     //    bool
-    //    modifyPlayerList(const std::unordered_map<std::string, bl::palette::compound_tag *> &player_list);
+    //    modifyPlayerList(const std::unordered_map<std::string,
+    //    bl::palette::compound_tag *> &player_list);
     //
-    //    bool modifyOtherItemList(const std::unordered_map<std::string, bl::palette::compound_tag *> &item_list);
+    //    bool modifyOtherItemList(const std::unordered_map<std::string,
+    //    bl::palette::compound_tag *> &item_list);
     //
     //    bool modifyVillageList(
-    //            const std::unordered_map<std::string, std::array<bl::palette::compound_tag *, 4>> &village_list);
+    //            const std::unordered_map<std::string,
+    //            std::array<bl::palette::compound_tag *, 4>> &village_list);
 
-    bool modifyChunkBlockEntities(const bl::chunk_pos& cp, const std::string& raw);
+    bool
+    modifyChunkBlockEntities(const bl::chunk_pos& cp, const std::string& raw);
 
-    bool modifyChunkPendingTicks(const bl::chunk_pos& cp, const std::string& raw);
+    bool
+    modifyChunkPendingTicks(const bl::chunk_pos& cp, const std::string& raw);
 
-    bool modifyChunkActors(const bl::chunk_pos& cp, bl::ChunkVersion v, const std::vector<bl::actor*>& actors);
+    bool modifyChunkActors(
+        const bl::chunk_pos&           cp,
+        bl::ChunkVersion               v,
+        const std::vector<bl::actor*>& actors
+    );
 
 public:
     ~AsyncLevelLoader() override;

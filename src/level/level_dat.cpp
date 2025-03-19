@@ -58,7 +58,9 @@ void level_dat::set_nbt(bl::palette::compound_tag* root) {
     this->preload_data();
 }
 
-std::string level_dat::to_raw() const { return this->header_ + this->root_->to_raw(); }
+std::string level_dat::to_raw() const {
+    return this->header_ + this->root_->to_raw();
+}
 
 level_dat::~level_dat() { delete this->root_; }
 

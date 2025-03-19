@@ -4,13 +4,15 @@
 namespace bl::palette {
 
 /**
- * Read a nbt from the data stream, which can be of any type, and return the pointer and the length
+ * Read a nbt from the data stream, which can be of any type, and return the
+ * pointer and the length
  * @param data
  * @return
  */
 std::tuple<abstract_tag*, size_t> read_nbt(const byte_t* data);
 
-std::tuple<compound_tag*, size_t> read_compound_value(const byte_t* data, const std::string& key);
+std::tuple<compound_tag*, size_t>
+read_compound_value(const byte_t* data, const std::string& key);
 
 int read_string(const byte_t* data, std::string& val) {
     uint16_t len = *reinterpret_cast<const uint16_t*>(data);
@@ -25,7 +27,8 @@ int read_tag_type(const byte_t* data, tag_type& type) {
     return 1;
 }
 
-std::tuple<byte_array_tag*, size_t> read_byte_array_value(const byte_t* data, const std::string& key) {
+std::tuple<byte_array_tag*, size_t>
+read_byte_array_value(const byte_t* data, const std::string& key) {
     auto*   tag = new byte_array_tag(key);
     int32_t len = {0};
     memcpy(&len, data, 4);
@@ -34,7 +37,8 @@ std::tuple<byte_array_tag*, size_t> read_byte_array_value(const byte_t* data, co
     return {tag, len * 1 + 4};
 }
 
-std::tuple<int_array_tag*, size_t> read_int_array_value(const byte_t* data, const std::string& key) {
+std::tuple<int_array_tag*, size_t>
+read_int_array_value(const byte_t* data, const std::string& key) {
     auto*   tag = new int_array_tag(key);
     int32_t len{0};
     memcpy(&len, data, 4);
@@ -43,7 +47,8 @@ std::tuple<int_array_tag*, size_t> read_int_array_value(const byte_t* data, cons
     return {tag, len * 4 + 4};
 }
 
-std::tuple<long_array_tag*, size_t> read_long_array_value(const byte_t* data, const std::string& key) {
+std::tuple<long_array_tag*, size_t>
+read_long_array_value(const byte_t* data, const std::string& key) {
     auto*   tag = new long_array_tag(key);
     int32_t len{0};
     memcpy(&len, data, 4);
@@ -53,7 +58,8 @@ std::tuple<long_array_tag*, size_t> read_long_array_value(const byte_t* data, co
     return {tag, len * 8 + 4};
 }
 
-std::tuple<list_tag*, size_t> read_list_tag_value(const byte_t* data, const std::string& key) {
+std::tuple<list_tag*, size_t>
+read_list_tag_value(const byte_t* data, const std::string& key) {
     size_t   read = 0;
     auto*    tag  = new list_tag(key);
     tag_type child_type;
@@ -112,13 +118,17 @@ std::tuple<list_tag*, size_t> read_list_tag_value(const byte_t* data, const std:
             read         += sz;
             tag->value.push_back(t);
         } else {
-            throw std::runtime_error("unsupported list child tag type " + std::to_string((int)child_type));
+            throw std::runtime_error(
+                "unsupported list child tag type "
+                + std::to_string((int)child_type)
+            );
         }
     }
     return {tag, read};
 }
 
-std::tuple<compound_tag*, size_t> read_compound_value(const byte_t* data, const std::string& key) {
+std::tuple<compound_tag*, size_t>
+read_compound_value(const byte_t* data, const std::string& key) {
     auto*  tag   = new compound_tag(key);
     size_t total = 0;
     while (true) {
@@ -191,7 +201,9 @@ std::tuple<abstract_tag*, size_t> read_nbt(const byte_t* data) {
         auto [res, len] = read_list_tag_value(data + read, key);
         return {res, len + read};
     } else {
-        throw std::runtime_error("unsupported tag type " + std::to_string((int)type));
+        throw std::runtime_error(
+            "unsupported tag type " + std::to_string((int)type)
+        );
     }
 }
 

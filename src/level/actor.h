@@ -18,10 +18,12 @@ public:
         return res;
     }
 
-    void                                     dump();
-    [[nodiscard]] vec3                       pos() const { return this->pos_; };
-    [[nodiscard]] std::string                identifier() const { return this->identifier_; };
-    [[nodiscard]] bl::palette::compound_tag* root() const { return this->root_; }
+    void                      dump();
+    [[nodiscard]] vec3        pos() const { return this->pos_; };
+    [[nodiscard]] std::string identifier() const { return this->identifier_; };
+    [[nodiscard]] bl::palette::compound_tag* root() const {
+        return this->root_;
+    }
     actor() = default;
 
 private:
@@ -48,7 +50,10 @@ struct actor_digest_list {
         if (raw.size() % 8 != 0) return false;
         const size_t actor_num = raw.size() / 8;
         for (auto i = 0u; i < actor_num; i++) {
-            this->actor_digests_.emplace_back(raw.begin() + i, raw.begin() + i + 8);
+            this->actor_digests_.emplace_back(
+                raw.begin() + i,
+                raw.begin() + i + 8
+            );
         }
         return true;
     }

@@ -48,18 +48,23 @@ region_pos cfg::c2r(const bl::chunk_pos& ch) {
 
 void cfg::initColorTable() {
     if (!bl::init_biome_color_palette_from_file(cfg::BIOME_FILE_PATH)) {
-        qWarning() << "Can not load biome color file in path: " << BIOME_FILE_PATH.c_str();
+        qWarning() << "Can not load biome color file in path: "
+                   << BIOME_FILE_PATH.c_str();
     }
 
     if (!bl::init_block_color_palette_from_file(cfg::BLOCK_FILE_PATH)) {
-        qWarning() << "Can not load block color file in path: " << BLOCK_FILE_PATH.c_str();
+        qWarning() << "Can not load block color file in path: "
+                   << BLOCK_FILE_PATH.c_str();
     }
 
     // init image
 
-    unloaded_region_image_ = new QImage(cfg::RW << 4, cfg::RW << 4, QImage::Format_RGB888);
-    null_region_image_     = new QImage(cfg::RW << 4, cfg::RW << 4, QImage::Format_RGBA8888);
-    //    default_region_image_ = new QImage(cfg::RW << 4, cfg::RW << 4, QImage::Format_RGB888);
+    unloaded_region_image_ =
+        new QImage(cfg::RW << 4, cfg::RW << 4, QImage::Format_RGB888);
+    null_region_image_ =
+        new QImage(cfg::RW << 4, cfg::RW << 4, QImage::Format_RGBA8888);
+    //    default_region_image_ = new QImage(cfg::RW << 4, cfg::RW << 4,
+    //    QImage::Format_RGB888);
     const int BW = cfg::RW << 4;
     for (int i = 0; i < BW; i++) {
         for (int j = 0; j < BW; j++) {
@@ -68,11 +73,13 @@ void cfg::initColorTable() {
 
             const int idx = (i / (cfg::RW * 8) + j / (cfg::RW * 8)) % 2;
             assert(unloaded_region_image_);
-            unloaded_region_image_->setPixelColor(i, j, QColor(arr1[idx], arr1[idx], arr1[idx]));
-            null_region_image_->setPixelColor(i, j, QColor(arr2[idx], arr2[idx], arr2[idx]));
+            unloaded_region_image_
+                ->setPixelColor(i, j, QColor(arr1[idx], arr1[idx], arr1[idx]));
+            null_region_image_
+                ->setPixelColor(i, j, QColor(arr2[idx], arr2[idx], arr2[idx]));
 
-            //            default_region_image_->setPixelColor(i, j, QColor(255 - arr2[idx], 255 - arr2[idx], 255 -
-            //            arr2[idx]));
+            //            default_region_image_->setPixelColor(i, j, QColor(255
+            //            - arr2[idx], 255 - arr2[idx], 255 - arr2[idx]));
         }
     }
 
@@ -90,7 +97,8 @@ void cfg::initColorTable() {
     //    };
     //    for (int i = 0; i < 8; i++) {
     //        for (int j = 0; j < 8; j++) {
-    //            if (fills[i][j] == ' ') bg_->setPixelColor(i, j, QColor(31, 138, 112, 160));
+    //            if (fills[i][j] == ' ') bg_->setPixelColor(i, j, QColor(31,
+    //            138, 112, 160));
     //        }
     //    }
 }
@@ -105,15 +113,15 @@ void cfg::initConfig() {
             qCritical() << "Can not find config file.";
         } else {
             f >> j;
-            cfg::SHADOW_LEVEL         = j["terrain_shadow_level"].get<int>();
-            cfg::COLOR_THEME          = j["theme"].get<std::string>();
-            REGION_CACHE_SIZE         = j["region_cache_size"].get<int>();
-            EMPTY_REGION_CACHE_SIZE   = j["empty_region_cache_size"].get<int>();
-            THREAD_NUM                = j["background_thread_number"].get<int>();
-            cfg::MINIMUM_SCALE_LEVEL  = j["minimum_scale_level"].get<int>();
-            cfg::MAXIMUM_SCALE_LEVEL  = j["maximum_scale_level"].get<int>();
-            cfg::ZOOM_SPEED           = j["zoom_speed"].get<float>();
-            cfg::FONT_SIZE            = j["font_size"].get<int>();
+            cfg::SHADOW_LEVEL        = j["terrain_shadow_level"].get<int>();
+            cfg::COLOR_THEME         = j["theme"].get<std::string>();
+            REGION_CACHE_SIZE        = j["region_cache_size"].get<int>();
+            EMPTY_REGION_CACHE_SIZE  = j["empty_region_cache_size"].get<int>();
+            THREAD_NUM               = j["background_thread_number"].get<int>();
+            cfg::MINIMUM_SCALE_LEVEL = j["minimum_scale_level"].get<int>();
+            cfg::MAXIMUM_SCALE_LEVEL = j["maximum_scale_level"].get<int>();
+            cfg::ZOOM_SPEED          = j["zoom_speed"].get<float>();
+            cfg::FONT_SIZE           = j["font_size"].get<int>();
             cfg::FANCY_TERRAIN_RENDER = j["fancy_terrain_render"].get<bool>();
             cfg::LOAD_GLOBAL_DATA     = j["load_global_data"].get<bool>();
             cfg::OPEN_NBT_EDITOR_ONLY = j["nbt_editor_mode"].get<bool>();
@@ -124,7 +132,8 @@ void cfg::initConfig() {
     }
     if (THREAD_NUM < 1) {
         THREAD_NUM = 2;
-        qWarning() << "Invalid background thread number, reset it to default(2)";
+        qWarning(
+        ) << "Invalid background thread number, reset it to default(2)";
     }
 
     qInfo() << "Read config finished, here are the details";
@@ -145,7 +154,8 @@ void cfg::initConfig() {
 }
 
 QString cfg::VERSION_STRING() {
-    return QString(cfg::SOFTWARE_NAME.c_str()) + " " + QString(cfg::SOFTWARE_VERSION.c_str());
+    return QString(cfg::SOFTWARE_NAME.c_str()) + " "
+         + QString(cfg::SOFTWARE_VERSION.c_str());
 }
 
 // QImage *cfg::EMPTY_REGION_IMAGE() { return transparent_region_img_; }
@@ -160,8 +170,13 @@ QImage cfg::CREATE_REGION_IMG(const std::bitset<cfg::RW * cfg::RW>& bitmap) {
         for (int j = 0; j < BW; j++) {
             const int arr[2]{20, 40};
             const int idx = (i / (cfg::RW << 3) + j / (cfg::RW << 3)) % 2;
-            if (bitmap[(i >> 4) * cfg::RW + (j >> 4)] && (!cfg::transparent_void)) {
-                res.setPixelColor(i, j, QColor(255 - arr[idx], 255 - arr[idx], 255 - arr[idx]));
+            if (bitmap[(i >> 4) * cfg::RW + (j >> 4)]
+                && (!cfg::transparent_void)) {
+                res.setPixelColor(
+                    i,
+                    j,
+                    QColor(255 - arr[idx], 255 - arr[idx], 255 - arr[idx])
+                );
             } else {
                 res.setPixelColor(i, j, QColor(arr[idx], arr[idx], arr[idx]));
             }

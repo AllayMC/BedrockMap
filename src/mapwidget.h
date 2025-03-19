@@ -21,7 +21,12 @@ public:
 
     MapWidget(MainWindow* w, QWidget* parent) : QWidget(parent), mw_(w) {
         this->sync_refresh_timer_ = new QTimer();
-        connect(this->sync_refresh_timer_, SIGNAL(timeout()), this, SLOT(asyncRefresh()));
+        connect(
+            this->sync_refresh_timer_,
+            SIGNAL(timeout()),
+            this,
+            SLOT(asyncRefresh())
+        );
         this->sync_refresh_timer_->start(100);
         setMouseTracking(true);
         this->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -90,7 +95,9 @@ public:
     // Go to position.
     void gotoPositionAction();
 
-    inline void selectChunk(const bl::chunk_pos& p) { this->opened_chunk_ = true, this->opened_chunk_pos_ = p; }
+    inline void selectChunk(const bl::chunk_pos& p) {
+        this->opened_chunk_ = true, this->opened_chunk_pos_ = p;
+    }
 
     inline void unselectChunk() {
         qDebug() << "Unselected";
@@ -120,18 +127,30 @@ public slots:
     void delete_chunks();
 
 private:
-    [[nodiscard]] inline qreal BW() const { return static_cast<qreal>(this->cw_) / 16.0; }
+    [[nodiscard]] inline qreal BW() const {
+        return static_cast<qreal>(this->cw_) / 16.0;
+    }
 
 private:
     // for debug
 
     void drawDebugWindow(QPaintEvent* event, QPainter* p);
 
-    void drawRegion(QPaintEvent* event, QPainter* p, const region_pos& pos, const QPoint& start, QImage* img) const;
+    void drawRegion(
+        QPaintEvent*      event,
+        QPainter*         p,
+        const region_pos& pos,
+        const QPoint&     start,
+        QImage*           img
+    ) const;
 
-    void forEachChunkInCamera(const std::function<void(const bl::chunk_pos&, const QPoint&)>& f);
+    void forEachChunkInCamera(
+        const std::function<void(const bl::chunk_pos&, const QPoint&)>& f
+    );
 
-    void foreachRegionInCamera(const std::function<void(const region_pos& p, const QPoint&)>& f);
+    void foreachRegionInCamera(
+        const std::function<void(const region_pos& p, const QPoint&)>& f
+    );
 
     // function draw
 
@@ -158,10 +177,11 @@ private:
     void drawMarkers(QPaintEvent* event, QPainter* p);
 
     QRect getRenderSelectArea();
-    // Given a window, calculate the position data of all blocks that need to be rendered in the area and the
-    // coordinates of the rendering range.
+    // Given a window, calculate the position data of all blocks that need to be
+    // rendered in the area and the coordinates of the rendering range.
 
-    std::tuple<bl::chunk_pos, bl::chunk_pos, QRect> getRenderRange(const QRect& camera);
+    std::tuple<bl::chunk_pos, bl::chunk_pos, QRect>
+    getRenderRange(const QRect& camera);
 
     ~MapWidget() override;
 
@@ -183,7 +203,12 @@ private:
 
     MainWindow* mw_{nullptr};
     // render control
-    QRect          camera_{0, 0, width(), height()}; // 需要绘制的范围，后面设置成和widget等大即可
+    QRect camera_{
+        0,
+        0,
+        width(),
+        height()
+    }; // 需要绘制的范围，后面设置成和widget等大即可
     DimType        dim_type_{DimType::OverWorld};
     MainRenderType main_render_type_{MainRenderType::Terrain};
     QTimer*        sync_refresh_timer_;

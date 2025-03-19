@@ -6,7 +6,8 @@ namespace bl {
 
 namespace {
 
-std::vector<biome> load_subchunk_biome(const byte_t* data, int& read, size_t len) {
+std::vector<biome>
+load_subchunk_biome(const byte_t* data, int& read, size_t len) {
     read = 1;
 
     uint8_t head = data[0];
@@ -25,7 +26,8 @@ std::vector<biome> load_subchunk_biome(const byte_t* data, int& read, size_t len
         for (int wordi = 0; wordi < word_count; wordi++) {
             auto word = *reinterpret_cast<const int*>(data + read + wordi * 4);
             for (int block = 0; block < bpw; block++) {
-                int state = (word >> ((position % bpw) * bits)) & ((1 << bits) - 1);
+                int state =
+                    (word >> ((position % bpw) * bits)) & ((1 << bits) - 1);
                 assert(position < 4096);
                 index[position] = state;
                 position++;
@@ -47,7 +49,8 @@ std::vector<biome> load_subchunk_biome(const byte_t* data, int& read, size_t len
     }
 
     for (int i = 0; i < 4096; i++) {
-        if (index[i] >= 0 && index[i] < static_cast<int>(biomes_palettes.size())) {
+        if (index[i] >= 0
+            && index[i] < static_cast<int>(biomes_palettes.size())) {
             res[i] = biomes_palettes[index[i]];
         }
     }
@@ -69,7 +72,10 @@ bool biome3d::load_from_d3d(const byte_t* data, size_t len) {
         int  read            = 0;
         auto sub_chunk_biome = load_subchunk_biome(data + index, read, len);
         for (int y = 0; y < 16; y++) {
-            auto layer = std::vector<std::vector<bl::biome>>(16, std::vector<bl::biome>(16, bl::none));
+            auto layer = std::vector<std::vector<bl::biome>>(
+                16,
+                std::vector<bl::biome>(16, bl::none)
+            );
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     layer[x][z] = sub_chunk_biome[x * 256 + z * 16 + y];
@@ -85,7 +91,8 @@ bool biome3d::load_from_d3d(const byte_t* data, size_t len) {
 
 biome biome3d::get_biome(int cx, int y, int cz) {
     if (this->version_ == Old) {
-        return this->biomes_.empty() ? bl::biome::none : this->biomes_[0][cx][cz];
+        return this->biomes_.empty() ? bl::biome::none
+                                     : this->biomes_[0][cx][cz];
     }
     auto [my, _]  = pos_.get_y_range(this->version_);
     y            -= my;
@@ -99,7 +106,10 @@ biome biome3d::get_biome(int cx, int y, int cz) {
 
 std::vector<std::vector<biome>> biome3d::get_biome_y(int y) {
     if (this->version_ == Old) {
-        return this->biomes_.empty() ? std::vector<std::vector<bl::biome>>(16, std::vector<bl::biome>(16, bl::none))
+        return this->biomes_.empty() ? std::vector<std::vector<bl::biome>>(
+                                           16,
+                                           std::vector<bl::biome>(16, bl::none)
+                                       )
                                      : this->biomes_[0];
     }
     auto [my, _]  = pos_.get_y_range(this->version_);
@@ -125,7 +135,10 @@ bool biome3d::load_from_d2d(const byte_t* data, size_t len) {
         return false;
     }
     memcpy(this->height_map_.data(), data, 512);
-    auto layer = std::vector<std::vector<biome>>(16, std::vector<biome>(16, bl::biome::none));
+    auto layer = std::vector<std::vector<biome>>(
+        16,
+        std::vector<biome>(16, bl::biome::none)
+    );
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
             layer[x][z] = static_cast<biome>(data[512 + x + 16 * z]);

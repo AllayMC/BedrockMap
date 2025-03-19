@@ -54,7 +54,9 @@ void ChunkSectionWidget::paintEvent(QPaintEvent* event) {
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 16; j++) {
             QRect rect(x_start + i * bw, (j + 17) * bw + z_start, bw, bw);
-            auto  c = bl::get_biome_color(this->get_layer_data(this->y_level_)[i][j].biome);
+            auto  c = bl::get_biome_color(
+                this->get_layer_data(this->y_level_)[i][j].biome
+            );
             p.fillRect(rect, QBrush(QColor(c.r, c.g, c.b)));
             p.setPen(pen);
             p.drawRect(rect);
@@ -86,7 +88,11 @@ void ChunkSectionWidget::load_data(bl::chunk* ch) {
                 auto* raw        = ch->get_block_raw(x, y, z);
                 auto  info       = ch->get_block(x, y, z);
                 data.block_name  = info.name;
-                data.block_color = bl::blend_color_with_biome(data.block_name, info.color, data.biome);
+                data.block_color = bl::blend_color_with_biome(
+                    data.block_name,
+                    info.color,
+                    data.biome
+                );
                 if (raw) {
                     data.block_palette = raw->to_readable_string();
                 }
@@ -113,27 +119,50 @@ void ChunkSectionWidget::showContextMenu(const QPoint& p) {
     if (!terrain_view_rect.contains(p) && !biome_view_rect.contains(p)) return;
 
     QMenu contextMenu(this);
-    auto  rx       = (p.x() - x_start) / bw;
-    auto  rz       = ((p.y() - z_start) / bw) % 17;
-    auto& data     = this->get_layer_data(this->y_level_)[rx][rz];
-    auto posString = QString("%1,%2,%3").arg(QString::number(rx), QString::number(this->y_level_), QString::number(rz));
+    auto  rx        = (p.x() - x_start) / bw;
+    auto  rz        = ((p.y() - z_start) / bw) % 17;
+    auto& data      = this->get_layer_data(this->y_level_)[rx][rz];
+    auto  posString = QString("%1,%2,%3")
+                         .arg(
+                             QString::number(rx),
+                             QString::number(this->y_level_),
+                             QString::number(rz)
+                         );
     auto biomeString     = QString(bl::get_biome_name(data.biome).c_str());
     auto paletteString   = QString(data.block_palette.c_str());
     auto blockNameString = QString(data.block_name.c_str());
 
     QAction posAction("Position: " + posString, this);
     QAction blockNameAction("Block name: " + blockNameString, this);
-    QAction blockPaletteAction(("Palette: " + getDisplayedPalette(paletteString.toStdString())).c_str(), this);
+    QAction blockPaletteAction(
+        ("Palette: " + getDisplayedPalette(paletteString.toStdString()))
+            .c_str(),
+        this
+    );
     QAction biomeAction("Biome: " + biomeString, this);
 
     auto* cb = QApplication::clipboard();
 
-    connect(&posAction, &QAction::triggered, this, [cb, &posString] { cb->setText(posString); });
+    connect(&posAction, &QAction::triggered, this, [cb, &posString] {
+        cb->setText(posString);
+    });
 
-    connect(&blockPaletteAction, &QAction::triggered, this, [cb, &paletteString] { cb->setText(paletteString); });
-    connect(&blockNameAction, &QAction::triggered, this, [cb, &blockNameString] { cb->setText(blockNameString); });
+    connect(
+        &blockPaletteAction,
+        &QAction::triggered,
+        this,
+        [cb, &paletteString] { cb->setText(paletteString); }
+    );
+    connect(
+        &blockNameAction,
+        &QAction::triggered,
+        this,
+        [cb, &blockNameString] { cb->setText(blockNameString); }
+    );
 
-    connect(&biomeAction, &QAction::triggered, this, [cb, &biomeString] { cb->setText(biomeString); });
+    connect(&biomeAction, &QAction::triggered, this, [cb, &biomeString] {
+        cb->setText(biomeString);
+    });
 
     contextMenu.addAction(&posAction);
     contextMenu.addAction(&blockNameAction);

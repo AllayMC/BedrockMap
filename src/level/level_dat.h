@@ -13,10 +13,16 @@ public:
 
     void set_nbt(bl::palette::compound_tag* tag);
 
-    [[nodiscard]] inline bool        loaded() const { return this->loaded_; }
-    [[nodiscard]] inline block_pos   spawn_position() const { return this->spawn_position_; }
-    [[nodiscard]] inline uint64_t    storage_version() const { return this->storage_version_; }
-    [[nodiscard]] inline std::string level_name() const { return this->level_name_; }
+    [[nodiscard]] inline bool      loaded() const { return this->loaded_; }
+    [[nodiscard]] inline block_pos spawn_position() const {
+        return this->spawn_position_;
+    }
+    [[nodiscard]] inline uint64_t storage_version() const {
+        return this->storage_version_;
+    }
+    [[nodiscard]] inline std::string level_name() const {
+        return this->level_name_;
+    }
 
     [[nodiscard]] bl::palette::compound_tag* root() { return this->root_; }
 

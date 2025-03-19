@@ -9,7 +9,13 @@
 #define KCYN "\x1B[36m"
 #define KWHT "\x1B[37m"
 
-void log(const char* file_name, const char* function_name, size_t line, const char* fmt, ...) {
+void log(
+    const char* file_name,
+    const char* function_name,
+    size_t      line,
+    const char* fmt,
+    ...
+) {
 #ifdef DEBUG
     va_list args;
     va_start(args, fmt);
@@ -20,7 +26,13 @@ void log(const char* file_name, const char* function_name, size_t line, const ch
 #endif
 }
 
-void error_msg(const char* file_name, const char* function_name, size_t line, const char* fmt, ...) {
+void error_msg(
+    const char* file_name,
+    const char* function_name,
+    size_t      line,
+    const char* fmt,
+    ...
+) {
     va_list args;
     va_start(args, fmt);
     fprintf(stdout, "[ERROR] [%s:%zu @ %s]:", file_name, line, function_name);
@@ -29,7 +41,14 @@ void error_msg(const char* file_name, const char* function_name, size_t line, co
     fflush(stdout);
 }
 
-void M_Assert(const char* expr_str, bool expr, const char* file, int line, const char* msg, ...) {
+void M_Assert(
+    const char* expr_str,
+    bool        expr,
+    const char* file,
+    int         line,
+    const char* msg,
+    ...
+) {
     if (!expr) {
         fprintf(stderr, "Assert failed:\t");
         va_list args;
@@ -49,7 +68,10 @@ std::vector<byte_t> read_file(const std::string& file_name) {
         BL_ERROR("Can not open file %s", file_name.c_str());
         return {};
     }
-    std::vector<byte_t> bytes((std::istreambuf_iterator<char>(input)), (std::istreambuf_iterator<char>()));
+    std::vector<byte_t> bytes(
+        (std::istreambuf_iterator<char>(input)),
+        (std::istreambuf_iterator<char>())
+    );
     input.close();
     return bytes;
 }
@@ -60,7 +82,10 @@ void write_file(const std::string& file_name, const byte_t* data, size_t len) {
         BL_ERROR("Can not open file %s", file_name.c_str());
         return;
     }
-    output.write(reinterpret_cast<const char*>(data), static_cast<std::streamsize>(len));
+    output.write(
+        reinterpret_cast<const char*>(data),
+        static_cast<std::streamsize>(len)
+    );
     output.close();
 }
 

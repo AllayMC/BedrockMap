@@ -49,11 +49,12 @@ public:
      * @return
      */
     [[nodiscard]] virtual std::string to_raw() const {
-        return this->type_to_raw() + this->key_to_raw() + this->payload_to_raw();
+        return this->type_to_raw() + this->key_to_raw()
+             + this->payload_to_raw();
     }
 
     [[nodiscard]] std::string key() const { return this->key_; }
-    void                      set_key(const std::string& key) { this->key_ = key; }
+    void set_key(const std::string& key) { this->key_ = key; }
 
     [[nodiscard]] virtual std::string payload_to_raw() const = 0;
 
@@ -177,7 +178,9 @@ struct string_tag : public abstract_tag {
         abstract_tag::write(o, indent);
         o << "'" << this->value << "'" << std::endl;
     }
-    [[nodiscard]] std::string value_string() const override { return this->value; };
+    [[nodiscard]] std::string value_string() const override {
+        return this->value;
+    };
 
     [[nodiscard]] abstract_tag* copy() const override {
         auto* res  = new string_tag(this->key_);
@@ -206,7 +209,9 @@ struct int_tag : public abstract_tag {
         abstract_tag::write(o, indent);
         o << this->value << std::endl;
     }
-    [[nodiscard]] std::string   value_string() const override { return std::to_string(this->value); };
+    [[nodiscard]] std::string value_string() const override {
+        return std::to_string(this->value);
+    };
     [[nodiscard]] abstract_tag* copy() const override {
         auto* res  = new int_tag(this->key_);
         res->value = this->value;
@@ -235,7 +240,9 @@ struct short_tag : public abstract_tag {
         o << this->value << std::endl;
     }
 
-    [[nodiscard]] std::string value_string() const override { return std::to_string(this->value); }
+    [[nodiscard]] std::string value_string() const override {
+        return std::to_string(this->value);
+    }
     ~short_tag() override = default;
 
     [[nodiscard]] abstract_tag* copy() const override {
@@ -265,7 +272,9 @@ struct long_tag : public abstract_tag {
         o << this->value << std::endl;
     }
 
-    [[nodiscard]] std::string   value_string() const override { return std::to_string(this->value); };
+    [[nodiscard]] std::string value_string() const override {
+        return std::to_string(this->value);
+    };
     [[nodiscard]] abstract_tag* copy() const override {
         auto* res  = new long_tag(this->key_);
         res->value = this->value;
@@ -295,7 +304,9 @@ struct float_tag : public abstract_tag {
         o << this->value << std::endl;
     }
 
-    [[nodiscard]] std::string   value_string() const override { return std::to_string(this->value); }
+    [[nodiscard]] std::string value_string() const override {
+        return std::to_string(this->value);
+    }
     [[nodiscard]] abstract_tag* copy() const override {
         auto* res  = new float_tag(this->key_);
         res->value = this->value;
@@ -324,7 +335,9 @@ struct double_tag : public abstract_tag {
         o << this->value << std::endl;
     }
 
-    [[nodiscard]] std::string value_string() const override { return std::to_string(this->value); }
+    [[nodiscard]] std::string value_string() const override {
+        return std::to_string(this->value);
+    }
 
     [[nodiscard]] abstract_tag* copy() const override {
         auto* res  = new double_tag(this->key_);
@@ -354,7 +367,9 @@ struct byte_tag : public abstract_tag {
         abstract_tag::write(o, indent);
         o << static_cast<int>(this->value) << std::endl;
     }
-    [[nodiscard]] std::string   value_string() const override { return std::to_string(this->value); }
+    [[nodiscard]] std::string value_string() const override {
+        return std::to_string(this->value);
+    }
     [[nodiscard]] abstract_tag* copy() const override {
         auto* res  = new byte_tag(this->key_);
         res->value = this->value;

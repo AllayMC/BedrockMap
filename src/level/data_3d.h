@@ -109,7 +109,9 @@ public:
         return this->height_map_[x + z * 16] + my;
     }
 
-    [[nodiscard]] inline std::array<int16_t, 256> height_map() const { return this->height_map_; }
+    [[nodiscard]] inline std::array<int16_t, 256> height_map() const {
+        return this->height_map_;
+    }
 
     biome get_biome(int cx, int y, int cz);
 

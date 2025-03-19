@@ -19,12 +19,17 @@ bool load_raw(leveldb::DB*& db, const std::string& raw_key, std::string& raw) {
 AsyncLevelLoader::AsyncLevelLoader() {
     this->pool_.setMaxThreadCount(cfg::THREAD_NUM);
     for (int i = 0; i < 3; i++) {
-        this->region_cache_.push_back(new QCache<region_pos, ChunkRegion>(cfg::REGION_CACHE_SIZE));
-        this->invalid_cache_.push_back(new QCache<region_pos, char>(cfg::EMPTY_REGION_CACHE_SIZE));
+        this->region_cache_.push_back(
+            new QCache<region_pos, ChunkRegion>(cfg::REGION_CACHE_SIZE)
+        );
+        this->invalid_cache_.push_back(
+            new QCache<region_pos, char>(cfg::EMPTY_REGION_CACHE_SIZE)
+        );
     }
     this->slime_chunk_cache_ = new QCache<region_pos, QImage>(8192);
     /**
-     * Do not trust any data from bedrock_level and do not cache it for a long time in the database.
+     * Do not trust any data from bedrock_level and do not cache it for a long
+     * time in the database.
      */
     this->level_.set_cache(false);
 }
@@ -60,10 +65,16 @@ ChunkRegion* AsyncLevelLoader::tryGetRegion(const region_pos& p, bool& empty) {
             this->region_render_timer_.push(render_time);
 
             if (!region || (!region->valid)) {
-                this->invalid_cache_[dim]->insert(bl::chunk_pos(x, z, dim), new char(0));
+                this->invalid_cache_[dim]->insert(
+                    bl::chunk_pos(x, z, dim),
+                    new char(0)
+                );
                 delete region;
             } else {
-                this->region_cache_[dim]->insert(bl::chunk_pos(x, z, dim), region);
+                this->region_cache_[dim]->insert(
+                    bl::chunk_pos(x, z, dim),
+                    region
+                );
             }
             this->processing_.remove(bl::chunk_pos{x, z, dim});
         }
@@ -83,7 +94,8 @@ AsyncLevelLoader::~AsyncLevelLoader() { this->close(); }
 
 void LoadRegionTask::run() {
 #ifdef QT_DEBUG
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point begin =
+        std::chrono::steady_clock::now();
 #endif
 
     auto*      region = new ChunkRegion();
@@ -98,7 +110,8 @@ void LoadRegionTask::run() {
     }
 
 #ifdef QT_DEBUG
-    std::chrono::steady_clock::time_point load_end = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point load_end =
+        std::chrono::steady_clock::now();
 #endif
 
     // If there is a legal chunk, the current area is valid
@@ -120,9 +133,12 @@ void LoadRegionTask::run() {
         }
 
         // init bg
-        region->terrain_bake_image_ = cfg::CREATE_REGION_IMG(region->chunk_bit_map_);
-        region->biome_bake_image_   = cfg::CREATE_REGION_IMG(region->chunk_bit_map_);
-        region->height_bake_image_  = cfg::CREATE_REGION_IMG(region->chunk_bit_map_);
+        region->terrain_bake_image_ =
+            cfg::CREATE_REGION_IMG(region->chunk_bit_map_);
+        region->biome_bake_image_ =
+            cfg::CREATE_REGION_IMG(region->chunk_bit_map_);
+        region->height_bake_image_ =
+            cfg::CREATE_REGION_IMG(region->chunk_bit_map_);
 
         // draw blocks
         for (int rw = 0; rw < cfg::RW; rw++) {
@@ -132,7 +148,8 @@ void LoadRegionTask::run() {
                 this->filter_->bakeChunkActors(chunk, region);
                 if (chunk) {
                     auto hss = chunk->HSAs();
-                    region->HSAs_.insert(region->HSAs_.end(), hss.begin(), hss.end());
+                    region->HSAs_
+                        .insert(region->HSAs_.end(), hss.begin(), hss.end());
                 }
             }
         }
@@ -151,15 +168,26 @@ void LoadRegionTask::run() {
                 } else if (i != 0 && j == 0) {
                     sum = region->tips_info_[i - 1][j].height * 2;
                 } else if (i != 0 && j != 0) {
-                    sum = region->tips_info_[i][j - 1].height + region->tips_info_[i - 1][j].height;
+                    sum = region->tips_info_[i][j - 1].height
+                        + region->tips_info_[i - 1][j].height;
                 }
 
                 if (current_height * 2 > sum) {
-                    region->terrain_bake_image_
-                        .setPixelColor(i, j, region->terrain_bake_image_.pixelColor(i, j).lighter(cfg::SHADOW_LEVEL));
+                    region->terrain_bake_image_.setPixelColor(
+                        i,
+                        j,
+                        region->terrain_bake_image_.pixelColor(i, j).lighter(
+                            cfg::SHADOW_LEVEL
+                        )
+                    );
                 } else if (current_height * 2 < sum) {
-                    region->terrain_bake_image_
-                        .setPixelColor(i, j, region->terrain_bake_image_.pixelColor(i, j).darker(cfg::SHADOW_LEVEL));
+                    region->terrain_bake_image_.setPixelColor(
+                        i,
+                        j,
+                        region->terrain_bake_image_.pixelColor(i, j).darker(
+                            cfg::SHADOW_LEVEL
+                        )
+                    );
                 }
             }
         }
@@ -167,25 +195,46 @@ void LoadRegionTask::run() {
     // TODO: scale
 
     //    if (cfg::LOW_IMG_SCALE > 1) {
-    //        region->terrain_bake_image_ = region->terrain_bake_image_.scaled(IMG_WIDTH / cfg::LOW_IMG_SCALE,
+    //        region->terrain_bake_image_ =
+    //        region->terrain_bake_image_.scaled(IMG_WIDTH / cfg::LOW_IMG_SCALE,
     //                                                                         IMG_WIDTH / cfg::LOW_IMG_SCALE);
-    //        region->biome_bake_image_ = region->biome_bake_image_.scaled(IMG_WIDTH / cfg::LOW_IMG_SCALE,
-    //                                                                     IMG_WIDTH / cfg::LOW_IMG_SCALE);
-    //        region->height_bake_image_ = region->height_bake_image_.scaled(IMG_WIDTH / cfg::LOW_IMG_SCALE,
-    //                                                                       IMG_WIDTH / cfg::LOW_IMG_SCALE);
+    //        region->biome_bake_image_ =
+    //        region->biome_bake_image_.scaled(IMG_WIDTH / cfg::LOW_IMG_SCALE,
+    //                                                                     IMG_WIDTH
+    //                                                                     /
+    //                                                                     cfg::LOW_IMG_SCALE);
+    //        region->height_bake_image_ =
+    //        region->height_bake_image_.scaled(IMG_WIDTH / cfg::LOW_IMG_SCALE,
+    //                                                                       IMG_WIDTH
+    //                                                                       /
+    //                                                                       cfg::LOW_IMG_SCALE);
     //    }
 
     for (auto* ch : chunks_) delete ch;
 
 #ifdef QT_DEBUG
-    std::chrono::steady_clock::time_point total_end = std::chrono::steady_clock::now();
-    auto load_time   = std::chrono::duration_cast<std::chrono::microseconds>(load_end - begin).count();
-    auto render_time = std::chrono::duration_cast<std::chrono::microseconds>(total_end - load_end).count();
+    std::chrono::steady_clock::time_point total_end =
+        std::chrono::steady_clock::now();
+    auto load_time =
+        std::chrono::duration_cast<std::chrono::microseconds>(load_end - begin)
+            .count();
+    auto render_time = std::chrono::duration_cast<std::chrono::microseconds>(
+                           total_end - load_end
+    )
+                           .count();
 #else
     auto load_time   = -1;
     auto render_time = -1;
 #endif
-    emit finish(this->pos_.x, this->pos_.z, this->pos_.dim, region, load_time, render_time, chunks_);
+    emit finish(
+        this->pos_.x,
+        this->pos_.z,
+        this->pos_.dim,
+        region,
+        load_time,
+        render_time,
+        chunks_
+    );
 }
 
 void AsyncLevelLoader::close() {
@@ -200,7 +249,9 @@ void AsyncLevelLoader::close() {
     this->clearAllCache();
 }
 
-bl::chunk* AsyncLevelLoader::getChunkDirect(const bl::chunk_pos& p) { return this->level_.get_chunk(p, false); }
+bl::chunk* AsyncLevelLoader::getChunkDirect(const bl::chunk_pos& p) {
+    return this->level_.get_chunk(p, false);
+}
 
 void AsyncLevelLoader::clearAllCache() {
     qDebug() << "Clear cache";
@@ -214,9 +265,13 @@ void AsyncLevelLoader::clearAllCache() {
     this->slime_chunk_cache_->clear();
 }
 
-QFuture<bool> AsyncLevelLoader::dropChunk(const bl::chunk_pos& min, const bl::chunk_pos& max) {
-    auto directChunkReader = [&](const bl::chunk_pos& min, const bl::chunk_pos& max) {
-        int res = 0;
+QFuture<bool> AsyncLevelLoader::dropChunk(
+    const bl::chunk_pos& min,
+    const bl::chunk_pos& max
+) {
+    auto directChunkReader = [&](const bl::chunk_pos& min,
+                                 const bl::chunk_pos& max) {
+        // int res = 0;
         for (int i = min.x; i <= max.x; i++) {
             for (int j = min.z; j <= max.z; j++) {
                 bl::chunk_pos cp{i, j, min.dim};
@@ -232,11 +287,17 @@ bool AsyncLevelLoader::modifyLeveldat(bl::palette::compound_tag* nbt) {
     if (!this->loaded_) return false;
     level_.dat().set_nbt(nbt);
     auto raw = level_.dat().to_raw();
-    bl::utils::write_file(level_.root_path() + "/" + bl::bedrock_level::LEVEL_DATA, raw.data(), raw.size());
+    bl::utils::write_file(
+        level_.root_path() + "/" + bl::bedrock_level::LEVEL_DATA,
+        raw.data(),
+        raw.size()
+    );
     return true;
 }
 
-bool AsyncLevelLoader::modifyDBGlobal(const std::unordered_map<std::string, std::string>& modifies) {
+bool AsyncLevelLoader::modifyDBGlobal(
+    const std::unordered_map<std::string, std::string>& modifies
+) {
     if (!this->loaded_) return false;
     leveldb::WriteBatch batch;
     for (auto& kv : modifies) {
@@ -252,15 +313,21 @@ bool AsyncLevelLoader::modifyDBGlobal(const std::unordered_map<std::string, std:
     return true;
 }
 
-bool AsyncLevelLoader::modifyChunkBlockEntities(const bl::chunk_pos& cp, const std::string& raw) {
+bool AsyncLevelLoader::modifyChunkBlockEntities(
+    const bl::chunk_pos& cp,
+    const std::string&   raw
+) {
     bl::chunk_key key{bl::chunk_key::BlockEntity, cp, -1};
-    auto          s = this->level_.db()->Put(leveldb::WriteOptions(), key.to_raw(), raw);
+    auto s = this->level_.db()->Put(leveldb::WriteOptions(), key.to_raw(), raw);
     return s.ok();
 }
 
-bool AsyncLevelLoader::modifyChunkPendingTicks(const bl::chunk_pos& cp, const std::string& raw) {
+bool AsyncLevelLoader::modifyChunkPendingTicks(
+    const bl::chunk_pos& cp,
+    const std::string&   raw
+) {
     bl::chunk_key key{bl::chunk_key::PendingTicks, cp, -1};
-    auto          s = this->level_.db()->Put(leveldb::WriteOptions(), key.to_raw(), raw);
+    auto s = this->level_.db()->Put(leveldb::WriteOptions(), key.to_raw(), raw);
     return s.ok();
 }
 
@@ -281,7 +348,11 @@ bool AsyncLevelLoader::modifyChunkActors(
 
     // 1. Remove all entities with new format
     std::string actor_digest_raw;
-    if (load_raw(this->level_.db(), chunk_digest_key.to_raw(), actor_digest_raw)) {
+    if (load_raw(
+            this->level_.db(),
+            chunk_digest_key.to_raw(),
+            actor_digest_raw
+        )) {
         bl::actor_digest_list al;
         al.load(actor_digest_raw);
         for (auto& uid : al.actor_digests_) {
@@ -323,43 +394,60 @@ std::vector<QString> AsyncLevelLoader::debugInfo() {
     std::vector<QString> res;
     res.emplace_back("Region cache:");
     for (int i = 0; i < 3; i++) {
-        res.push_back(QString(" - [%1]: %2/%3")
-                          .arg(
-                              QString::number(i),
-                              QString::number(this->region_cache_[i]->totalCost()),
-                              QString::number(this->region_cache_[i]->maxCost())
-                          ));
+        res.push_back(
+            QString(" - [%1]: %2/%3")
+                .arg(
+                    QString::number(i),
+                    QString::number(this->region_cache_[i]->totalCost()),
+                    QString::number(this->region_cache_[i]->maxCost())
+                )
+        );
     }
     res.emplace_back("Null region cache:");
     for (int i = 0; i < 3; i++) {
-        res.push_back(QString(" - [%1]: %2/%3")
-                          .arg(
-                              QString::number(i),
-                              QString::number(this->invalid_cache_[i]->totalCost()),
-                              QString::number(this->invalid_cache_[i]->maxCost())
-                          ));
+        res.push_back(
+            QString(" - [%1]: %2/%3")
+                .arg(
+                    QString::number(i),
+                    QString::number(this->invalid_cache_[i]->totalCost()),
+                    QString::number(this->invalid_cache_[i]->maxCost())
+                )
+        );
     }
 
     res.push_back(QString("Slime Chunk cache: %2/%3")
                       .arg(
-                          QString::number(this->slime_chunk_cache_->totalCost()),
+                          QString::number(this->slime_chunk_cache_->totalCost()
+                          ),
                           QString::number(this->slime_chunk_cache_->maxCost())
                       ));
 
     res.emplace_back("Background thread pool:");
-    res.push_back(QString(" - Total threads: %1").arg(QString::number(cfg::THREAD_NUM)));
+    res.push_back(
+        QString(" - Total threads: %1").arg(QString::number(cfg::THREAD_NUM))
+    );
 
 #ifdef QT_DEBUG
-    res.push_back(QString(" - Background tasks %1").arg(QString::number(this->processing_.size())));
+    res.push_back(QString(" - Background tasks %1")
+                      .arg(QString::number(this->processing_.size())));
     res.push_back(QString("Region timer: %1 ms:")
                       .arg(QString::number(
-                          static_cast<double>(this->region_render_timer_.mean() + this->region_load_timer_.mean())
+                          static_cast<double>(
+                              this->region_render_timer_.mean()
+                              + this->region_load_timer_.mean()
+                          )
                           / 1000.0
                       )));
     res.push_back(QString(" - Region Load: %1 ms")
-                      .arg(QString::number(static_cast<double>(this->region_load_timer_.mean()) / 1000.0)));
+                      .arg(QString::number(
+                          static_cast<double>(this->region_load_timer_.mean())
+                          / 1000.0
+                      )));
     res.push_back(QString(" - Region Render: %1 ms")
-                      .arg(QString::number(static_cast<double>(this->region_render_timer_.mean()) / 1000.0)));
+                      .arg(QString::number(
+                          static_cast<double>(this->region_render_timer_.mean())
+                          / 1000.0
+                      )));
 #endif
     return res;
 }
@@ -389,7 +477,8 @@ QImage* AsyncLevelLoader::bakedHeightImage(const region_pos& rp) {
     return region ? &region->height_bake_image_ : cfg::UNLOADED_REGION_IMAGE();
 }
 
-std::unordered_map<QImage*, std::vector<bl::vec3>> AsyncLevelLoader::getActorList(const region_pos& rp) {
+std::unordered_map<QImage*, std::vector<bl::vec3>>
+AsyncLevelLoader::getActorList(const region_pos& rp) {
     if (!this->loaded_) return {};
     bool  null_region{false};
     auto* region = this->tryGetRegion(rp, null_region);
@@ -397,7 +486,8 @@ std::unordered_map<QImage*, std::vector<bl::vec3>> AsyncLevelLoader::getActorLis
     return region->actors_;
 }
 
-std::vector<bl::hardcoded_spawn_area> AsyncLevelLoader::getHSAs(const region_pos& rp) {
+std::vector<bl::hardcoded_spawn_area>
+AsyncLevelLoader::getHSAs(const region_pos& rp) {
     if (!this->loaded_) return {};
     bool  null_region{false};
     auto* region = this->tryGetRegion(rp, null_region);
@@ -413,8 +503,8 @@ BlockTipsInfo AsyncLevelLoader::getBlockTips(const bl::block_pos& p, int dim) {
     bool  null_region{false};
     auto* region = this->tryGetRegion(rp, null_region);
     if (null_region || (!region)) return {};
-    auto& info          = region->tips_info_;
-    auto  min_block_pos = rp.get_min_pos(bl::ChunkVersion::New);
+    // auto& info = region->tips_info_;
+    auto min_block_pos = rp.get_min_pos(bl::ChunkVersion::New);
     return region->tips_info_[p.x - min_block_pos.x][p.z - min_block_pos.z];
 }
 
@@ -447,7 +537,8 @@ QImage* AsyncLevelLoader::bakedSlimeChunkImage(const region_pos& rp) {
 int64_t RegionTimer::mean() const {
     return this->values.empty()
              ? 0
-             : std::accumulate(values.begin(), values.end(), 0ll) / static_cast<int64_t>(values.size());
+             : std::accumulate(values.begin(), values.end(), 0ll)
+                   / static_cast<int64_t>(values.size());
 }
 
 void RegionTimer::push(int64_t value) {

@@ -19,9 +19,13 @@ void setupLog() {
         fs::create_directory("./logs");
     }
     const auto p1 = std::chrono::system_clock::now();
-    LOG_FILE_NAME = "./logs/"
-                  + QString::number(std::chrono::duration_cast<std::chrono::seconds>(p1.time_since_epoch()).count())
-                  + ".log";
+    LOG_FILE_NAME =
+        "./logs/"
+        + QString::number(std::chrono::duration_cast<std::chrono::seconds>(
+                              p1.time_since_epoch()
+        )
+                              .count())
+        + ".log";
 }
 
 void setupTheme(QApplication& a) {
@@ -36,7 +40,11 @@ void setupTheme(QApplication& a) {
     //    }
 }
 
-void myMessageHandler(QtMsgType type, const QMessageLogContext&, const QString& msg) {
+void myMessageHandler(
+    QtMsgType type,
+    const QMessageLogContext&,
+    const QString& msg
+) {
     QString txt;
     switch (type) {
     case QtDebugMsg:
@@ -63,7 +71,8 @@ void myMessageHandler(QtMsgType type, const QMessageLogContext&, const QString& 
 }
 
 void setupFont(QApplication& a) {
-    // auto id = QFontDatabase::addApplicationFont(":/res/fonts/JetBrainsMono-Regular.ttf");
+    // auto id =
+    // QFontDatabase::addApplicationFont(":/res/fonts/JetBrainsMono-Regular.ttf");
     // if (id == -1) {
     //     qWarning() << "Can not load font";
     // }
@@ -91,13 +100,18 @@ int main(int argc, char* argv[]) {
         w.show();
         return QApplication::exec();
     } else {
-        auto*     w   = new NbtWidget();
-        const int ext = 100;
+        auto* w = new NbtWidget();
+        // const int ext = 100;
         w->setWindowTitle("NBT Editor");
         auto const rec    = QApplication::primaryScreen()->geometry();
         auto const height = static_cast<int>(rec.height() * 0.6);
         auto const width  = static_cast<int>(rec.width() * 0.6);
-        w->setGeometry({(rec.width() - width) / 2, (rec.height() - height) / 2, width, height});
+        w->setGeometry(
+            {(rec.width() - width) / 2,
+             (rec.height() - height) / 2,
+             width,
+             height}
+        );
         w->show();
         return QApplication::exec();
     };

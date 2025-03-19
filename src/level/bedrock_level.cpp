@@ -27,18 +27,23 @@ bool bedrock_level::open(const std::string& root) {
     namespace fs     = std::filesystem;
     this->root_name_ = root;
     fs::path path(this->root_name_);
-    path           /= LEVEL_DATA;
-    this->is_open_  = this->dat_.load_from_file(path.string()) && this->read_db();
+    path /= LEVEL_DATA;
+    this->is_open_ =
+        this->dat_.load_from_file(path.string()) && this->read_db();
     return this->is_open_;
 }
 
 bool bedrock_level::read_db() { // NOLINT
     namespace fs = std::filesystem;
     fs::path path(this->root_name_);
-    path                   /= bl::bedrock_level::LEVEL_DB;
-    leveldb::Status status  = leveldb::DB::Open(this->options_, path.string(), &this->db_);
+    path /= bl::bedrock_level::LEVEL_DB;
+    leveldb::Status status =
+        leveldb::DB::Open(this->options_, path.string(), &this->db_);
     if (!status.ok()) {
-        BL_ERROR("Can not open level database: [%s].", status.ToString().c_str());
+        BL_ERROR(
+            "Can not open level database: [%s].",
+            status.ToString().c_str()
+        );
     }
     return status.ok();
 }
@@ -155,7 +160,9 @@ bool bedrock_level::remove_chunk(const chunk_pos& cp) {
     return s.ok();
 }
 
-void bedrock_level::foreach_global_keys(const std::function<void(const std::string&, const std::string&)>& f) {
+void bedrock_level::foreach_global_keys(
+    const std::function<void(const std::string&, const std::string&)>& f
+) {
     auto* it = this->db_->NewIterator(leveldb::ReadOptions());
     for (it->SeekToFirst(); it->Valid(); it->Next()) {
         auto ck = bl::chunk_key::parse(it->key().ToString());
@@ -168,18 +175,20 @@ void bedrock_level::foreach_global_keys(const std::function<void(const std::stri
 }
 
 void bedrock_level::load_global_data() {
-    this->foreach_global_keys([this](const std::string& key, const std::string& value) {
-        if (key.find("player") != std::string::npos) {
-            this->player_data_.append_nbt(key, value);
-        } else if (key.find("map") == 0) {
-            this->map_item_data_.append_nbt(key, value);
-        } else {
-            bl::village_key vk = village_key::parse(key);
-            if (vk.valid()) {
-                this->village_data_.append_village(vk, value);
+    this->foreach_global_keys(
+        [this](const std::string& key, const std::string& value) {
+            if (key.find("player") != std::string::npos) {
+                this->player_data_.append_nbt(key, value);
+            } else if (key.find("map") == 0) {
+                this->map_item_data_.append_nbt(key, value);
+            } else {
+                bl::village_key vk = village_key::parse(key);
+                if (vk.valid()) {
+                    this->village_data_.append_village(vk, value);
+                }
             }
         }
-    });
+    );
 }
 
 bedrock_level::bedrock_level() {

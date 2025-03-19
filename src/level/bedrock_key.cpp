@@ -2,7 +2,8 @@
 
 namespace bl {
 
-const chunk_key chunk_key::INVALID_CHUNK_KEY = chunk_key{chunk_key::Unknown, bl::chunk_pos(), 0};
+const chunk_key chunk_key::INVALID_CHUNK_KEY =
+    chunk_key{chunk_key::Unknown, bl::chunk_pos(), 0};
 
 chunk_key chunk_key::parse(const std::string& key) {
     auto sz = key.size();
@@ -82,7 +83,7 @@ village_key village_key::parse(const std::string& key) {
     village_key res;
     if (key.size() < 46) return res;
     if (key.rfind("VILLAGE_", 0) != 0) return res;
-    res.uuid             = std::string(key.begin() + 8, key.begin() + 44); // uuid
+    res.uuid = std::string(key.begin() + 8, key.begin() + 44); // uuid
     std::string type_str = std::string(key.data() + 45);
     if (type_str == "DWELLERS") {
         res.type = DWELLERS;
@@ -173,7 +174,8 @@ std::string chunk_key::chunk_key_to_str(bl::chunk_key::key_type key) {
 }
 
 std::string chunk_pos::to_string() const {
-    return std::to_string(this->x) + ", " + std::to_string(this->z) + ", " + std::to_string(this->dim);
+    return std::to_string(this->x) + ", " + std::to_string(this->z) + ", "
+         + std::to_string(this->dim);
 }
 
 bool chunk_pos::operator<(const chunk_pos& rhs) const {
@@ -184,7 +186,9 @@ bool chunk_pos::operator<(const chunk_pos& rhs) const {
     return dim < rhs.dim;
 }
 
-bool chunk_pos::operator==(const chunk_pos& p) const { return this->x == p.x && this->dim == p.dim && this->z == p.z; }
+bool chunk_pos::operator==(const chunk_pos& p) const {
+    return this->x == p.x && this->dim == p.dim && this->z == p.z;
+}
 
 block_pos chunk_pos::get_min_pos(ChunkVersion v) const {
     auto [y, _] = this->get_y_range(v);
@@ -208,7 +212,8 @@ std::tuple<int32_t, int32_t> chunk_pos::get_y_range(ChunkVersion v) const {
     return {0, -1};
 }
 
-std::tuple<int8_t, int8_t> chunk_pos::get_subchunk_index_range(ChunkVersion v) const {
+std::tuple<int8_t, int8_t> chunk_pos::get_subchunk_index_range(ChunkVersion v
+) const {
     if (this->dim == 1) return {0, 7};
     if (this->dim == 2) return {0, 15};
     if (this->dim == 0) {
@@ -228,7 +233,8 @@ bool chunk_pos::is_slime() const {
 }
 
 std::string chunk_key::to_string() const {
-    auto type_info  = chunk_key_to_str(type) + "(" + std::to_string(static_cast<int>(type)) + ")";
+    auto type_info = chunk_key_to_str(type) + "("
+                   + std::to_string(static_cast<int>(type)) + ")";
     auto index_info = std::string();
     if (type == SubChunkTerrain) {
         index_info = "y = " + std::to_string(y_index);
@@ -257,9 +263,13 @@ std::string chunk_key::to_raw() const {
     return r;
 }
 
-std::string actor_key::to_string() const { return std::to_string(this->actor_uid); }
+std::string actor_key::to_string() const {
+    return std::to_string(this->actor_uid);
+}
 
-std::string village_key::to_string() const { return this->uuid + "," + village_key_type_to_str(this->type); }
+std::string village_key::to_string() const {
+    return this->uuid + "," + village_key_type_to_str(this->type);
+}
 
 chunk_pos block_pos::to_chunk_pos() const {
     auto cx = x < 0 ? x - 15 : x;

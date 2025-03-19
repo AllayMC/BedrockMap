@@ -26,10 +26,10 @@ QImage* village_dwellers_nbt;
 QImage* other_nbt;
 QImage* player_nbt;
 
-std::unordered_map<bl::village_key::key_type, QIcon>& village_icon_pool() {
-    static std::unordered_map<bl::village_key::key_type, QIcon> icons_;
-    return icons_;
-}
+// std::unordered_map<bl::village_key::key_type, QIcon>& village_icon_pool() {
+//     static std::unordered_map<bl::village_key::key_type, QIcon> icons_;
+//     return icons_;
+// }
 
 QImage* addMask(const QImage& img) {
     if (img.size() != QSize(16, 16)) {
@@ -41,7 +41,8 @@ QImage* addMask(const QImage& img) {
         int cx = x - 1;
         int cz = z - 1;
 
-        if (cx >= 0 && cx < 16 && cz >= 0 && cz < 16 && origin->pixelColor(cx, cz).alpha() != 0) {
+        if (cx >= 0 && cx < 16 && cz >= 0 && cz < 16
+            && origin->pixelColor(cx, cz).alpha() != 0) {
             mask->setPixelColor(x, z, origin->pixelColor(cx, cz).rgba());
         } else {
             int alpha{0};
@@ -50,7 +51,8 @@ QImage* addMask(const QImage& img) {
                     //                        There are pixels in the range
                     int nx = cx + i;
                     int nz = cz + j;
-                    if (nx >= 0 && nx < 16 && nz >= 0 && nz < 16 && origin->pixelColor(nx, nz).alpha() != 0) {
+                    if (nx >= 0 && nx < 16 && nz >= 0 && nz < 16
+                        && origin->pixelColor(nx, nz).alpha() != 0) {
                         alpha = 220;
                     }
                 }
@@ -68,7 +70,8 @@ QImage* addMask(const QImage& img) {
 }
 
 QImage* scale2(const QImage& img) {
-    auto* res = new QImage(img.width() * 2, img.height() * 2, QImage::Format_RGBA8888);
+    auto* res =
+        new QImage(img.width() * 2, img.height() * 2, QImage::Format_RGBA8888);
     for (int i = 0; i < img.width(); i++) {
         for (int j = 0; j < img.height(); j++) {
             auto c = img.pixelColor(i, j);
@@ -98,11 +101,16 @@ void initResources() {
     // village icons
 
     // using vkt = bl::village_key::key_type;
-    // village_icon_pool()[vkt::DWELLERS] = QIcon(QPixmap::fromImage(QImage(":/ui/village/dwellers.png")));
-    // village_icon_pool()[vkt::PLAYERS] = QIcon(QPixmap::fromImage(QImage(":/ui/village/players.png")));
-    // village_icon_pool()[vkt::INFO] = QIcon(QPixmap::fromImage(QImage(":/ui/village/info.png")));
-    // village_icon_pool()[vkt::POI] = QIcon(QPixmap::fromImage(QImage(":/ui/village/poi.png")));
-    // village_icon_pool()[vkt::PLAYERS] = QIcon(QPixmap::fromImage(QImage(":/ui/village/players.png")));
+    // village_icon_pool()[vkt::DWELLERS] =
+    // QIcon(QPixmap::fromImage(QImage(":/ui/village/dwellers.png")));
+    // village_icon_pool()[vkt::PLAYERS] =
+    // QIcon(QPixmap::fromImage(QImage(":/ui/village/players.png")));
+    // village_icon_pool()[vkt::INFO] =
+    // QIcon(QPixmap::fromImage(QImage(":/ui/village/info.png")));
+    // village_icon_pool()[vkt::POI] =
+    // QIcon(QPixmap::fromImage(QImage(":/ui/village/poi.png")));
+    // village_icon_pool()[vkt::PLAYERS] =
+    // QIcon(QPixmap::fromImage(QImage(":/ui/village/players.png")));
 
     village_dwellers_nbt = scale2(QImage(":/ui/village/dwellers.png"));
     village_players_nbt  = scale2(QImage(":/ui/village/players.png"));
