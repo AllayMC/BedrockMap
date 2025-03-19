@@ -20,7 +20,9 @@ TEST(Data3d, MemoryFree) {
 }
 
 TEST(Data3d, BiomeRead) {
-    bl::init_biome_color_palette_from_file(R"(C:\Users\xhy\dev\bedrock-level\data\colors\biome.json)");
+    bl::init_biome_color_palette_from_file(
+        R"(C:\Users\xhy\dev\bedrock-level\data\colors\biome.json)"
+    );
 
     auto data = bl::utils::read_file("../data/dumps/data3d/0_0.data3d");
     EXPECT_TRUE(data.size() > 512);
@@ -28,7 +30,10 @@ TEST(Data3d, BiomeRead) {
     d3d.load_from_d3d(data.data(), data.size());
 
     for (int y = -64; y < 320; y++) {
-        std::vector<std::vector<bl::color>> c(16, std::vector<bl::color>(16, bl::color()));
+        std::vector<std::vector<bl::Color>> c(
+            16,
+            std::vector<bl::Color>(16, bl::Color())
+        );
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 auto b  = d3d.get_biome(x, y, z);
@@ -40,14 +45,19 @@ TEST(Data3d, BiomeRead) {
 }
 
 TEST(Data3d, TopBiomeRead) {
-    bl::init_biome_color_palette_from_file(R"(C:\Users\xhy\dev\bedrock-level\data\colors\biome.json)");
+    bl::init_biome_color_palette_from_file(
+        R"(C:\Users\xhy\dev\bedrock-level\data\colors\biome.json)"
+    );
 
     auto data = bl::utils::read_file("../data/dumps/data3d/1_-1.data3d");
     EXPECT_TRUE(data.size() > 512);
     bl::biome3d d3d{};
     d3d.load_from_d3d(data.data(), data.size());
 
-    std::vector<std::vector<bl::color>> c(16, std::vector<bl::color>(16, bl::color()));
+    std::vector<std::vector<bl::Color>> c(
+        16,
+        std::vector<bl::Color>(16, bl::Color())
+    );
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
             auto b  = d3d.get_top_biome(x, z);

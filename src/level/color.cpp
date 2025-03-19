@@ -16,44 +16,44 @@ std::unordered_set<std::string> water_block_names;
 std::unordered_set<std::string> leaves_block_names;
 std::unordered_set<std::string> grass_block_names;
 
-std::unordered_map<biome, bl::color> biome_water_map;
-std::unordered_map<biome, bl::color> biome_leave_map;
-std::unordered_map<biome, bl::color> biome_grass_map;
+std::unordered_map<biome, Color> biome_water_map;
+std::unordered_map<biome, Color> biome_leave_map;
+std::unordered_map<biome, Color> biome_grass_map;
 
-bl::color default_water_color{63, 118, 228};
-bl::color default_leave_color{113, 167, 77};
-bl::color default_grass_color{142, 185, 113};
+Color default_water_color{63, 118, 228};
+Color default_leave_color{113, 167, 77};
+Color default_grass_color{142, 185, 113};
 
 // biome id -> name
 std::unordered_map<biome, std::string> biome_id_map;
 // biome id -> biome color
-std::unordered_map<biome, bl::color> biome_color_map;
+std::unordered_map<biome, Color> biome_color_map;
 
 // key It is the raw form of palette
-std::unordered_map<std::string, bl::color> block_color_map;
+std::unordered_map<std::string, Color> block_color_map;
 
-bl::color blend_with_biome(
-    const std::unordered_map<bl::biome, bl::color>& map,
-    bl::color                                       gray,
-    bl::color                                       default_color,
-    bl::biome                                       b
+Color blend_with_biome(
+    const std::unordered_map<bl::biome, Color>& map,
+    Color                                       gray,
+    Color                                       default_color,
+    bl::biome                                   biome
 ) {
-    auto it = map.find(b);
-    auto x  = it == map.end() ? default_color : it->second;
-    gray.r  = static_cast<int>(gray.r / 255.0 * x.r);
-    gray.g  = static_cast<int>(gray.g / 255.0 * x.g);
-    gray.b  = static_cast<int>(gray.b / 255.0 * x.b);
-    return gray;
+    auto x = map.contains(biome) ? map.at(biome) : default_color;
+    return Color{
+        static_cast<uint8_t>(gray.r() / 255.0 * x.r()),
+        static_cast<uint8_t>(gray.g() / 255.0 * x.g()),
+        static_cast<uint8_t>(gray.b() / 255.0 * x.b())
+    };
 }
 
 } // namespace
 
-color get_biome_color(bl::biome b) {
-    auto it = biome_color_map.find(b);
-    return it == biome_color_map.end() ? bl::color() : it->second;
+Color get_biome_color(bl::biome biome) {
+    return biome_color_map.contains(biome) ? biome_color_map.at(biome)
+                                           : Color{};
 }
 
-color get_block_color_from_SNBT(const std::string& name) {
+Color get_block_color_from_SNBT(const std::string& name) {
     auto it = block_color_map.find(name);
     if (it == block_color_map.end()) {
         return {};
@@ -61,9 +61,8 @@ color get_block_color_from_SNBT(const std::string& name) {
     return it->second;
 }
 
-std::string get_biome_name(biome b) {
-    auto it = biome_id_map.find(b);
-    return it == biome_id_map.end() ? "unknown" : it->second;
+std::string get_biome_name(bl::biome biome) {
+    return biome_id_map.contains(biome) ? biome_id_map.at(biome) : "unknown";
 }
 
 bool init_biome_color_palette_from_file(const std::string& filename) {
@@ -82,10 +81,11 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
             if (value.contains("rgb")) {
                 auto rgb = value["rgb"];
                 assert(rgb.size() == 3);
-                color c;
-                c.r = static_cast<uint8_t>(rgb[0].get<int>());
-                c.g = static_cast<uint8_t>(rgb[1].get<int>());
-                c.b = static_cast<uint8_t>(rgb[2].get<int>());
+                Color c{
+                    static_cast<uint8_t>(rgb[0].get<int>()),
+                    static_cast<uint8_t>(rgb[1].get<int>()),
+                    static_cast<uint8_t>(rgb[2].get<int>())
+                };
                 biome_color_map[static_cast<biome>(id)] = c;
             }
 
@@ -93,10 +93,11 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
             if (value.contains("water")) {
                 auto water = value["water"];
                 assert(water.size() == 3);
-                color c;
-                c.r = static_cast<uint8_t>(water[0].get<int>());
-                c.g = static_cast<uint8_t>(water[1].get<int>());
-                c.b = static_cast<uint8_t>(water[2].get<int>());
+                Color c{
+                    static_cast<uint8_t>(water[0].get<int>()),
+                    static_cast<uint8_t>(water[1].get<int>()),
+                    static_cast<uint8_t>(water[2].get<int>())
+                };
                 biome_water_map[static_cast<biome>(id)] = c;
                 if (key == "default") default_water_color = c;
             }
@@ -104,10 +105,11 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
             if (value.contains("grass")) {
                 auto grass = value["grass"];
                 assert(grass.size() == 3);
-                color c;
-                c.r = static_cast<uint8_t>(grass[0].get<int>());
-                c.g = static_cast<uint8_t>(grass[1].get<int>());
-                c.b = static_cast<uint8_t>(grass[2].get<int>());
+                Color c{
+                    static_cast<uint8_t>(grass[0].get<int>()),
+                    static_cast<uint8_t>(grass[1].get<int>()),
+                    static_cast<uint8_t>(grass[2].get<int>())
+                };
                 biome_grass_map[static_cast<biome>(id)] = c;
                 if (key == "default") default_grass_color = c;
             }
@@ -115,10 +117,11 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
             if (value.contains("leaves")) {
                 auto leaves = value["leaves"];
                 assert(leaves.size() == 3);
-                color c;
-                c.r = static_cast<uint8_t>(leaves[0].get<int>());
-                c.g = static_cast<uint8_t>(leaves[1].get<int>());
-                c.b = static_cast<uint8_t>(leaves[2].get<int>());
+                Color c{
+                    static_cast<uint8_t>(leaves[0].get<int>()),
+                    static_cast<uint8_t>(leaves[1].get<int>()),
+                    static_cast<uint8_t>(leaves[2].get<int>())
+                };
                 biome_leave_map[static_cast<biome>(id)] = c;
                 if (key == "default") default_leave_color = c;
             }
@@ -164,12 +167,12 @@ bool init_block_color_palette_from_file(const std::string& filename) {
 
             if (extra_data.contains("color")) {
                 auto  rgb = extra_data["color"];
-                color c;
-                c.r = static_cast<uint8_t>(rgb[0].get<double>() * 255.0);
-                c.g = static_cast<uint8_t>(rgb[1].get<double>() * 255.0);
-                c.b = static_cast<uint8_t>(rgb[2].get<double>() * 255.0);
-                c.a = static_cast<uint8_t>(rgb[3].get<double>() * 255.0);
-
+                Color c{
+                    static_cast<uint8_t>(rgb[0].get<double>() * 255.0),
+                    static_cast<uint8_t>(rgb[1].get<double>() * 255.0),
+                    static_cast<uint8_t>(rgb[2].get<double>() * 255.0),
+                    static_cast<uint8_t>(rgb[3].get<double>() * 255.0)
+                };
                 auto* root      = new compound_tag("");
                 auto* name_key  = new string_tag("name");
                 name_key->value = block_name;
@@ -233,7 +236,7 @@ bool init_block_color_palette_from_file(const std::string& filename) {
 }
 
 void export_image(
-    const std::vector<std::vector<color>>& b,
+    const std::vector<std::vector<Color>>& b,
     int                                    ppi,
     const std::string&                     name
 ) {
@@ -246,21 +249,24 @@ void export_image(
     for (int i = 0; i < h; i++) {
         for (int j = 0; j < w; j++) {
             auto color                = b[i / ppi][j / ppi];
-            data[3 * (j + i * w)]     = color.r;
-            data[3 * (j + i * w) + 1] = color.g;
-            data[3 * (j + i * w) + 2] = color.b;
+            data[3 * (j + i * w)]     = color.r();
+            data[3 * (j + i * w) + 1] = color.g();
+            data[3 * (j + i * w) + 2] = color.b();
         }
     }
 
     stbi_write_png(name.c_str(), w, h, c, data.data(), 0);
 }
 
-std::unordered_map<std::string, bl::color>& get_block_color_table() {
+std::unordered_map<std::string, Color>& get_block_color_table() {
     return block_color_map;
 }
 
-bl::color
-blend_color_with_biome(const std::string& name, bl::color color, bl::biome b) {
+Color blend_color_with_biome(
+    const std::string& name,
+    Color              color,
+    bl::biome          b
+) {
     if (water_block_names.count(name))
         return blend_with_biome(biome_water_map, color, default_water_color, b);
     if (grass_block_names.count(name))

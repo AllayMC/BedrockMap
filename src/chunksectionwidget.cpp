@@ -43,7 +43,7 @@ void ChunkSectionWidget::paintEvent(QPaintEvent* event) {
         for (int j = 0; j < 16; j++) {
             QRect rect(x_start + i * bw, j * bw + z_start, bw, bw);
             auto  c = this->get_layer_data(this->y_level_)[i][j].block_color;
-            p.fillRect(rect, QBrush(QColor(c.r, c.g, c.b)));
+            p.fillRect(rect, QBrush(QColor(c.r(), c.g(), c.b())));
             p.setPen(pen);
             p.drawRect(rect);
 
@@ -57,7 +57,7 @@ void ChunkSectionWidget::paintEvent(QPaintEvent* event) {
             auto  c = bl::get_biome_color(
                 this->get_layer_data(this->y_level_)[i][j].biome
             );
-            p.fillRect(rect, QBrush(QColor(c.r, c.g, c.b)));
+            p.fillRect(rect, QBrush(QColor(c.r(), c.g(), c.b())));
             p.setPen(pen);
             p.drawRect(rect);
         }

@@ -313,13 +313,13 @@ chunk::~chunk() {
     for (auto& e : this->entities_) delete e;
 }
 
-bl::color chunk::get_block_color(int cx, int y, int cz) {
+Color chunk::get_block_color(int cx, int y, int cz) {
     auto* raw = this->get_block_raw(cx, y, cz);
     if (!raw) return {};
     return get_block_color_from_SNBT(raw->to_raw());
 }
 
-//    bl::color chunk::get_top_block_color(int cx, int cz) {
+//    Color chunk::get_top_block_color(int cx, int cz) {
 //        auto height = this->get_height(cx, cz);
 //        return this->get_block_color(cx, height - 1, cz);
 //    }

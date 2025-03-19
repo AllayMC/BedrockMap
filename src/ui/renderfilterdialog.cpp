@@ -14,14 +14,18 @@ QColor height_to_color(int height, int dim) {
     static int max[]{319, 127, 255};
     if (height < min[dim]) height = min[dim];
     if (height > max[dim]) height = max[dim];
-    auto gray =
-        static_cast<int>(static_cast<qreal>(height - min[dim]) / static_cast<qreal>(max[dim] - min[dim]) * 255.0);
+    auto gray = static_cast<int>(
+        static_cast<qreal>(height - min[dim])
+        / static_cast<qreal>(max[dim] - min[dim]) * 255.0
+    );
     return {255 - gray, 255 - gray, 255 - gray};
 }
 
 } // namespace
 
-RenderFilterDialog::RenderFilterDialog(QWidget* parent) : QDialog(parent), ui(new Ui::RenderFilterDialog) {
+RenderFilterDialog::RenderFilterDialog(QWidget* parent)
+: QDialog(parent),
+  ui(new Ui::RenderFilterDialog) {
     ui->setupUi(this);
     this->setWindowTitle("Configuring Map Filters");
     ui->layer_slider->setSingleStep(1);
@@ -39,15 +43,18 @@ void RenderFilterDialog::fillInUI() {
     ui->actor_black_box->setChecked(this->filter_.actor_black_mode_);
 
     QStringList actor_list;
-    for (const auto& actor : this->filter_.actors_list_) actor_list << actor.c_str();
+    for (const auto& actor : this->filter_.actors_list_)
+        actor_list << actor.c_str();
     ui->actor_text_edit->setPlainText(actor_list.join(','));
 
     QStringList block_list;
-    for (const auto& block : this->filter_.blocks_list_) block_list << block.c_str();
+    for (const auto& block : this->filter_.blocks_list_)
+        block_list << block.c_str();
     ui->block_text_edit->setPlainText(block_list.join(','));
 
     QStringList biome_list;
-    for (const auto& biome : this->filter_.biomes_list_) biome_list << QString::number(biome);
+    for (const auto& biome : this->filter_.biomes_list_)
+        biome_list << QString::number(biome);
     ui->biome_text_edit->setPlainText(biome_list.join(','));
 }
 
@@ -80,7 +87,9 @@ void RenderFilterDialog::collectFilerData() {
     }
 }
 
-void RenderFilterDialog::on_current_layer_lineedit_textEdited(const QString& arg1) {
+void RenderFilterDialog::on_current_layer_lineedit_textEdited(
+    const QString& arg1
+) {
     ui->layer_slider->setValue(ui->current_layer_lineedit->text().toInt());
 }
 
@@ -118,15 +127,28 @@ void setRegionBlockData(
 
 
     info.color = bl::blend_color_with_biome(info.name, info.color, biome);
-    region->terrain_bake_image_.setPixelColor(X, Z, QColor(info.color.r, info.color.g, info.color.b, info.color.a));
+    region->terrain_bake_image_.setPixelColor(
+        X,
+        Z,
+        QColor(info.color.r(), info.color.g(), info.color.b(), info.color.a())
+    );
 
     if ((f->biomes_list_.count(biome) == 0) == f->biome_black_mode_) {
         // Biome filtering (just don't display, no search function)
         auto biome_color = bl::get_biome_color(biome);
-        region->biome_bake_image_
-            .setPixelColor(X, Z, QColor(biome_color.r, biome_color.g, biome_color.b, biome_color.a));
+        region->biome_bake_image_.setPixelColor(
+            X,
+            Z,
+            QColor(
+                biome_color.r(),
+                biome_color.g(),
+                biome_color.b(),
+                biome_color.a()
+            )
+        );
     }
-    region->height_bake_image_.setPixelColor(X, Z, height_to_color(y, ch->get_pos().dim));
+    region->height_bake_image_
+        .setPixelColor(X, Z, height_to_color(y, ch->get_pos().dim));
     // setup tips
     auto& tips      = region->tips_info_[X][Z];
     tips.block_name = info.name;
@@ -135,7 +157,8 @@ void setRegionBlockData(
 }
 
 // Terrain, biome rendering and coordinate data settings
-void MapFilter::renderImages(bl::chunk* ch, int rw, int rh, ChunkRegion* region) const {
+void MapFilter::renderImages(bl::chunk* ch, int rw, int rh, ChunkRegion* region)
+    const {
     if (!ch || !region) return;
     auto [miny, maxy] = ch->get_pos().get_y_range(ch->get_version());
     if (this->enable_layer_) {
@@ -144,8 +167,18 @@ void MapFilter::renderImages(bl::chunk* ch, int rw, int rh, ChunkRegion* region)
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 16; j++) {
                 auto b = ch->get_block_fast(i, this->layer, j);
-                if ((this->blocks_list_.count(b.name) == 0) == this->block_black_mode_) {
-                    setRegionBlockData(this, ch, i, j, this->layer, rw, rh, region);
+                if ((this->blocks_list_.count(b.name) == 0)
+                    == this->block_black_mode_) {
+                    setRegionBlockData(
+                        this,
+                        ch,
+                        i,
+                        j,
+                        this->layer,
+                        rw,
+                        rh,
+                        region
+                    );
                 }
             }
         }
@@ -158,7 +191,8 @@ void MapFilter::renderImages(bl::chunk* ch, int rw, int rh, ChunkRegion* region)
                 bool found{false};
                 while (y >= miny) {
                     auto b = ch->get_block_fast(i, y, j);
-                    if ((this->blocks_list_.count(b.name) == 0) == this->block_black_mode_) {
+                    if ((this->blocks_list_.count(b.name) == 0)
+                        == this->block_black_mode_) {
                         found = true;
                         break;
                     }
@@ -177,7 +211,8 @@ void MapFilter::bakeChunkActors(bl::chunk* ch, ChunkRegion* region) const {
     auto entities = ch->entities();
     for (auto& e : entities) {
         auto key = QString(e->identifier().c_str()).replace("minecraft:", "");
-        if ((this->actors_list_.count(key.toStdString()) == 0) == this->actor_black_mode_) {
+        if ((this->actors_list_.count(key.toStdString()) == 0)
+            == this->actor_black_mode_) {
             region->actors_[ActorImage(key)].push_back(e->pos());
         }
     }

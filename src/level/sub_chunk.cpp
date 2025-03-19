@@ -188,10 +188,7 @@ block_info sub_chunk::get_block_fast(int rx, int ry, int rz) {
         return {};
     }
 
-    return {
-        dynamic_cast<bl::palette::string_tag*>(id->second)->value,
-        bl::color{}
-    };
+    return {dynamic_cast<bl::palette::string_tag*>(id->second)->value, Color{}};
 }
 
 palette::compound_tag* sub_chunk::get_block_raw(int rx, int ry, int rz) {
