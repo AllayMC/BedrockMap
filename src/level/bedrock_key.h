@@ -1,9 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <functional>
-#include <string>
-
 namespace bl {
 
 enum ChunkVersion {

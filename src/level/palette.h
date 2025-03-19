@@ -2,14 +2,6 @@
 
 #include "level/utils.h"
 
-#include <cstdlib>
-#include <cstring>
-#include <map>
-#include <ostream>
-#include <string>
-#include <utility>
-#include <vector>
-
 namespace bl::palette {
 
 // TODD: Rewrite this library using templates

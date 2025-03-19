@@ -9,8 +9,6 @@
 #include <leveldb/filter_policy.h>
 #include <leveldb/write_batch.h>
 
-#include <filesystem>
-
 class SlowEnv : public leveldb::Env {};
 
 namespace bl {

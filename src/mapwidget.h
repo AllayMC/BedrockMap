@@ -9,8 +9,6 @@
 #include <QWidget>
 #include <QtDebug>
 
-#include <tuple>
-
 class MainWindow;
 
 class MapWidget : public QWidget {

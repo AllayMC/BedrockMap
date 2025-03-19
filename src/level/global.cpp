@@ -1,7 +1,5 @@
 #include "level/global.h"
 
-#include <array>
-
 namespace bl {
 
 void village_data::reset(const std::unordered_map<std::string, std::array<bl::palette::compound_tag*, 4>>& data) {

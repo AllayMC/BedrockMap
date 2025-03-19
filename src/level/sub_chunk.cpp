@@ -3,8 +3,6 @@
 #include "level/palette.h"
 #include "level/utils.h"
 
-#include <cstdio>
-
 namespace bl {
 
 namespace {

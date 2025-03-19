@@ -5,9 +5,6 @@
 #include <QColor>
 #include <QImage>
 
-#include <bitset>
-#include <cstdint>
-
 typedef bl::chunk_pos region_pos;
 
 struct cfg {

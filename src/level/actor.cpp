@@ -1,8 +1,6 @@
 #include "level/actor.h"
 #include "level/palette.h"
 
-#include <iostream>
-
 namespace bl {
 
 bool actor::load(const byte_t* data, size_t len) {

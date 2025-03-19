@@ -22,8 +22,6 @@
 #include <QRectF>
 #include <QRgb>
 
-#include <cmath>
-
 void MapWidget::resizeEvent(QResizeEvent* event) {
     this->camera_ = QRect(-10, -10, this->width() + 10, this->height() + 10);
 }

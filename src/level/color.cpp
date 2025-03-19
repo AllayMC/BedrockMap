@@ -6,11 +6,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>
 
-#include <fstream>
-#include <iostream>
-#include <unordered_map>
-#include <unordered_set>
-
 namespace bl {
 
 namespace {

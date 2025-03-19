@@ -7,8 +7,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include <fstream>
-
 namespace {
 
 //    QImage *bg_{nullptr};
@@ -96,8 +94,6 @@ void cfg::initColorTable() {
     //        }
     //    }
 }
-
-#include <bitset>
 
 void cfg::initConfig() {
     qInfo() << "Current working directory: " << QDir::currentPath();

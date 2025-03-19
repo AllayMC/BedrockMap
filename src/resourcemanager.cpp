@@ -9,8 +9,6 @@
 #include <QString>
 #include <QtDebug>
 
-#include <unordered_map>
-
 namespace {
 
 QMap<QString, QImage*> actor_img_pool;

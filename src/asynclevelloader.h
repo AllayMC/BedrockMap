@@ -11,14 +11,6 @@
 #include <QRunnable>
 #include <QThreadPool>
 
-#include <array>
-#include <atomic>
-#include <bitset>
-#include <deque>
-#include <mutex>
-#include <unordered_set>
-#include <vector>
-
 class AsyncLevelLoader;
 namespace bl {
 

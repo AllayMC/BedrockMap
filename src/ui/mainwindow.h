@@ -1,8 +1,5 @@
 #pragma once
 
-#include <QShortcut>
-#include <vector>
-
 #include <QDialog>
 #include <QFutureWatcher>
 #include <QKeyEvent>
@@ -10,7 +7,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QPushButton>
-#include <unordered_map>
+#include <QShortcut>
 
 #include "asynclevelloader.h"
 #include "mapwidget.h"

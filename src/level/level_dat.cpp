@@ -1,8 +1,6 @@
 #include "level/level_dat.h"
 #include "level/utils.h"
 
-#include <filesystem>
-
 namespace bl {
 
 bool level_dat::load_from_file(const std::string& path) {

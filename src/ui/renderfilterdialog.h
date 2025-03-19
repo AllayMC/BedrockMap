@@ -3,8 +3,6 @@
 #include <QDialog>
 #include <QtDebug>
 
-#include <unordered_set>
-
 namespace Ui {
 class RenderFilterDialog;
 }

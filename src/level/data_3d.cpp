@@ -2,9 +2,6 @@
 #include "level/bedrock_key.h"
 #include "level/utils.h"
 
-#include <cstdio>
-#include <cstring>
-
 namespace bl {
 
 namespace {
@@ -28,7 +25,8 @@ std::vector<biome> load_subchunk_biome(const byte_t* data, int& read, size_t len
         for (int wordi = 0; wordi < word_count; wordi++) {
             auto word = *reinterpret_cast<const int*>(data + read + wordi * 4);
             for (int block = 0; block < bpw; block++) {
-                int state       = (word >> ((position % bpw) * bits)) & ((1 << bits) - 1);
+                int state = (word >> ((position % bpw) * bits)) & ((1 << bits) - 1);
+                assert(position < 4096);
                 index[position] = state;
                 position++;
             }

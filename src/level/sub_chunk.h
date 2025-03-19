@@ -3,10 +3,6 @@
 #include "level/color.h"
 #include "level/palette.h"
 
-#include <cstdint>
-#include <cstdio>
-#include <vector>
-
 namespace bl {
 
 struct block_info {

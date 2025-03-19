@@ -2,10 +2,6 @@
 
 #include "level/utils.h"
 
-#include <cassert>
-#include <cstdint>
-#include <vector>
-
 namespace bl::bits {
 
 inline uint8_t mask(uint8_t low, uint8_t high) { return (0xff >> (7u - high) & (0xff << low)); }

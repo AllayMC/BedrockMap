@@ -2,9 +2,6 @@
 
 #include "level/data_3d.h"
 
-#include <string>
-#include <unordered_map>
-
 namespace bl {
 
 struct color {

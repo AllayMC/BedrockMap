@@ -18,6 +18,7 @@ target('BedrockMap')
     add_files('src/**.ui')  -- qt widgets
     add_files('src/**.h')   -- qt meta header
 
+    set_pcxxheader('src/pch.h')
     set_warnings('all')
     set_optimize('fastest')
     set_languages('cxx23', 'c23')
@@ -45,8 +46,10 @@ target('BedrockMap')
     add_files('assets/autogen.qrc')
 
     on_load(function (target)
-        -- placeholder to prevent configure failure.
-        io.writefile('assets/autogen.qrc', '<!--This file will be automatically generated before building.-->\n<RCC></RCC>')
+        if not os.exists('assets/autogen.qrc') then
+            -- placeholder to prevent configure failure.
+            io.writefile('assets/autogen.qrc', '<!--This file will be automatically generated before building.-->\n<RCC></RCC>')
+        end
     end)
     before_build(function (target)
         local assets_dir = 'assets/'

@@ -12,7 +12,6 @@
 #include <QStandardPaths>
 #include <QtConcurrent>
 #include <QtDebug>
-#include <exception>
 
 #include "level/palette.h"
 #include "mapwidget.h"

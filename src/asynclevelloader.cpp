@@ -1,13 +1,11 @@
 #include "asynclevelloader.h"
+#include "config.h"
 
 #include <QObject>
 #include <QtConcurrent>
 #include <QtDebug>
 
-#include "config.h"
-#include "leveldb/write_batch.h"
-
-#include <chrono>
+#include <leveldb/write_batch.h>
 
 namespace {
 

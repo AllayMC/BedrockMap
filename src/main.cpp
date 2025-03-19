@@ -11,9 +11,6 @@
 #include "resourcemanager.h"
 #include "ui/mainwindow.h"
 
-#include <chrono>
-#include <filesystem>
-
 QString LOG_FILE_NAME;
 
 void setupLog() {
