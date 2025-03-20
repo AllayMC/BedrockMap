@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include "level/color.h"
+#include "level/map_color_palette.h"
 
 #include <QDir>
 #include <QtDebug>
@@ -37,7 +38,7 @@ bool cfg::transparent_void = false;
 
 // The paths to three important files are directly built-in.
 const std::string cfg::CONFIG_FILE_PATH = "config.json";
-const std::string cfg::BLOCK_FILE_PATH  = "block_color.json";
+const std::string cfg::BLOCK_FILE_PATH  = "block_states.json";
 const std::string cfg::BIOME_FILE_PATH  = "biome_color.json";
 
 region_pos cfg::c2r(const bl::chunk_pos& ch) {
@@ -52,10 +53,7 @@ void cfg::initColorTable() {
                    << BIOME_FILE_PATH.c_str();
     }
 
-    if (!bl::init_block_color_palette_from_file(cfg::BLOCK_FILE_PATH)) {
-        qWarning() << "Can not load block color file in path: "
-                   << BLOCK_FILE_PATH.c_str();
-    }
+    bl_map_color_palette.init_block_color_data(cfg::BLOCK_FILE_PATH);
 
     // init image
 

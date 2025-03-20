@@ -4,6 +4,7 @@
 
 #include "asynclevelloader.h"
 #include "level/color.h"
+#include "level/map_color_palette.h"
 #include "resourcemanager.h"
 #include "ui_renderfilterdialog.h"
 
@@ -124,13 +125,13 @@ void setRegionBlockData(
     const int Z     = (rh << 4) + chz;
     auto      info  = ch->get_block(chx, y, chz);
     auto      biome = ch->get_biome(chx, y, chz);
+    auto      raw   = ch->get_block_raw(chx, y, chz);
+    auto      color = bl_map_color_palette.get_color(*raw);
 
-
-    info.color = bl::blend_color_with_biome(info.name, info.color, biome);
     region->terrain_bake_image_.setPixelColor(
         X,
         Z,
-        QColor(info.color.r(), info.color.g(), info.color.b(), info.color.a())
+        QColor(color.r(), color.g(), color.b(), color.a())
     );
 
     if ((f->biomes_list_.count(biome) == 0) == f->biome_black_mode_) {

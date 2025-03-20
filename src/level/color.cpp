@@ -10,12 +10,7 @@ namespace bl {
 
 namespace {
 
-// biome id -> water
 // Biome-related color whitelist
-std::unordered_set<std::string> water_block_names;
-std::unordered_set<std::string> leaves_block_names;
-std::unordered_set<std::string> grass_block_names;
-
 std::unordered_map<biome, Color> biome_water_map;
 std::unordered_map<biome, Color> biome_leave_map;
 std::unordered_map<biome, Color> biome_grass_map;
@@ -29,36 +24,11 @@ std::unordered_map<biome, std::string> biome_id_map;
 // biome id -> biome color
 std::unordered_map<biome, Color> biome_color_map;
 
-// key It is the raw form of palette
-std::unordered_map<std::string, Color> block_color_map;
-
-Color blend_with_biome(
-    const std::unordered_map<bl::biome, Color>& map,
-    Color                                       gray,
-    Color                                       default_color,
-    bl::biome                                   biome
-) {
-    auto x = map.contains(biome) ? map.at(biome) : default_color;
-    return Color{
-        static_cast<uint8_t>(gray.r() / 255.0 * x.r()),
-        static_cast<uint8_t>(gray.g() / 255.0 * x.g()),
-        static_cast<uint8_t>(gray.b() / 255.0 * x.b())
-    };
-}
-
 } // namespace
 
 Color get_biome_color(bl::biome biome) {
     return biome_color_map.contains(biome) ? biome_color_map.at(biome)
                                            : Color{};
-}
-
-Color get_block_color_from_SNBT(const std::string& name) {
-    auto it = block_color_map.find(name);
-    if (it == block_color_map.end()) {
-        return {};
-    }
-    return it->second;
 }
 
 std::string get_biome_name(bl::biome biome) {
@@ -137,104 +107,6 @@ bool init_biome_color_palette_from_file(const std::string& filename) {
     return true;
 }
 
-bool init_block_color_palette_from_file(const std::string& filename) {
-    try {
-        std::ifstream f(filename);
-        if (!f.is_open()) {
-            BL_ERROR("Can not open file %s", filename.c_str());
-            return false;
-        }
-        nlohmann::json j;
-        f >> j;
-        BL_LOGGER("Load json success: %s", filename.c_str());
-        for (auto& item : j) {
-            using namespace bl::palette;
-            auto extra_data = item["extra_data"];
-            auto block_name = item["name"].get<std::string>();
-
-            if (extra_data.contains("use_grass_color")
-                && extra_data["use_grass_color"].get<bool>()) {
-                grass_block_names.insert(block_name);
-            }
-            if (extra_data.contains("use_leaves_color")
-                && extra_data["use_leaves_color"].get<bool>()) {
-                leaves_block_names.insert(block_name);
-            }
-            if (extra_data.contains("use_water_color")
-                && extra_data["use_water_color"].get<bool>()) {
-                water_block_names.insert(block_name);
-            }
-
-            if (extra_data.contains("color")) {
-                auto  rgb = extra_data["color"];
-                Color c{
-                    static_cast<uint8_t>(rgb[0].get<double>() * 255.0),
-                    static_cast<uint8_t>(rgb[1].get<double>() * 255.0),
-                    static_cast<uint8_t>(rgb[2].get<double>() * 255.0),
-                    static_cast<uint8_t>(rgb[3].get<double>() * 255.0)
-                };
-                auto* root      = new compound_tag("");
-                auto* name_key  = new string_tag("name");
-                name_key->value = block_name;
-                auto* stat_tag  = new compound_tag("states");
-                if (item.contains("states")) {
-                    for (auto& [k, v] : item["states"].items()) {
-                        if (v.type() == nlohmann::json::value_t::string) {
-                            auto* t  = new string_tag(k);
-                            t->value = v.get<std::string>();
-                            stat_tag->put(t);
-                        } else if (v.type()
-                                   == nlohmann::json::value_t::boolean) {
-                            auto* t  = new byte_tag(k);
-                            t->value = v.get<bool>();
-                            stat_tag->put(t);
-                        } else if (v.type()
-                                   == nlohmann::json::value_t::number_float) {
-                            auto* t  = new float_tag(k);
-                            t->value = v.get<float>();
-                            stat_tag->put(t);
-                        } else if (v.type()
-                                   == nlohmann::json::value_t::number_integer) {
-                            auto* t  = new int_tag(k);
-                            t->value = v.get<int>();
-                            stat_tag->put(t);
-
-                        } else if (v.type()
-                                   == nlohmann::json::value_t::
-                                       number_unsigned) {
-                            auto* t  = new int_tag(k);
-                            t->value = v.get<unsigned>();
-                            stat_tag->put(t);
-                        }
-                    }
-                }
-                root->put(name_key);
-                root->put(stat_tag);
-
-                block_color_map[root->to_raw()] = c;
-                delete root;
-            }
-        }
-    } catch (std::exception& e) {
-        std::cout << "Err: " << e.what() << std::endl;
-        return false;
-    }
-    BL_LOGGER("Water blocks:");
-    for (auto& b : water_block_names) {
-        BL_LOGGER(" - %s", b.c_str());
-    }
-    BL_LOGGER("Leaves blocks:");
-    for (auto& b : leaves_block_names) {
-        BL_LOGGER(" - %s", b.c_str());
-    }
-    BL_LOGGER("Grass blocks:");
-    for (auto& b : grass_block_names) {
-        BL_LOGGER(" - %s", b.c_str());
-    }
-
-    return true;
-}
-
 void export_image(
     const std::vector<std::vector<Color>>& b,
     int                                    ppi,
@@ -256,24 +128,6 @@ void export_image(
     }
 
     stbi_write_png(name.c_str(), w, h, c, data.data(), 0);
-}
-
-std::unordered_map<std::string, Color>& get_block_color_table() {
-    return block_color_map;
-}
-
-Color blend_color_with_biome(
-    const std::string& name,
-    Color              color,
-    bl::biome          b
-) {
-    if (water_block_names.count(name))
-        return blend_with_biome(biome_water_map, color, default_water_color, b);
-    if (grass_block_names.count(name))
-        return blend_with_biome(biome_grass_map, color, default_grass_color, b);
-    if (leaves_block_names.count(name))
-        return blend_with_biome(biome_leave_map, color, default_leave_color, b);
-    return color;
 }
 
 } // namespace bl

@@ -1,6 +1,7 @@
 #include "chunksectionwidget.h"
 
 #include "level/color.h"
+#include "level/map_color_palette.h"
 
 #include <QAction>
 #include <QApplication>
@@ -88,11 +89,7 @@ void ChunkSectionWidget::load_data(bl::chunk* ch) {
                 auto* raw        = ch->get_block_raw(x, y, z);
                 auto  info       = ch->get_block(x, y, z);
                 data.block_name  = info.name;
-                data.block_color = bl::blend_color_with_biome(
-                    data.block_name,
-                    info.color,
-                    data.biome
-                );
+                data.block_color = bl_map_color_palette.get_color(*raw);
                 if (raw) {
                     data.block_palette = raw->to_readable_string();
                 }

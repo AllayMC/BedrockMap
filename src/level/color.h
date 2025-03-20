@@ -35,11 +35,11 @@ public:
 
     // 0xRRGGBBAA
     constexpr explicit Color(uint32_t hex) {
-            m_red   = (hex >> 24) & 0xFF;
-            m_green = (hex >> 16) & 0xFF;
-            m_blue  = (hex >> 8) & 0xFF;
-            m_alpha = hex & 0xFF;
-        }
+        m_red   = (hex >> 24) & 0xFF;
+        m_green = (hex >> 16) & 0xFF;
+        m_blue  = (hex >> 8) & 0xFF;
+        m_alpha = hex & 0xFF;
+    }
 
     constexpr explicit Color(std::string_view hex)
     : Color(color_hexstr_to_int(hex)) {}
@@ -64,20 +64,7 @@ private:
 
 std::string get_biome_name(biome b);
 
-Color get_block_color_from_SNBT(const std::string& name);
-
-// [[maybe_unused]] Color get_water_color(Color gray, bl::biome b);
-
-// Color get_leave_color(Color gray, bl::biome b);
-// Color get_grass_color(Color gray, bl::biome b);
-
-Color blend_color_with_biome(const std::string& name, Color color, bl::biome b);
-
-[[maybe_unused]] std::unordered_map<std::string, Color>&
-     get_block_color_table();
 bool init_biome_color_palette_from_file(const std::string& filename);
-
-bool init_block_color_palette_from_file(const std::string& filename);
 
 [[maybe_unused]] void export_image(
     const std::vector<std::vector<Color>>& c,
