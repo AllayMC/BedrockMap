@@ -4,6 +4,21 @@
 
 namespace bl {
 
+constexpr uint32_t color_hexstr_to_int(std::string_view hex) {
+    if (hex.empty() || hex[0] != '#'
+        || (hex.length() != 7 && hex.length() != 9)) {
+        throw std::runtime_error("TODO");
+    }
+
+    uint32_t result{};
+    if (std::from_chars(hex.data() + 1, hex.data() + hex.size(), result, 16).ec
+        != std::errc()) {
+        throw std::runtime_error("TODO");
+    }
+
+    return result;
+}
+
 class Color {
 public:
     constexpr Color() : m_red(0), m_green(0), m_blue(0), m_alpha(255) {}
@@ -18,21 +33,16 @@ public:
       m_blue(blue),
       m_alpha(alpha) {}
 
+    // 0xRRGGBBAA
     constexpr explicit Color(uint32_t hex) {
-        if (hex <= 0xFFFFFF) {
-            // 0xRRGGBB
-            m_red   = (hex >> 16) & 0xFF;
-            m_green = (hex >> 8) & 0xFF;
-            m_blue  = hex & 0xFF;
-            m_alpha = 255;
-        } else {
-            // 0xRRGGBBAA
             m_red   = (hex >> 24) & 0xFF;
             m_green = (hex >> 16) & 0xFF;
             m_blue  = (hex >> 8) & 0xFF;
             m_alpha = hex & 0xFF;
         }
-    }
+
+    constexpr explicit Color(std::string_view hex)
+    : Color(color_hexstr_to_int(hex)) {}
 
     constexpr auto r() const { return m_red; }
     constexpr auto g() const { return m_green; }
@@ -40,10 +50,10 @@ public:
     constexpr auto a() const { return m_alpha; }
 
     [[nodiscard]] constexpr auto data() const {
-        return (static_cast<int32_t>(m_red) << 24)
-             | (static_cast<int32_t>(m_green) << 16)
-             | (static_cast<int32_t>(m_blue) << 6)
-             | static_cast<int32_t>(m_alpha);
+        return (static_cast<uint32_t>(m_red) << 24)
+             | (static_cast<uint32_t>(m_green) << 16)
+             | (static_cast<uint32_t>(m_blue) << 8)
+             | static_cast<uint32_t>(m_alpha);
     }
 
 private:
